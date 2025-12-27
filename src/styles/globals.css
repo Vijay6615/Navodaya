@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-/* ===== generic scroll animation ===== */
+/* generic scroll animation */
 
 .fade-up {
   opacity: 0;
@@ -120,15 +120,14 @@ footer {
   border-top: 1px solid #f5d0a9;
 }
 
-
 .puja-card.visible {
   opacity: 1;
   transform: translateY(0);
-} */
+} 
 
 
 
-/* ---- NAVBAR WRAPPER ---- */
+/* NAVBAR WRAPPER */
 .nav-wrapper {
   position: sticky;
   top: 0;
@@ -173,7 +172,7 @@ footer {
   font-size: 16px;
 }
 
-/* ---- CENTER LINKS ---- */
+/*CENTER LINKS */
 .nav-links {
   display: flex;
   gap: 22px;
@@ -192,7 +191,7 @@ footer {
   border-radius: 999px;
 }
 
-/* ---- RIGHT SIDE ---- */
+/*RIGHT SIDE*/
 
 .nav-right {
   display: flex;
@@ -219,7 +218,7 @@ footer {
   cursor: pointer;
 }
 
-/* ---- HAMBURGER ---- */
+/* HAMBURGER  */
 .hamburger {
   color: black;
   display: none;
@@ -229,7 +228,7 @@ footer {
   cursor: pointer;
 }
 
-/* ------------- MOBILE MODE ------------- */
+/* MOBILE MODE  */
 @media (max-width: 900px) {
 
   .hamburger {
@@ -347,7 +346,7 @@ footer {
 
 
 
-/* ==== SECTIONS ==== */
+/* SECTIONS  */
 .section,
 .page-section {
   max-width: 1200px;
@@ -372,7 +371,7 @@ footer {
   color: #6b7280;
 }
 
-/* ==== HERO (FULL BANNER) ==== */
+/* HERO (FULL BANNER)*/
 
 .hero-banner {
   margin-top: 16px;
@@ -546,7 +545,7 @@ footer {
 }
 
 
-/* ===== panditji===*/
+/*  panditji */
 
 
 .two-col {
@@ -702,7 +701,7 @@ footer {
 
 
 
-/* ==== CONSULTATION HERO SECTION ==== */
+/*  CONSULTATION HERO SECTION  */
 .consult-hero {
   max-width: 1250px;
   margin: 0 auto;
@@ -721,7 +720,7 @@ footer {
   min-width: 360px;
 }
 
-/* desktop only – move text down to image level */
+/* desktop only move text down to image level */
 @media (min-width: 992px) {
   .consult-left {
     margin-top: 80px;   
@@ -829,7 +828,7 @@ footer {
   }
 
   .consult-left {
-    margin-top: 0;   /* reset */
+    margin-top: 0;  
   }
 
   .consult-title {
@@ -860,7 +859,7 @@ footer {
 
 
 
-/* ==== Testimonials ==== */
+/*  Testimonials  */
 
 .testimonials {
   padding: 80px 20px;
@@ -983,7 +982,7 @@ footer {
 
 
 
-/* ==== MEET PANDITJI ==== */
+/*  MEET PANDITJI  */
 
 .two-col {
   display: grid;
@@ -1047,7 +1046,7 @@ footer {
   line-height: 1.6;
 }
 
-/* ==== PUJAS ==== */
+/*  PUJAS  */
 
 .grid-responsive {
   display: grid;
@@ -1139,7 +1138,7 @@ footer {
   flex: 1;
 }
 
-/* ==== FORMS & BOOKING ==== */
+/*  FORMS & BOOKING  */
 
 .form-card {
   background: #ffffff;
@@ -1193,8 +1192,6 @@ textarea {
   color: #ffffff;
 }
 
-
-/*==== CONTACT ==== */
 
 /* CONTACT LAYOUT */
 .contact-wrapper {
@@ -1328,7 +1325,7 @@ textarea {
 
 
 
-/* ==== DASHBOARD ==== */
+/* DASHBOARD  */
 
 .dashboard-cards {
   display: grid;
@@ -1363,7 +1360,7 @@ textarea {
   text-align: left;
 }
 
-/* ==== FOOTER ==== */
+/* FOOTER */
 .site-footer {
   margin-top: 40px;
   padding: 24px 16px;
@@ -1401,7 +1398,7 @@ textarea {
   color: #9ca3af;
 }
 
-/* ==== GLOBAL UTILITIES ==== */
+/*  GLOBAL UTILITIES */
 
 .two-col {
   display: flex;
@@ -1426,8 +1423,6 @@ textarea {
   padding-left: 18px;
   color: #4b5563;
 }
-
-/* ======= RESPONSIVE BREAKPOINTS ======= */
 
 /* Mobile */
 @media (max-width: 640px) {
