@@ -36,10 +36,10 @@
 }
 
 
-/* 🌸 GLOBAL LIGHT ORANGE THEME */
+/* GLOBAL LIGHT ORANGE THEME */
 
 body {
-  background: #fff7ed; /* soft light orange */
+  background: #fff7ed; 
   color: #3b1f0e;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -120,12 +120,6 @@ footer {
   border-top: 1px solid #f5d0a9;
 }
 
-/* SCROLL ANIMATION BASE STATE */
-/* .puja-card {
-  opacity: 0;   
-  transform: translateY(30px);
-  transition: 0.6s ease;
-} */
 
 .puja-card.visible {
   opacity: 1;
@@ -133,10 +127,6 @@ footer {
 } */
 
 
-
-/* ---------- NAVBAR MAIN ---------- */
-/* NAVBAR WRAPPER */
-/* NAVBAR WRAPPER */
 
 /* ---- NAVBAR WRAPPER ---- */
 .nav-wrapper {
@@ -389,7 +379,7 @@ footer {
   border-radius: 28px;
   overflow: hidden;
   min-height: 340px;
-  background-image: url("/hero.jpg"); /* yahi image use hogi */
+  background-image: url("/hero.jpg"); 
   background-size: cover;
   background-position: center;
   position: relative;
@@ -558,7 +548,7 @@ footer {
 
 /* ===== panditji===*/
 
-/* TWO COLUMN DESKTOP LAYOUT */
+
 .two-col {
   display: grid;
   grid-template-columns: 1.1fr 1.4fr;
@@ -649,9 +639,7 @@ footer {
 }
 
 
-/*=====frostcard=====*/
-
-                  /* WHY CHOOSE PANDITJI */
+/* WHY CHOOSE PANDITJI */
 .why-panditji {
   text-align: center;
   max-width: 1200px;
@@ -713,26 +701,8 @@ footer {
 } */
 
 
-/*==gallery====*/
 
-
-
-
-/* gallery  end */
-
-
-
-/***********************
-  CONSULT HERO SECTION
-************************/
-
-/***********************
-  PREMIUM HERO (LIKE SHOWN)
-************************/
-
-/* ===========================
-   HERO MAIN CONTAINER
-=========================== */
+/* ==== CONSULTATION HERO SECTION ==== */
 .consult-hero {
   max-width: 1250px;
   margin: 0 auto;
@@ -745,9 +715,7 @@ footer {
 }
 
 
-/* ===========================
-   LEFT SIDE (TEXT AREA)
-=========================== */
+/* LEFT TEXT SECTION */
 .consult-left {
   flex: 1 1 50%;
   min-width: 360px;
@@ -756,7 +724,7 @@ footer {
 /* desktop only – move text down to image level */
 @media (min-width: 992px) {
   .consult-left {
-    margin-top: 80px;   /* 🔥 adjust + / – if needed */
+    margin-top: 80px;   
   }
 }
 
@@ -772,7 +740,7 @@ footer {
   font-size: 54px;
   line-height: 1.05;
   margin: 10px 0 6px 0;
-  max-width: 520px; /* forces same breaks like screenshot */
+  max-width: 520px; 
   font-weight: 800;
 }
 
@@ -817,9 +785,6 @@ footer {
 }
 
 
-/* ===========================
-   RIGHT SIDE IMAGE
-=========================== */
 .consult-right {
   flex: 1 1 50%;
   min-width: 360px;
@@ -853,9 +818,7 @@ footer {
 }
 
 
-/* ===========================
-   MOBILE / TABLET VIEW
-=========================== */
+/* RESPONSIVE ADJUSTMENTS */
 @media (max-width: 992px) {
 
   .consult-hero {
@@ -1176,21 +1139,6 @@ footer {
   flex: 1;
 }
 
-/*=== ===*/
-
-/* .puja-anim {
-  opacity: 0;
-  transform: translateY(25px);
-  transition: .5s ease;
-}
-
-.puja-anim.show {
-  opacity: 1;
-  transform: translateY(0);
-} */
-
-
-
 /* ==== FORMS & BOOKING ==== */
 
 .form-card {
@@ -1302,7 +1250,7 @@ textarea {
 }
 
 .whatsapp-icon {
-  width: 22px;      /* 👈 control size */
+  width: 22px;     
   height: 25px;
   object-fit: contain;
 }
