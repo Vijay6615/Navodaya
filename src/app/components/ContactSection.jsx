@@ -1,15 +1,24 @@
+"use client";
+
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 export default function ContactSection() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [msg, setMsg] = useState("");
-  const [selectedPuja, setSelectedPuja] = useState("");
+
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "",
+    email: "",
+    phone: "",
+    puja: "",
+    message: "",
+  });
 
   const pujas = [
     "Satyanarayan Puja",
-    "Griha Pravesh Puja",
+    "Griha Pravesh",
     "Navgrah Shanti",
     "Mahamrityunjay Jaap",
     "Rudrabhishek",
@@ -19,148 +28,146 @@ export default function ContactSection() {
     "Navchandi Yagya",
     "Marriage Puja",
     "Vastu Shanti",
-    "Naamkaran Sanskar",
-    "Mundan Sanskar",
+    "Naamkaran",
+    "Mundan",
     "Pitru Dosh Puja",
-    "Bhumi Pujan"
+    "Bhumi Pujan",
   ];
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const sendEmail = (e) => {
     e.preventDefault();
 
-    const whatsappNumber = "919594943609";
-
-    const text =
-      ` *New Puja Inquiry*%0A%0A` +
-      ` Name: ${name}%0A` +
-      ` Email: ${email}%0A` +
-      ` Phone: ${phone}%0A` +
-      ` Selected Puja: ${selectedPuja}%0A` +
-      ` Message: ${msg}%0A%0A` +
-      ` Requested through Website Contact Form`;
-
-    const url = `https://wa.me/${whatsappNumber}?text=${text}`;
-    window.open(url, "_blank");
+    emailjs.send(
+      "YOUR_SERVICE_ID",
+      "YOUR_TEMPLATE_ID",
+      form,
+      "YOUR_PUBLIC_KEY"
+    )
+    .then(() => {
+      alert("Message sent successfully ✅");
+      setForm({
+        firstName: "",
+        lastName: "",
+        age: "",
+        gender: "",
+        email: "",
+        phone: "",
+        puja: "",
+        message: "",
+      });
+    })
+    .catch(() => {
+      alert("Failed to send ❌");
+    });
   };
 
   return (
     <div className="contact-wrapper">
-      {/* LEFT SIDE : DETAILS + QR  (unchanged) */}
+
+      {/* LEFT INFO */}
       <div className="contact-info">
-        <h2>Panditji Puja Services</h2>
-        <p className="contact-desc">
-          Authentic Vedic pujas, havans and rituals performed with devotion and
-          proper vidhi-vidhan for peace, prosperity and well-being.
-        </p>
+        <h2>Contact Panditji</h2>
+        <p>Fill the form to book puja or consultation</p>
 
         <ul className="contact-list">
-          <li>
-            📞 <strong>Phone:</strong>{" "}
-            <a href="tel:+919594943609">+91 9594943609</a>
-          </li>
-
-          <li className="whatsapp-item">
-            <img
-              src="/images/whatsapp-logo.png"
-              alt="WhatsApp"
-              className="whatsapp-icon"
-            />
-            <strong>WhatsApp:</strong>{" "}
-            <a
-              href="https://wa.me/919594943609"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Chat on WhatsApp
-            </a>
-          </li>
-
-          <li>
-            ✉️ <strong>Email:</strong>{" "}
-            <a href="mailto:panditji@puja.com">panditji@puja.com</a>
-          </li>
-
-          <li>
-            📍 <strong>Location:</strong> Mumbai, Maharashtra, India
-          </li>
-
-          <li>
-            🕉️ <strong>Available:</strong> 6:00 AM – 10:00 PM
-          </li>
+          <li>📞 +91 9594943609</li>
+          <li>✉️ panditji@puja.com</li>
+          <li>📍 Mumbai, Maharashtra</li>
         </ul>
-
-        <div className="contact-qr-box">
-          <p className="qr-title">📲 Scan for WhatsApp</p>
-
-          <a
-            href="https://api.whatsapp.com/send?phone=919594943609"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/images/QRCODE.png"
-              alt="Scan for WhatsApp Chat"
-              className="contact-qr-image"
-            />
-          </a>
-
-          <p className="qr-subtext">
-            Scan this QR code to chat directly with Panditji on WhatsApp
-          </p>
-        </div>
       </div>
 
-      {/* RIGHT SIDE : FORM */}
-      <form className="contact-form" onSubmit={handleSubmit}>
-        <h3>Send Your Query</h3>
+      {/* RIGHT FORM */}
+      <form className="contact-form" onSubmit={sendEmail}>
 
-        <input
-          type="text"
-          placeholder="Your Name"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <h3>Puja Booking Form</h3>
+
+        <div className="two-input">
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            required
+            value={form.firstName}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Surname"
+            required
+            value={form.lastName}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="two-input">
+          <input
+            type="number"
+            name="age"
+            placeholder="Age"
+            required
+            value={form.age}
+            onChange={handleChange}
+          />
+
+          <select
+            name="gender"
+            required
+            value={form.gender}
+            onChange={handleChange}
+          >
+            <option value="">Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
 
         <input
           type="email"
+          name="email"
           placeholder="Email Address"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={handleChange}
         />
 
         <input
           type="tel"
+          name="phone"
           placeholder="Phone Number"
           required
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          value={form.phone}
+          onChange={handleChange}
         />
 
-        {/* 🔽 NEW — PUJA DROPDOWN */}
         <select
+          name="puja"
           required
-          value={selectedPuja}
-          onChange={(e) => setSelectedPuja(e.target.value)}
+          value={form.puja}
+          onChange={handleChange}
         >
           <option value="">Select Puja</option>
           {pujas.map((p, i) => (
-            <option key={i} value={p}>
-              {p}
-            </option>
+            <option key={i}>{p}</option>
           ))}
         </select>
 
         <textarea
+          name="message"
           rows="4"
-          placeholder="Your message / puja requirement"
+          placeholder="Message / Puja details"
           required
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
+          value={form.message}
+          onChange={handleChange}
         ></textarea>
 
-        <button type="submit">Send Message on WhatsApp</button>
+        <button type="submit">Send Booking Request</button>
       </form>
     </div>
   );

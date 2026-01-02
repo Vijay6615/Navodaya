@@ -4,7 +4,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-grid">
         <div>
-          <div className="brand-logo small">ॐ</div>
+          <div className="brand-logo small"><b>Navodaya Puja</b></div>
           <p>Bringing divine blessings to your doorstep.</p>
         </div>
 
@@ -15,6 +15,7 @@ export default function Footer() {
             <li><a href="/pujas">Our Pujas</a></li>
             <li><a href="/aboutpanditji">About Panditji</a></li>
             <li><a href="/contact">Book Now</a></li>
+            <li><a href="/gallery">Gallery</a></li>
           </ul>
         </div>
 

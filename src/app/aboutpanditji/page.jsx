@@ -1,8 +1,26 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function AboutPanditjiPage() {
+  /* 🔁 IMAGE SLIDESHOW */
+  const photos = [
+    
+    "/images/panditji.jpg",
+    "/images/ganesh.jpg",
+    "/panditji.jpg",
+  ];
+
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % photos.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  /* 👆 fade-up animation on scroll */
   useEffect(() => {
     const items = document.querySelectorAll(".fade-up");
 
@@ -16,68 +34,91 @@ export default function AboutPanditjiPage() {
     );
 
     items.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect(); // ✅ cleanup
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section className="page-section premium-bg">
+    <section className="w-full min-h-screen py-12 bg-gradient-to-br from-orange-50 to-rose-50">
 
-      {/* ✨ Title Section */}
-      <div className="title-wrap fade-up">
-        <p className="subtitle">About Our Guruji</p>
-        <h1 className="page-title-gradient">Meet Our Panditji</h1>
-        <p className="title-desc">
-          Traditional rituals performed with devotion, authenticity, and precision.
+      {/* Title */}
+      <div className="text-center mb-10 fade-up">
+        {/* <p className="text-orange-600 font-semibold">About Our Guruji</p> */}
+        <h1 className="text-4xl font-bold text-gray-800">
+          Meet Panditji
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Traditional rituals performed with devotion, authenticity and precision.
         </p>
       </div>
 
-      <div className="about-card two-col">
+      {/* 🔥 MAIN 2 SECTION LAYOUT */}
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
 
-        {/* LEFT IMAGE */}
-        <div className="meet-photo-wrap fade-up">
-          <img src="/panditji.jpg" alt="Panditji" className="meet-photo premium-shadow" />
+        {/* 🖼 IMAGE SECTION — FIXED SIZE */}
+        <div className="relative w-full h-[420px] rounded-3xl overflow-hidden shadow-xl">
+
+          <img
+            key={index}
+            src={photos[index]}
+            alt="Panditji"
+            className="
+              w-full h-full
+              object-cover
+              transition-all duration-700 ease-out
+              animate-fade-zoom
+            "
+          />
+
+          {/* soft glow border */}
+          <div className="absolute inset-0 rounded-3xl ring-2 ring-orange-400/40"></div>
         </div>
 
-        {/* RIGHT CONTENT */}
-        <div className="meet-info">
+        {/* 🧾 TEXT SECTION */}
+        <div className="space-y-5 px-3">
 
-          <h2 className="meet-name fade-up">Pt. Jayprakash Shukla</h2>
+          <h2 className="text-2xl font-bold text-gray-800 fade-up">
+            PT. Jayprakash Shukla
+          </h2>
 
-          <div className="verified-badges fade-up">
-            <span className="badge">📜 Government Registered</span>
-            <span className="badge">🛕 Vedic Certified Priest</span>
-            <span className="badge">✔️ Trustworthy & Experienced</span>
-          </div>
-
-          <p className="meet-role fade-up">Certified Vedic Scholar & Pujari</p>
-
-          {/* 🔢 Stats */}
-          <div className="meet-stats premium-stats fade-up">
-            <div>
-              <span className="stat-number">20+</span>
-              <span className="stat-label">Years Experience</span>
-            </div>
-            <div>
-              <span className="stat-number">15k+</span>
-              <span className="stat-label">Pujas Performed</span>
-            </div>
-            <div>
-              <span className="stat-number">4.9★</span>
-              <span className="stat-label">Client Rating</span>
-            </div>
-          </div>
-
-          {/* TEXT */}
-          <p className="meet-text fade-up">
-            With over 20 years of dedicated service in performing authentic
-            Vedic rituals, Panditji brings sacred traditions to your home with
-            devotion, pure vidhi-vidhan, and deep scriptural knowledge.
+          <p className="text-gray-600 fade-up">
+            Certified Vedic Scholar & Priest
           </p>
 
-          {/* ⭐ Specializations */}
-          <h3 className="section-title fade-up">Specializations</h3>
-          <div className="ap-tags fade-up">
+          <div className="flex flex-wrap gap-2 fade-up">
+            <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm">
+              📜 Deep Knowledge
+            </span>
+            <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm">
+              🛕 Vedic Certified
+            </span>
+            <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm">
+              ✔️ Trusted Priest
+            </span>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 text-center fade-up">
+            <div>
+              <p className="text-3xl font-bold text-orange-600">20+</p>
+              <p className="text-gray-600 text-sm">Years Experience</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-orange-600">15000+</p>
+              <p className="text-gray-600 text-sm">Pujas Performed</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-orange-600">4.9★</p>
+              <p className="text-gray-600 text-sm">Client Rating</p>
+            </div>
+          </div>
+
+          <p className="text-gray-700 fade-up">
+            With over 20 years of dedicated service in performing sacred Vedic rituals,
+            Panditji brings blessings, peace and prosperity to your home.
+          </p>
+
+          <h3 className="font-bold text-xl fade-up">Specializations</h3>
+          <div className="flex flex-wrap gap-2 fade-up">
             {[
               "Vedic Rituals",
               "Havan",
@@ -85,38 +126,11 @@ export default function AboutPanditjiPage() {
               "Navagraha Shanti",
               "Mahamrityunjay Jaap",
             ].map((t) => (
-              <span key={t} className="ap-tag premium-tag">{t}</span>
+              <span key={t} className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-sm">
+                {t}
+              </span>
             ))}
           </div>
-
-          {/* 🌐 Languages */}
-          <h3 className="section-title fade-up">Languages Spoken</h3>
-          <div className="ap-tags fade-up">
-            {["Hindi", "Marathi", "English", "Sanskrit"].map((t) => (
-              <span key={t} className="ap-tag">{t}</span>
-            ))}
-          </div>
-
-          {/* 🛕 Services */}
-          <h3 className="section-title fade-up">Services Offered</h3>
-          <ul className="ap-list fade-up">
-            <li>All types of Vedic pujas & havans</li>
-            <li>Muhurta & horoscope consultation</li>
-            <li>Vastu consultation for home & office</li>
-            <li>Jaap & Anushthan</li>
-          </ul>
-
-          {/* 🎓 Qualifications */}
-          <h3 className="section-title fade-up">Qualifications</h3>
-          <ul className="ap-list fade-up">
-            <li>M.A. in Sanskrit</li>
-            <li>Certified from Varanasi Sanskrit University</li>
-            <li>10+ years temple service</li>
-            <li>Trained in all major puja traditions</li>
-          </ul>
-
-          {/* CTA BUTTONS */}
-          
         </div>
       </div>
     </section>

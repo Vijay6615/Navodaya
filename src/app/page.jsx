@@ -1,7 +1,5 @@
 "use client";
-
 import { useEffect } from "react";
-
 import Hero from "./components/Hero";
 import FrostCard from "./components/FrostCard";
 import ConsultHero from "./components/ConsultHero";

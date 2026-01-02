@@ -4,7 +4,7 @@
 export const PUJAS = [
   {
     id: "1",
-    title: "Ganesh Puja",
+    name: "Ganesh Puja",
     category: "Deity Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -14,7 +14,7 @@ export const PUJAS = [
   },
   {
     id: "2",
-    title: "Griha Pravesh Puja",
+    name: "Griha Pravesh Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -24,7 +24,7 @@ export const PUJAS = [
   },
   {
     id: "3",
-    title: "Vastu Shanti Puja ",
+    name: "Vastu Shanti Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -34,7 +34,7 @@ export const PUJAS = [
   },
   {
     id: "4",
-    title: " Bhoomi Puja",
+    name: "Bhoomi Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -44,7 +44,7 @@ export const PUJAS = [
   },
   {
     id: "5",
-    title: " Satyanarayan Puja",
+    name: " Satyanarayan Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -54,7 +54,7 @@ export const PUJAS = [
   },
   {
     id: "6",
-    title: " Lakshmi Puja",
+    name: " Lakshmi Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -64,7 +64,7 @@ export const PUJAS = [
   },
   {
     id: "7",
-    title: "Shiv Puja / Rudrabhishek ",
+    name: "Shiv Puja / Rudrabhishek ",
     category: "Deity Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -74,7 +74,7 @@ export const PUJAS = [
   },
   {
     id: "8",
-    title: " Durga Puja",
+    name: "Durga Puja",
     category: "Deity Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -84,7 +84,7 @@ export const PUJAS = [
   },
   {
     id: "9",
-    title: " Vishnu Puja",
+    name: "Vishnu Puja",
     category: "Deity Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -94,7 +94,7 @@ export const PUJAS = [
   },
   {
     id: "10",
-    title: " Rahu–Ketu Shanti Puja",
+    name: "Rahu–Ketu Shanti Puja",
     category: "Astrology",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -104,7 +104,7 @@ export const PUJAS = [
   },
   {
     id: "11",
-    title: "Navagraha Puja",
+    name: "Navagraha Puja",
     category: "Astrology",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -114,7 +114,7 @@ export const PUJAS = [
   },
   {
     id: "12",
-    title: " Shani Shanti Puja",
+    name: " Shani Shanti Puja",
     category: "Astrology",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -124,7 +124,7 @@ export const PUJAS = [
   },
   {
     id: "13",
-    title: " Mangal Dosh Nivaran  ",
+    name: " Mangal Dosh Nivaran",
     category: "Astrology",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -134,7 +134,7 @@ export const PUJAS = [
   },
   {
     id: "14",
-    title: " Kaal Sarp Dosh Puja  ",
+    name: "Kaal Sarp Dosh Puja",
     category: "Astrology",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -144,7 +144,7 @@ export const PUJAS = [
   },
   {
     id: "15",
-    title: "Maha Mrityunjaya Havan",
+    name: "Maha Mrityunjaya Havan",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -154,7 +154,7 @@ export const PUJAS = [
   },
   {
     id: "16",
-    title: "Gayatri Havan",
+    name: "Gayatri Havan",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -164,7 +164,7 @@ export const PUJAS = [
   },
   {
     id: "17",
-    title: "Dhan Prapti Havan",
+    name: "Dhan Prapti Havan",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -174,7 +174,7 @@ export const PUJAS = [
   },
   {
     id: "18",
-    title: "Sarva Badha Nivaran Havan",
+    name: "Sarva Badha Nivaran Havan",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -184,7 +184,7 @@ export const PUJAS = [
   },
   {
     id: "19",
-    title: "Shanti Havan",
+    name: "Shanti Havan",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -194,7 +194,7 @@ export const PUJAS = [
   },
   {
     id: "20",
-    title: "Rudraabhishek ",
+    name: "Rudraabhishek ",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -204,7 +204,7 @@ export const PUJAS = [
   },
   {
     id: "21",
-    title: "Durga Puja",
+    name: "Durga Puja",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -214,7 +214,7 @@ export const PUJAS = [
   },
   {
     id: "22",
-    title: "Saraswati Puja",
+    name: "Saraswati Puja",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -224,7 +224,7 @@ export const PUJAS = [
   },
   {
     id: "23",
-    title: "Navagraha Shanti",
+    name: "Navagraha Shanti",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -234,7 +234,7 @@ export const PUJAS = [
   },
   {
     id: "24",
-    title: "Maha Mrityunjaya Jaap",
+    name: "Maha Mrityunjaya Jaap",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -244,7 +244,7 @@ export const PUJAS = [
   },
   {
     id: "25",
-    title: "SundarKand Path",
+    name: "SundarKand Path",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -254,7 +254,7 @@ export const PUJAS = [
   },
   {
     id: "26",
-    title: "Hanuman Chalisa Path",
+    name: "Hanuman Chalisa Path",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -264,7 +264,7 @@ export const PUJAS = [
   },
   {
     id: "27",
-    title: "Akhand Ramayan Path",
+    name: "Akhand Ramayan Path",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -274,7 +274,7 @@ export const PUJAS = [
   },
   {
     id: "28",
-    title: "9 Chandi Path ",
+    name: "9 Chandi Path ",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -284,7 +284,7 @@ export const PUJAS = [
   },
   {
     id: "29",
-    title: "Rahu Ketu Shanti ",
+    name: "Rahu Ketu Shanti ",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -294,7 +294,7 @@ export const PUJAS = [
   },
   {
     id: "30",
-    title: "Office Opening Puja",
+    name: "Office Opening Puja",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
