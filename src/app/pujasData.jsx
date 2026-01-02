@@ -5,7 +5,7 @@ export const PUJAS = [
   {
     id: "1",
     name: "Ganesh Puja",
-    category: "Deity Puja",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -65,7 +65,7 @@ export const PUJAS = [
   {
     id: "7",
     name: "Shiv Puja / Rudrabhishek ",
-    category: "Deity Puja",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -75,7 +75,7 @@ export const PUJAS = [
   {
     id: "8",
     name: "Durga Puja",
-    category: "Deity Puja",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -85,7 +85,7 @@ export const PUJAS = [
   {
     id: "9",
     name: "Vishnu Puja",
-    category: "Deity Puja",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -145,7 +145,7 @@ export const PUJAS = [
   {
     id: "15",
     name: "Maha Mrityunjaya Havan",
-    category: "Havan & Special",
+    category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -155,7 +155,7 @@ export const PUJAS = [
   {
     id: "16",
     name: "Gayatri Havan",
-    category: "Havan & Special",
+    category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -165,7 +165,7 @@ export const PUJAS = [
   {
     id: "17",
     name: "Dhan Prapti Havan",
-    category: "Havan & Special",
+    category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -175,7 +175,7 @@ export const PUJAS = [
   {
     id: "18",
     name: "Sarva Badha Nivaran Havan",
-    category: "Havan & Special",
+    category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -185,7 +185,7 @@ export const PUJAS = [
   {
     id: "19",
     name: "Shanti Havan",
-    category: "Havan & Special",
+    category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -235,7 +235,7 @@ export const PUJAS = [
   {
     id: "24",
     name: "Maha Mrityunjaya Jaap",
-    category: "Havan & Special",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -245,7 +245,7 @@ export const PUJAS = [
   {
     id: "25",
     name: "SundarKand Path",
-    category: "Havan & Special",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -255,7 +255,7 @@ export const PUJAS = [
   {
     id: "26",
     name: "Hanuman Chalisa Path",
-    category: "Havan & Special",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
@@ -295,7 +295,7 @@ export const PUJAS = [
   {
     id: "30",
     name: "Office Opening Puja",
-    category: "Havan & Special",
+    category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
