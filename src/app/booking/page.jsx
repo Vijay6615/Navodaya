@@ -1,11 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import emailjs from "@emailjs/browser";
 
-export default function BookingPage() {
+// disable static prerendering (IMPORTANT FOR VERCEL)
+export const dynamic = "force-dynamic";
 
+function BookingForm() {
   const searchParams = useSearchParams();
   const selectedPuja = searchParams.get("puja") || "";
 
@@ -30,20 +32,17 @@ export default function BookingPage() {
     e.preventDefault();
     setLoading(true);
 
-    // 1️⃣ ADMIN EMAIL
     emailjs
       .send(
-        "service_lsuicww",     // your service id
-        "template_3zsnbxq",    // admin booking template id
+        "service_lsuicww",
+        "template_3zsnbxq",
         form,
-        "gGm69Djy_97dOYF1O"    // your public key
+        "gGm69Djy_97dOYF1O"
       )
       .then(() => {
-
-        // 2️⃣ USER AUTO REPLY
         emailjs.send(
           "service_lsuicww",
-          "template_autoreply123",   // ⬅️ your auto reply template id
+          "template_autoreply123",
           form,
           "gGm69Djy_97dOYF1O"
         );
@@ -70,13 +69,13 @@ export default function BookingPage() {
   return (
     <section className="min-h-screen flex justify-center items-center bg-orange-50 px-5">
       <div className="max-w-xl w-full bg-white shadow-2xl rounded-2xl p-7">
-
         <h1 className="text-2xl font-bold text-center text-orange-600">
           Puja Booking Form 🙏
         </h1>
 
         <p className="text-center text-gray-600 mb-4">
-          Selected Puja: <strong className="text-orange-700">{selectedPuja}</strong>
+          Selected Puja:{" "}
+          <strong className="text-orange-700">{selectedPuja}</strong>
         </p>
 
         {sent && (
@@ -86,7 +85,6 @@ export default function BookingPage() {
         )}
 
         <form onSubmit={sendEmail}>
-
           <input
             name="name"
             placeholder="Your Name"
@@ -158,9 +156,17 @@ export default function BookingPage() {
           >
             {loading ? "Sending..." : "Confirm Booking 🙏"}
           </button>
-
         </form>
       </div>
     </section>
+  );
+}
+
+// Suspense wrapper
+export default function BookingPage() {
+  return (
+    <Suspense fallback={<p className="text-center mt-10">Loading…</p>}>
+      <BookingForm />
+    </Suspense>
   );
 }
