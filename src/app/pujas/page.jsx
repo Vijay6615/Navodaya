@@ -17,6 +17,7 @@ export default function PujasPage() {
         : [...prev, category]
     );
   };
+  //aise he
 
   // CLEAR ALL
   const clearAll = () => {
