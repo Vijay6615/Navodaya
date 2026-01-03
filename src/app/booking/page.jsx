@@ -12,6 +12,7 @@ export default function BookingPage() {
   const [form, setForm] = useState({
     name: "",
     phone: "",
+    email: "",
     date: "",
     address: "",
     puja: selectedPuja,
@@ -29,20 +30,31 @@ export default function BookingPage() {
     e.preventDefault();
     setLoading(true);
 
+    // 1️⃣ ADMIN EMAIL
     emailjs
       .send(
-        "service_lsuicww",      // your service id
-        "template_3zsnbxq",     // your template id (same also ok)
+        "service_lsuicww",     // your service id
+        "template_3zsnbxq",    // admin booking template id
         form,
-        "gGm69Djy_97dOYF1O"     // your public key
+        "gGm69Djy_97dOYF1O"    // your public key
       )
       .then(() => {
+
+        // 2️⃣ USER AUTO REPLY
+        emailjs.send(
+          "service_lsuicww",
+          "template_autoreply123",   // ⬅️ your auto reply template id
+          form,
+          "gGm69Djy_97dOYF1O"
+        );
+
         setSent(true);
         setLoading(false);
 
         setForm({
           name: "",
           phone: "",
+          email: "",
           date: "",
           address: "",
           puja: selectedPuja,
@@ -57,7 +69,6 @@ export default function BookingPage() {
 
   return (
     <section className="min-h-screen flex justify-center items-center bg-orange-50 px-5">
-
       <div className="max-w-xl w-full bg-white shadow-2xl rounded-2xl p-7">
 
         <h1 className="text-2xl font-bold text-center text-orange-600">
@@ -89,6 +100,16 @@ export default function BookingPage() {
             name="phone"
             placeholder="Phone Number"
             value={form.phone}
+            onChange={handleChange}
+            className="input w-full mb-2"
+            required
+          />
+
+          <input
+            name="email"
+            type="email"
+            placeholder="Your Email"
+            value={form.email}
             onChange={handleChange}
             className="input w-full mb-2"
             required
