@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { PUJAS } from "../pujasData";
-import PujasPreview from "../components/PujasPreview";
+import { useRouter } from "next/navigation";
 
 export default function PujasPage() {
+  const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -175,9 +176,13 @@ export default function PujasPage() {
                   {puja.description}
                 </p>
 
-                <button className="mt-3 w-full py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600">
-                  Book Now
-                </button>
+                <button
+  className="mt-3 w-full py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600"
+  onClick={() => router.push(`/booking?puja=${encodeURIComponent(puja.name)}`)}
+>
+  Book Now
+</button>
+
               </div>
             ))
           )}

@@ -19,6 +19,9 @@ export default function ContactPage() {
 
   const [showList, setShowList] = useState(false);
 
+  // ------------ LOADING STATE ------------
+  const [loading, setLoading] = useState(false);
+
   // ------------ TOAST STATE ------------
   const [toast, setToast] = useState({
     show: false,
@@ -28,10 +31,7 @@ export default function ContactPage() {
 
   const showToast = (type, message) => {
     setToast({ show: true, type, message });
-
-    setTimeout(() => {
-      setToast({ show: false, type: "", message: "" });
-    }, 4000);
+    setTimeout(() => setToast({ show: false, type: "", message: "" }), 4000);
   };
 
   // handle input
@@ -43,16 +43,19 @@ export default function ContactPage() {
   const sendEmail = (e) => {
     e.preventDefault();
 
+    setLoading(true); // START LOADING
+
     emailjs
       .send(
-        "YOUR_SERVICE_ID",
-        "YOUR_TEMPLATE_ID",
+        "service_lsuicww",      // your service id
+        "template_2ki9qd8",     // your template id
         form,
-        "YOUR_PUBLIC_KEY"
+        "gGm69Djy_97dOYF1O"     // your public key
       )
       .then(() => {
         showToast("success", "Message sent successfully 🙏");
 
+        // reset form
         setForm({
           name: "",
           surname: "",
@@ -63,9 +66,12 @@ export default function ContactPage() {
           puja: "",
           message: "",
         });
+
+        setLoading(false); // STOP LOADING
       })
       .catch(() => {
         showToast("error", "Something went wrong 😔 Try again");
+        setLoading(false); // STOP LOADING
       });
   };
 
@@ -109,7 +115,6 @@ export default function ContactPage() {
     "Hanuman Chalisa Path",
     "Akhand Ramayan Path",
     "Office Opening Puja",
-    
   ];
 
   return (
@@ -128,13 +133,8 @@ export default function ContactPage() {
           <span className="text-xl">
             {toast.type === "success" ? "✅" : "⚠️"}
           </span>
-
           <p className="font-medium">{toast.message}</p>
-
-          <button
-            className="ml-3 text-white text-lg"
-            onClick={() => setToast({ show: false })}
-          >
+          <button className="ml-3 text-white text-lg" onClick={() => setToast({ show: false })}>
             ✖
           </button>
         </div>
@@ -143,11 +143,9 @@ export default function ContactPage() {
       {/* Title */}
       <div className="text-center mb-10 fade-up">
         <p className="text-orange-600 font-semibold">Contact Panditji</p>
-
         <h1 className="text-4xl font-extrabold text-gray-800 mt-1">
           Book Puja • Ask a Question • Get Guidance
         </h1>
-
         <p className="text-gray-600 max-w-2xl mx-auto mt-2">
           Fill the form below. We respond quickly 🙏
         </p>
@@ -158,15 +156,13 @@ export default function ContactPage() {
 
         {/* LEFT INFO */}
         <div className="fade-up rounded-3xl p-7 shadow-xl bg-white/80 backdrop-blur-xl border border-white/40">
-          <h2 className="text-2xl font-bold text-gray-800 mb-5">
-            📞 Contact Information
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">📞 Contact Information</h2>
 
           <ul className="space-y-2 text-gray-700">
             <li>📍 Mumbai / Varanasi</li>
             <li>📞 +91 95949 43609</li>
             <li>💬 WhatsApp Available</li>
-            <li>✉️ panditjipuja@gmail.com</li>
+            <li>✉️ navodayapuja@gmail.com</li>
           </ul>
 
           <a
@@ -178,42 +174,31 @@ export default function ContactPage() {
         </div>
 
         {/* RIGHT FORM */}
-        <form
-          onSubmit={sendEmail}
-          className="fade-up rounded-3xl p-7 shadow-xl bg-white/90 backdrop-blur-xl border border-white/40"
-        >
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">
-            ✍️ Booking / Contact Form
-          </h2>
+        <form onSubmit={sendEmail} className="fade-up rounded-3xl p-7 shadow-xl bg-white/90 backdrop-blur-xl border border-white/40">
+
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">✍️ Booking / Contact Form</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 
-            <input name="name" placeholder="First Name" required
-              value={form.name} onChange={handleChange} className="input" />
+            <input name="name" placeholder="First Name" required value={form.name} onChange={handleChange} className="input" />
 
-            <input name="surname" placeholder="Surname" required
-              value={form.surname} onChange={handleChange} className="input" />
+            <input name="surname" placeholder="Surname" required value={form.surname} onChange={handleChange} className="input" />
 
-            <input name="age" type="number" placeholder="Age" required
-              value={form.age} onChange={handleChange} className="input" />
+            <input name="age" type="number" placeholder="Age" required value={form.age} onChange={handleChange} className="input" />
 
-            <select name="gender" required
-              value={form.gender} onChange={handleChange} className="input">
+            <select name="gender" required value={form.gender} onChange={handleChange} className="input">
               <option value="">Select Gender</option>
               <option>Male</option>
               <option>Female</option>
               <option>Other</option>
             </select>
 
-            <input name="email" type="email" placeholder="Email" required
-              value={form.email} onChange={handleChange} className="input" />
+            <input name="email" type="email" placeholder="Email" required value={form.email} onChange={handleChange} className="input" />
 
-            <input name="phone" placeholder="Phone Number" required
-              value={form.phone} onChange={handleChange} className="input" />
+            <input name="phone" placeholder="Phone Number" required value={form.phone} onChange={handleChange} className="input" />
 
             {/* 🔍 SEARCHABLE PUJA SELECT */}
             <div className="relative md:col-span-2">
-
               <input
                 type="text"
                 placeholder="Search or select Puja"
@@ -225,11 +210,8 @@ export default function ContactPage() {
 
               {showList && (
                 <div className="absolute w-full max-h-40 overflow-y-auto bg-white rounded-xl shadow-lg border z-50">
-
                   {pujas
-                    .filter((p) =>
-                      p.toLowerCase().includes(form.puja.toLowerCase())
-                    )
+                    .filter((p) => p.toLowerCase().includes(form.puja.toLowerCase()))
                     .map((p, i) => (
                       <p
                         key={i}
@@ -257,11 +239,34 @@ export default function ContactPage() {
             className="input mt-2"
           />
 
+          {/* 🔥 LOADING BUTTON */}
           <button
             type="submit"
-            className="mt-4 w-full py-3 rounded-full bg-orange-600 text-white font-semibold hover:bg-orange-700"
+            disabled={loading}
+            className={`mt-4 w-full py-3 rounded-full text-white font-semibold ${
+              loading ? "bg-gray-400" : "bg-orange-600 hover:bg-orange-700"
+            }`}
           >
-            Send Request 🙏
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="white"
+                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l3 3-3 3v-4a8 8 0 01-8-8z"
+                  ></path>
+                </svg>
+                Sending…
+              </span>
+            ) : (
+              "Send"
+            )}
           </button>
         </form>
       </div>

@@ -99,7 +99,7 @@ export default function AboutPanditjiPage() {
           {/* Stats */}
           <div className="grid grid-cols-3 text-center fade-up">
             <div>
-              <p className="text-3xl font-bold text-orange-600">20+</p>
+              <p className="text-3xl font-bold text-orange-600">25+</p>
               <p className="text-gray-600 text-sm">Years Experience</p>
             </div>
             <div>
