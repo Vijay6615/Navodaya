@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Home,
   Sparkles,
-  Flame,
+  Blocks,
   Image,
   User
 } from "lucide-react";
@@ -16,9 +16,9 @@ export default function Navbar() {
 
   // 👇 icon ko component banaya
   const navItems = [
-    { name: "Home", icon: Home, href: "/home" },
+    { name: "Home", icon: Home, href: "/" },
     { name: "Pujas", icon: Sparkles, href: "/pujas" },
-    { name: "Aarti", icon: Flame, href: "/aarti" },
+    { name: "Book Now", icon: Blocks, href: "/contact" },
     { name: "Gallery", icon: Image, href: "/gallery" },
     { name: "Pandit Ji", icon: User, href: "/aboutpanditji" },
   ];
@@ -38,7 +38,7 @@ export default function Navbar() {
           <ul className="hidden md:flex items-center gap-6 font-medium">
             <li><Link href="/" className="hover:text-orange-600">Home</Link></li>
             <li><Link href="/pujas" className="hover:text-orange-600">Pujas</Link></li>
-            <li><Link href="/aboutpanditji" className="hover:text-orange-600">About</Link></li>
+            <li><Link href="/aboutpanditji" className="hover:text-orange-600">About Panditji</Link></li>
             <li><Link href="/gallery" className="hover:text-orange-600">Gallery</Link></li>
           </ul>
 

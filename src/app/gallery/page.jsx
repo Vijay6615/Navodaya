@@ -81,10 +81,6 @@ export default function GalleryPage() {
           Puja & Rituals Gallery
         </h1>
 
-        <p className="text-gray-600 max-w-2xl mx-auto mt-2">
-          Browse beautiful memories of pujas, havans & Vedic rituals.
-        </p>
-
         <p className="mt-2 font-semibold text-gray-700">
           🖼️ {imageCount} Images & 🎥 {videoCount} Videos
         </p>

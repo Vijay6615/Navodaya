@@ -142,7 +142,7 @@ export default function ContactPage() {
 
       {/* Title */}
       <div className="text-center mb-10 fade-up">
-        <p className="text-orange-600 font-semibold">Contact Panditji</p>
+        {/* <p className="text-orange-600 font-semibold">Contact Panditji</p> */}
         <h1 className="text-4xl font-extrabold text-gray-800 mt-1">
           Book Puja • Ask a Question • Get Guidance
         </h1>
