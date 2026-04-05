@@ -9,7 +9,6 @@ export default function PujasPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [search, setSearch] = useState("");
 
-  // TOGGLE CATEGORY
   const toggleCategory = (category) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -17,15 +16,12 @@ export default function PujasPage() {
         : [...prev, category]
     );
   };
-  //aise he
 
-  // CLEAR ALL
   const clearAll = () => {
     setSelectedCategories([]);
     setSearch("");
   };
 
-  // FILTER + SEARCH
   const filteredPujas = PUJAS.filter((puja) => {
     if (!puja) return false;
 
@@ -44,45 +40,77 @@ export default function PujasPage() {
   });
 
   const CATEGORY_LIST = [
+    "All",
     "Daily Puja",
     "Festival Puja",
-    "Special Occasions",
     "Astrology",
     "Havan Ceremonies",
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-5 py-8">
+    <section className="max-w-6xl mx-auto px-4 py-6">
 
-      {/* Heading */}
-      <h1 className="text-3xl font-bold text-orange-700 text-center">
-        Our Pujas
-      </h1>
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">पूजा सेवाएं</h1>
+          <p className="text-gray-500 text-sm">All Puja Services</p>
+        </div>
 
-      <p className="text-gray-600 text-center mb-6">
-        {filteredPujas.length} pujas available
-      </p>
+        <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold">
+          {filteredPujas.length} Pujas
+        </span>
+      </div>
 
-      {/* Search */}
-      <div className="w-full max-w-xl mx-auto mb-6">
+      {/* SEARCH */}
+      <div className="mb-4">
         <input
           type="text"
-          placeholder="Search Puja name or category..."
+          placeholder="🔍 Search pujas..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2 rounded-full border shadow-sm focus:ring-2 focus:ring-orange-500 outline-none"
+          className="w-full px-4 py-3 rounded-full border bg-white shadow-sm focus:ring-2 focus:ring-orange-400 outline-none"
         />
+      </div>
+
+      {/* CATEGORY SCROLL */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
+
+        {CATEGORY_LIST.map((cat) => {
+          const active =
+            cat === "All"
+              ? selectedCategories.length === 0
+              : selectedCategories.includes(cat);
+
+          return (
+            <button
+              key={cat}
+              onClick={() =>
+                cat === "All"
+                  ? setSelectedCategories([])
+                  : toggleCategory(cat)
+              }
+              className={`flex items-center gap-1 whitespace-nowrap px-4 py-2 rounded-full border text-sm transition
+                ${
+                  active
+                    ? "bg-orange-600 text-white shadow"
+                    : "bg-white text-gray-600"
+                }`}
+            >
+              {cat}
+            </button>
+          );
+        })}
       </div>
 
       {/* ACTIVE FILTER TAGS */}
       {(selectedCategories.length > 0 || search) && (
-        <div className="mb-4 flex flex-wrap items-center gap-2 justify-center">
-
+        <div className="mb-4 flex flex-wrap gap-2">
           {selectedCategories.map((cat) => (
             <span
               key={cat}
               onClick={() => toggleCategory(cat)}
-              className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 cursor-pointer hover:bg-orange-200"
+              className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm cursor-pointer"
             >
               {cat} ✕
             </span>
@@ -91,104 +119,87 @@ export default function PujasPage() {
           {search && (
             <span
               onClick={() => setSearch("")}
-              className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 cursor-pointer hover:bg-blue-200"
+              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm cursor-pointer"
             >
-              Search: {search} ✕
+              {search} ✕
             </span>
           )}
 
           <button
             onClick={clearAll}
-            className="ml-2 px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300 text-sm"
+            className="px-3 py-1 bg-gray-200 rounded-full text-sm"
           >
             Clear All
           </button>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* PUJA CARDS */}
+      <div className="grid grid-cols-2 gap-4">
 
-        {/* ====================== FILTER SECTION ======================= */}
-        <aside className="md:col-span-1 bg-white shadow-lg rounded-2xl border p-5">
+        {filteredPujas.map((puja, index) => (
+          <div
+            key={index}
+            className="rounded-2xl overflow-hidden shadow hover:shadow-xl transition cursor-pointer bg-white"
+          >
+            {/* IMAGE WITH OVERLAY */}
+            <div className="relative">
+              <img
+                src={puja.image}
+                alt={puja.name}
+                className="w-full h-32 object-cover"
+              />
 
-          <h2 className="text-lg font-semibold mb-3">Filter by Category</h2>
+              {/* overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
-          {/* modern chip style */}
-          <div className="flex flex-wrap gap-2">
+              {/* badge */}
+              <span className="absolute top-2 left-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-semibold">
+                POPULAR
+              </span>
 
-            {CATEGORY_LIST.map((cat) => {
-              const active = selectedCategories.includes(cat);
+              {/* heart */}
+              <span className="absolute top-2 right-2 text-white text-lg">
+                ♡
+              </span>
+            </div>
 
-              return (
-                <button
-                  key={cat}
-                  onClick={() => toggleCategory(cat)}
-                  className={`
-                    px-3 py-1 rounded-full text-sm border transition flex items-center gap-1
-                    ${
-                      active
-                        ? "bg-orange-500 text-white border-orange-600 shadow-md scale-105"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }
-                  `}
-                >
-                  {active && <span>✓</span>}
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
+            {/* CONTENT */}
+            <div className="p-3">
 
-        </aside>
+              <h3 className="font-bold text-sm text-gray-800 line-clamp-1">
+                {puja.name}
+              </h3>
 
-        {/* ===================== PUJA CARD LIST ======================== */}
-        <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <p className="text-xs text-gray-500 line-clamp-1">
+                {puja.shortDescription}
+              </p>
 
-          {filteredPujas.length === 0 ? (
-            <p className="text-center col-span-3 text-gray-400 py-10">
-              No pujas found. Try another search or filter.
-            </p>
-          ) : (
-            filteredPujas.map((puja, index) => (
-              <div
-                key={index}
-                className="
-                  p-4 rounded-2xl border shadow
-                  bg-white
-                  hover:shadow-2xl hover:-translate-y-1 hover:border-orange-400
-                  transition-all duration-300
-                  cursor-pointer
-                "
-              >
-                <img
-                  src={puja.image}
-                  alt={puja.name}
-                  className="w-full h-40 object-cover rounded-xl mb-3"
-                />
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-orange-600 font-bold">
+                  {puja.price}
+                </span>
 
-                <h3 className="font-semibold text-lg">{puja.name}</h3>
-                {/* <p className="text-sm text-gray-500">{puja.category}</p> */}
-                <p className="text-sm text-gray-500">{puja.shortDescription}</p>
-                <p className="text-orange-600 font-semibold mt-2">{puja.price}</p>
-                <p className="text-sm text-gray-500">Duration: {puja.duration}</p>
-
-
-                <p className="text-sm mt-2 text-gray-600 line-clamp-2">
-                  {puja.description}
-                </p>
-
-                <button
-  className="mt-3 w-full py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600"
-  onClick={() => router.push(`/booking?puja=${encodeURIComponent(puja.name)}`)}
->
-  Book Now
-</button>
-
+                <span className="text-xs text-gray-500">
+                  ⏱ {puja.duration}
+                </span>
               </div>
-            ))
-          )}
 
-        </div>
+              <button
+                onClick={() =>
+                  router.push(
+                    `/booking?puja=${encodeURIComponent(puja.name)}`
+                  )
+                }
+                className="mt-2 w-full py-1.5 rounded-lg bg-orange-500 text-white text-sm"
+              >
+                Book
+              </button>
+
+            </div>
+          </div>
+        ))}
+
       </div>
     </section>
   );

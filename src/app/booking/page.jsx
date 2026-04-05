@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
 import emailjs from "@emailjs/browser";
 
-// disable static prerendering (IMPORTANT FOR VERCEL)
 export const dynamic = "force-dynamic";
 
 function BookingForm() {
@@ -67,30 +66,52 @@ function BookingForm() {
   };
 
   return (
-    <section className="min-h-screen flex justify-center items-center bg-orange-50 px-5">
-      <div className="max-w-xl w-full bg-white shadow-2xl rounded-2xl p-7">
-        <h1 className="text-2xl font-bold text-center text-orange-600">
-          Puja Booking Form 🙏
-        </h1>
+    <section className="min-h-screen flex justify-center items-center px-5 bg-gradient-to-br from-orange-50 via-rose-50 to-yellow-50 relative">
 
-        <p className="text-center text-gray-600 mb-4">
-          Selected Puja:{" "}
-          <strong className="text-orange-700">{selectedPuja}</strong>
-        </p>
+      {/* subtle glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,140,0,0.25),transparent)]" />
 
-        {sent && (
-          <p className="text-green-600 text-center font-medium mb-3">
-            ✅ Booking request sent successfully!
+      <div className="max-w-xl w-full relative bg-white/80 backdrop-blur-2xl border border-white/40 shadow-2xl rounded-3xl p-7">
+
+        {/* header */}
+        <div className="text-center mb-3">
+          <span className="px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-700 font-semibold">
+            Step 1 • Booking Details
+          </span>
+
+          <h1 className="text-3xl font-extrabold mt-2 text-gray-800">
+            Book Your Puja 🙏
+          </h1>
+
+          <p className="text-gray-600">
+            Fill your details — Panditji will contact you shortly
           </p>
+        </div>
+
+        {/* selected puja badge */}
+        {selectedPuja && (
+          <div className="mb-3 text-center">
+            <p className="inline-block px-3 py-1 rounded-full bg-orange-600 text-white text-sm font-medium shadow">
+              Selected Puja: {selectedPuja}
+            </p>
+          </div>
         )}
 
-        <form onSubmit={sendEmail}>
+        {/* success alert */}
+        {sent && (
+          <div className="mb-4 text-center py-2 rounded-xl bg-green-100 text-green-700 font-semibold border border-green-300">
+            ✔️ Booking request sent successfully
+          </div>
+        )}
+
+        <form onSubmit={sendEmail} className="space-y-3">
+
           <input
             name="name"
-            placeholder="Your Name"
+            placeholder="Full Name"
             value={form.name}
             onChange={handleChange}
-            className="input w-full mb-2"
+            className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
             required
           />
 
@@ -99,17 +120,17 @@ function BookingForm() {
             placeholder="Phone Number"
             value={form.phone}
             onChange={handleChange}
-            className="input w-full mb-2"
+            className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
             required
           />
 
           <input
             name="email"
             type="email"
-            placeholder="Your Email"
+            placeholder="Email Address"
             value={form.email}
             onChange={handleChange}
-            className="input w-full mb-2"
+            className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
             required
           />
 
@@ -118,7 +139,7 @@ function BookingForm() {
             type="date"
             value={form.date}
             onChange={handleChange}
-            className="input w-full mb-2"
+            className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
             required
           />
 
@@ -127,7 +148,7 @@ function BookingForm() {
             placeholder="Complete Address"
             value={form.address}
             onChange={handleChange}
-            className="input w-full mb-2"
+            className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
             required
           />
 
@@ -135,26 +156,26 @@ function BookingForm() {
             name="puja"
             value={form.puja}
             readOnly
-            className="input w-full mb-2 bg-gray-100"
+            className="w-full px-4 py-3 rounded-xl border bg-gray-100"
           />
 
           <textarea
             name="message"
             rows="3"
-            placeholder="Any special request?"
+            placeholder="Any special instructions?"
             value={form.message}
             onChange={handleChange}
-            className="input w-full"
+            className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className={`mt-4 w-full py-3 rounded-full text-white font-semibold ${
-              loading ? "bg-gray-400" : "bg-orange-600 hover:bg-orange-700"
-            }`}
+            className={`mt-2 w-full py-3 rounded-full text-white font-bold tracking-wide shadow-lg transition 
+              ${loading ? "bg-gray-400" : "bg-orange-600 hover:bg-orange-700"}
+            `}
           >
-            {loading ? "Sending..." : "Confirm Booking 🙏"}
+            {loading ? "Sending..." : "Confirm Booking"}
           </button>
         </form>
       </div>
@@ -162,7 +183,6 @@ function BookingForm() {
   );
 }
 
-// Suspense wrapper
 export default function BookingPage() {
   return (
     <Suspense fallback={<p className="text-center mt-10">Loading…</p>}>

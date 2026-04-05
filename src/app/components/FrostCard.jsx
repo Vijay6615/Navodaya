@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // ================== EVENTS ==================
 const EVENTS = {
@@ -10,26 +11,18 @@ const EVENTS = {
       title: "Makar Sankranti Special Puja",
       desc: "Surya dev arghya, daan & grah shanti rituals for prosperity.",
       offer: "10% OFF this month",
-      date: "2026-01-14 00:00:00",
+      date: "2026-01-14",
     },
     {
       img: "/images/vasant.jpg",
       title: "Vasant Panchami",
       desc: "Mahalakshmi mantra jaap for business & money growth.",
       offer: " Also Free muhurat consultation",
-      date: "2026-01-23 08:00:00",
+      date: "2026-01-23",
     },
   ],
 
-  February: [
-    // {
-    //   img: "/images/saraswati-puja.jpg",
-    //   title: "Saraswati Puja",
-    //   desc: "Blessings for students, knowledge & learning success.",
-    //   offer: "Student discount available",
-    //   date: "2025-02-02 09:00:00",
-    // },
-  ],
+  February: [],
 
   March: [
     {
@@ -37,7 +30,7 @@ const EVENTS = {
       title: "Holika Dahan & Havan",
       desc: "Remove negativity and bring divine protection.",
       offer: "",
-      date: "2026-03-03 19:00:00",
+      date: "2026-03-03",
     },
   ],
 };
@@ -51,7 +44,6 @@ function Countdown({ date }) {
   useEffect(() => {
     function updateTimer() {
       const diff = new Date(date).getTime() - Date.now();
-
       if (diff <= 0) return setTimeLeft({ expired: true });
 
       setTimeLeft({
@@ -87,35 +79,25 @@ function Countdown({ date }) {
 // ================= MAIN COMPONENT =================
 export default function MonthlyEventsSection() {
   const [month, setMonth] = useState(months[0]);
+  const router = useRouter();
+  const [loadingId, setLoadingId] = useState(null);
 
   return (
     <section className="py-16 px-5 bg-gradient-to-b from-orange-50 via-rose-50 to-yellow-50">
 
-      {/* HEADER */}
       <div className="text-center mb-12">
         <p className="text-orange-600 font-semibold text-lg">🗓️ Upcoming Vedic Events</p>
-
-        <h1 className="text-4xl font-extrabold text-gray-800">
-          Monthly Special Pujas & Festivals
-        </h1>
-
-        <p className="text-gray-600 mt-2">
-          Select month • See offers • Book auspicious pujas
-        </p>
+        <h1 className="text-4xl font-extrabold text-gray-800">Monthly Special Pujas & Festivals</h1>
+        <p className="text-gray-600 mt-2">Select month • See offers • Book auspicious pujas</p>
       </div>
 
-      {/* MONTH TABS */}
       <div className="flex flex-wrap justify-center gap-2 mb-10">
         {months.map((m) => (
           <button
             key={m}
             onClick={() => setMonth(m)}
-            className={`
-              px-5 py-2 rounded-full text-sm font-semibold border
-              transition-all
-              ${month === m
-                ? "bg-orange-600 text-white shadow-lg scale-105"
-                : "bg-white hover:bg-gray-100"}
+            className={`px-5 py-2 rounded-full text-sm font-semibold border
+              ${month === m ? "bg-orange-600 text-white" : "bg-white"}
             `}
           >
             {m}
@@ -123,58 +105,45 @@ export default function MonthlyEventsSection() {
         ))}
       </div>
 
-      {/* EVENT CARDS */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
         {EVENTS[month].map((event, i) => {
           const expired = new Date(event.date).getTime() < Date.now();
 
           return (
-            <div
-              key={i}
-              className="rounded-3xl overflow-hidden bg-white/70 backdrop-blur-xl border shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1"
-            >
-              {/* IMAGE */}
-              <div className="relative">
-                <img src={event.img} className="w-full h-48 object-cover" />
+            <div key={i} className="rounded-3xl overflow-hidden bg-white border shadow">
+              <img src={event.img} className="w-full h-48 object-cover" />
 
-                <span className="absolute top-4 left-4 bg-orange-600 text-white text-xs px-3 py-1 rounded-full shadow">
-                  {event.offer}
-                </span>
-
-                <span className="absolute bottom-3 right-3 bg-white/80 text-gray-700 text-xs px-3 py-1 rounded-full shadow border">
-                  📅 {new Date(event.date).toDateString()}
-                </span>
-              </div>
-
-              {/* CONTENT */}
               <div className="p-5">
-
-                <h3 className="font-bold text-xl text-gray-800">{event.title}</h3>
-
+                <h3 className="font-bold text-xl">{event.title}</h3>
                 <p className="text-gray-600 text-sm mt-1">{event.desc}</p>
 
-                {/* COUNTDOWN BOX */}
-                <div className="mt-4 rounded-2xl border bg-orange-50 p-3 text-center">
+                <div className="mt-3">
                   <Countdown date={event.date} />
                 </div>
 
-                {/* BUTTON */}
                 <button
-                  disabled={expired}
-                  className={`mt-4 w-full py-2.5 rounded-xl font-semibold transition
-                    ${expired
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-orange-600 text-white hover:bg-orange-700"}
-                  `}
+                  disabled={expired || loadingId === i}
+                  onClick={() => {
+                    setLoadingId(i);
+                    router.push(
+                      `/booking?puja=${encodeURIComponent(event.title)}&date=${event.date}`
+                    );
+                  }}
+                  className={`mt-4 w-full py-2.5 rounded-xl font-semibold ${
+                    expired ? "bg-gray-300" : "bg-orange-600 text-white"
+                  }`}
                 >
-                  {expired ? "Event Closed" : "Book Now"}
+                  {expired
+                    ? "Event Closed"
+                    : loadingId === i
+                    ? "Redirecting…"
+                    : "Book Now"}
                 </button>
               </div>
             </div>
           );
         })}
-
       </div>
     </section>
   );
