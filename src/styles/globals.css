@@ -94,6 +94,20 @@ body {
 
 
 
+html, body, #__next {
+  height: auto !important;
+  overflow-y: auto !important;
+}
+body{
+  position: static !important;
+}
+
+/* Tailwind container fix */
+* {
+  touch-action: auto !important;
+}
+
+
 
                                           /* normal css*/
 /* Reset-ish */
@@ -688,7 +702,7 @@ footer {
 .hero-banner {
   margin-top: 16px;
   border-radius: 28px;
-  overflow: hidden;
+  overflow: visible;
   min-height: 340px;
   background-image: url("/hero.jpg"); 
   background-size: cover;
@@ -1354,7 +1368,7 @@ footer {
 }
 
 .meet-text {
-  color: #4b5563;
+  color: #4b5563;     
   line-height: 1.6;
 }
 
