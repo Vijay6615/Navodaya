@@ -55,7 +55,7 @@ export default function AboutPanditjiPage() {
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
 
         {/* 🖼 IMAGE SECTION — FIXED SIZE */}
-        <div className="relative w-full h-[420px] rounded-3xl overflow-hidden shadow-xl">
+        <div className="relative w-full h-[420px] rounded-3xl overflow-visible shadow-xl">
 
           <img
             key={index}

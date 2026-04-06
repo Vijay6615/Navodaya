@@ -140,7 +140,7 @@ export default function PujasPage() {
         {filteredPujas.map((puja, index) => (
           <div
             key={index}
-            className="rounded-2xl overflow-hidden shadow hover:shadow-xl transition cursor-pointer bg-white"
+            className="rounded-2xl overflow-visible shadow hover:shadow-xl transition cursor-pointer bg-white"
           >
             {/* IMAGE WITH OVERLAY */}
             <div className="relative">

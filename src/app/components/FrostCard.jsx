@@ -111,7 +111,7 @@ export default function MonthlyEventsSection() {
           const expired = new Date(event.date).getTime() < Date.now();
 
           return (
-            <div key={i} className="rounded-3xl overflow-hidden bg-white border shadow">
+            <div key={i} className="rounded-3xl overflow-visible bg-white border shadow">
               <img src={event.img} className="w-full h-48 object-cover" />
 
               <div className="p-5">

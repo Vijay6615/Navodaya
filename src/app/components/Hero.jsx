@@ -21,7 +21,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-visible">
 
       {/* 🔮 Gradient tint */}
       <div className="absolute inset-0 bg-gradient-to-br from-orange-700/70 via-rose-700/70 to-purple-800/70" />

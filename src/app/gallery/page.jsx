@@ -92,7 +92,7 @@ export default function GalleryPage() {
           <div
             key={i}
             onClick={() => setSelectedIndex(i)}
-            className="break-inside-avoid rounded-2xl overflow-hidden border bg-white shadow hover:shadow-2xl transition cursor-pointer"
+            className="break-inside-avoid rounded-2xl overflow-visible border bg-white shadow hover:shadow-2xl transition cursor-pointer"
           >
             {item.type === "image" && <img src={item.src} className="w-full object-cover" />}
 
