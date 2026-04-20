@@ -17,26 +17,16 @@ export default function PujasPage() {
     );
   };
 
-  const clearAll = () => {
-    setSelectedCategories([]);
-    setSearch("");
-  };
-
   const filteredPujas = PUJAS.filter((puja) => {
-    if (!puja) return false;
-
     const title = puja?.name?.toLowerCase() || "";
     const category = puja?.category?.toLowerCase() || "";
     const searchText = search.toLowerCase();
 
-    const matchesSearch =
-      title.includes(searchText) || category.includes(searchText);
-
-    const matchesCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(puja.category);
-
-    return matchesSearch && matchesCategory;
+    return (
+      (title.includes(searchText) || category.includes(searchText)) &&
+      (selectedCategories.length === 0 ||
+        selectedCategories.includes(puja.category))
+    );
   });
 
   const CATEGORY_LIST = [
@@ -48,34 +38,29 @@ export default function PujasPage() {
   ];
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-6">
+    <section className="max-w-6xl mx-auto px-4 py-6 pb-20">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">पूजा सेवाएं</h1>
-          <p className="text-gray-500 text-sm">All Puja Services</p>
+          <p className="text-gray-500 text-sm">
+            {filteredPujas.length} Services Available
+          </p>
         </div>
-
-        <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold">
-          {filteredPujas.length} Pujas
-        </span>
       </div>
 
       {/* SEARCH */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="🔍 Search pujas..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-3 rounded-full border bg-white shadow-sm focus:ring-2 focus:ring-orange-400 outline-none"
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="🔍 Search pujas..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full mb-4 px-4 py-3 rounded-full border shadow-sm focus:ring-2 focus:ring-orange-400 outline-none"
+      />
 
-      {/* CATEGORY SCROLL */}
+      {/* CATEGORY */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
-
         {CATEGORY_LIST.map((cat) => {
           const active =
             cat === "All"
@@ -90,12 +75,12 @@ export default function PujasPage() {
                   ? setSelectedCategories([])
                   : toggleCategory(cat)
               }
-              className={`flex items-center gap-1 whitespace-nowrap px-4 py-2 rounded-full border text-sm transition
-                ${
-                  active
-                    ? "bg-orange-600 text-white shadow"
-                    : "bg-white text-gray-600"
-                }`}
+              className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition
+              ${
+                active
+                  ? "bg-orange-600 text-white shadow"
+                  : "bg-white border text-gray-600"
+              }`}
             >
               {cat}
             </button>
@@ -103,64 +88,28 @@ export default function PujasPage() {
         })}
       </div>
 
-      {/* ACTIVE FILTER TAGS */}
-      {(selectedCategories.length > 0 || search) && (
-        <div className="mb-4 flex flex-wrap gap-2">
-          {selectedCategories.map((cat) => (
-            <span
-              key={cat}
-              onClick={() => toggleCategory(cat)}
-              className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm cursor-pointer"
-            >
-              {cat} ✕
-            </span>
-          ))}
-
-          {search && (
-            <span
-              onClick={() => setSearch("")}
-              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm cursor-pointer"
-            >
-              {search} ✕
-            </span>
-          )}
-
-          <button
-            onClick={clearAll}
-            className="px-3 py-1 bg-gray-200 rounded-full text-sm"
-          >
-            Clear All
-          </button>
-        </div>
-      )}
-
-      {/* PUJA CARDS */}
+      {/* CARDS */}
       <div className="grid grid-cols-2 gap-4">
 
         {filteredPujas.map((puja, index) => (
           <div
             key={index}
-            className="rounded-2xl overflow-visible shadow hover:shadow-xl transition cursor-pointer bg-white"
+            onClick={() => router.push(`/pujas/${puja.slug}`)}
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group cursor-pointer"
           >
-            {/* IMAGE WITH OVERLAY */}
+
+            {/* IMAGE */}
             <div className="relative">
               <img
                 src={puja.image}
                 alt={puja.name}
-                className="w-full h-32 object-cover"
+                className="w-full h-32 object-cover group-hover:scale-105 transition duration-300"
               />
 
-              {/* overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 
-              {/* badge */}
               <span className="absolute top-2 left-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-semibold">
                 POPULAR
-              </span>
-
-              {/* heart */}
-              <span className="absolute top-2 right-2 text-white text-lg">
-                ♡
               </span>
             </div>
 
@@ -185,15 +134,15 @@ export default function PujasPage() {
                 </span>
               </div>
 
+              {/* BOOK BUTTON */}
               <button
-                onClick={() =>
-                  router.push(
-                    `/booking?puja=${encodeURIComponent(puja.name)}`
-                  )
-                }
-                className="mt-2 w-full py-1.5 rounded-lg bg-orange-500 text-white text-sm"
+                onClick={(e) => {
+                  e.stopPropagation(); // 🔥 IMPORTANT (card click prevent)
+                  router.push(`/booking?puja=${encodeURIComponent(puja.name)}`);
+                }}
+                className="mt-3 w-full py-2 rounded-xl bg-orange-600 text-white text-sm font-semibold hover:bg-orange-700 transition"
               >
-                Book
+                Book Now
               </button>
 
             </div>

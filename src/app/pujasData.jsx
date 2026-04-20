@@ -4,16 +4,18 @@
 export const PUJAS = [
   {
     id: "1",
+    slug: "ganesh-puja",
     name: "Ganesh Puja",
     category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
     duration: "1–2 hours",
-    image: "/ganesh.jpg",
+    image: "/images/ganesh-puja.jpg",
   },
   {
     id: "2",
+    slug: "griha-pravesh-puja",
     name: "Griha Pravesh Puja",
     category: "Home / Auspicious",
     shortDescription:
@@ -24,6 +26,7 @@ export const PUJAS = [
   },
   {
     id: "3",
+    slug: "vastu-shanti-puja",
     name: "Vastu Shanti Puja",
     category: "Home / Auspicious",
     shortDescription:
@@ -34,6 +37,7 @@ export const PUJAS = [
   },
   {
     id: "4",
+    slug: "bhoomi-puja",
     name: "Bhoomi Puja",
     category: "Home / Auspicious",
     shortDescription:
@@ -44,7 +48,8 @@ export const PUJAS = [
   },
   {
     id: "5",
-    name: " Satyanarayan Puja",
+    slug: "satyanarayan-puja",
+    name: "Satyanarayan Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
@@ -54,16 +59,18 @@ export const PUJAS = [
   },
   {
     id: "6",
-    name: " Lakshmi Puja",
+    slug: "lakshmi-puja",
+    name: "Lakshmi Prapti Puja",
     category: "Home / Auspicious",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/laxmi.jpg",
   },
   {
     id: "7",
+    slug: "shiv-puja",
     name: "Shiv Puja / Rudrabhishek ",
     category: "Daily Puja",
     shortDescription:
@@ -74,6 +81,7 @@ export const PUJAS = [
   },
   {
     id: "8",
+    slug: "durga-puja",
     name: "Durga Puja",
     category: "Daily Puja",
     shortDescription:
@@ -84,6 +92,7 @@ export const PUJAS = [
   },
   {
     id: "9",
+    slug: "vishnu-puja",
     name: "Vishnu Puja",
     category: "Daily Puja",
     shortDescription:
@@ -94,6 +103,7 @@ export const PUJAS = [
   },
   {
     id: "10",
+    slug: "rahu-ketu-shanti-puja",
     name: "Rahu–Ketu Shanti Puja",
     category: "Astrology",
     shortDescription:
@@ -104,6 +114,7 @@ export const PUJAS = [
   },
   {
     id: "11",
+    slug: "navagraha-puja",
     name: "Navagraha Puja",
     category: "Astrology",
     shortDescription:
@@ -114,6 +125,7 @@ export const PUJAS = [
   },
   {
     id: "12",
+    slug: "shani-shanti-puja",
     name: " Shani Shanti Puja",
     category: "Astrology",
     shortDescription:
@@ -124,6 +136,7 @@ export const PUJAS = [
   },
   {
     id: "13",
+    slug: "mangal-dosh-nivaran",
     name: " Mangal Dosh Nivaran",
     category: "Astrology",
     shortDescription:
@@ -134,26 +147,29 @@ export const PUJAS = [
   },
   {
     id: "14",
-    name: "Kaal Sarp Dosh Puja",
+    slug: "kaal-sarp-dosh-puja",
+    name: "Kaal Sarp Dosh Shanti Puja",
     category: "Astrology",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/vastu.jpg",
   },
   {
     id: "15",
-    name: "Maha Mrityunjaya Havan",
+    slug: "maha-mrityunjaya-havan",
+    name: "Mahamrityunjaya Mantra Jaap for Health & Protection",
     category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/vastu.jpeg",
   },
   {
     id: "16",
+    slug: "gayatri-havan",
     name: "Gayatri Havan",
     category: "Havan Ceremonies",
     shortDescription:
@@ -164,6 +180,7 @@ export const PUJAS = [
   },
   {
     id: "17",
+    slug: "dhan-prapti-havan",
     name: "Dhan Prapti Havan",
     category: "Havan Ceremonies",
     shortDescription:
@@ -174,6 +191,7 @@ export const PUJAS = [
   },
   {
     id: "18",
+    slug: "sarva-badha-nivaran-havan",
     name: "Sarva Badha Nivaran Havan",
     category: "Havan Ceremonies",
     shortDescription:
@@ -184,26 +202,29 @@ export const PUJAS = [
   },
   {
     id: "19",
-    name: "Shanti Havan",
+    slug: "shanti-havan",
+    name: " Naugraha Shanti Havan",
     category: "Havan Ceremonies",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/vastu.jpeg",
   },
   {
     id: "20",
-    name: "Rudraabhishek ",
+    slug: "rudraabhishek",
+    name: "Rudrabhishek Puja for Wish Fulfillment",
     category: "Havan & Special",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Lord Shiva puja for fulfillment of wishes, peace, prosperity and spiritual growth.",
     price: "₹ 2,100",
     duration: "1–2 hours",
     image: "/images/rudraabhishek.jpg",
   },
   {
     id: "21",
+    slug: "durga-puja",
     name: "Durga Puja",
     category: "Havan & Special",
     shortDescription:
@@ -214,16 +235,18 @@ export const PUJAS = [
   },
   {
     id: "22",
+    slug: "saraswati-puja",
     name: "Saraswati Puja",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/saraswati-puja.jpg",
   },
   {
     id: "23",
+    slug: "navagraha-shanti",
     name: "Navagraha Shanti",
     category: "Havan & Special",
     shortDescription:
@@ -234,16 +257,18 @@ export const PUJAS = [
   },
   {
     id: "24",
+    slug: "maha-mrityunjaya-jaap",
     name: "Maha Mrityunjaya Jaap",
     category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/Maha_Mrityunjaya_Jaap.jpg",
   },
   {
     id: "25",
+    slug: "sundarKand-path",
     name: "SundarKand Path",
     category: "Daily Puja",
     shortDescription:
@@ -254,6 +279,7 @@ export const PUJAS = [
   },
   {
     id: "26",
+    slug: "hanuman-chalisa-path",
     name: "Hanuman Chalisa Path",
     category: "Daily Puja",
     shortDescription:
@@ -264,6 +290,7 @@ export const PUJAS = [
   },
   {
     id: "27",
+    slug: "akhand-ramayan-path",
     name: "Akhand Ramayan Path",
     category: "Havan & Special",
     shortDescription:
@@ -274,16 +301,18 @@ export const PUJAS = [
   },
   {
     id: "28",
-    name: "9 Chandi Path ",
+    slug: "9chandi-path",
+    name: "9 Chandi Path",
     category: "Havan & Special",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
-    price: "₹ 2,100",
+    price: "₹ 3,100",
     duration: "1–2 hours",
     image: "/images/vastu.jpeg",
   },
   {
     id: "29",
+    slug: "rahu-ketu-shanti ",
     name: "Rahu Ketu Shanti ",
     category: "Havan & Special",
     shortDescription:
@@ -294,13 +323,80 @@ export const PUJAS = [
   },
   {
     id: "30",
-    name: "Office Opening Puja",
+    slug: "bhoomi-pujan-construction-site-puja",
+    name: "Bhoomi Pujan / Construction Site Puja",
     category: "Daily Puja",
     shortDescription:
       "Sacred fire ritual for purification, health and spiritual upliftment.",
     price: "₹ 2,100",
     duration: "1–2 hours",
     image: "/images/office.jpg",
+  },
+  {
+    id: "31",
+    slug: "atharvashirsha-path",
+    name: "Atharvashirsha Path",
+    category: "Daily Puja",
+    shortDescription:
+      "Sacred fire ritual for purification, health and spiritual upliftment.",
+    price: "₹ 2,500",
+    duration: "1–2 hours",
+    image: "/images/ganesh-puja.jpg",
+  },
+  {
+    id: "32",
+    slug: "kanakdhara-path",
+    name: "Kanakdhara Path",
+    category: "Daily Puja",
+    shortDescription:
+      "Sacred fire ritual for purification, health and spiritual upliftment.",
+    price: "₹ 2,500",
+    duration: "1–2 hours",
+    image: "/images/kanakdhara.jpg",
+  },
+  {
+    id: "33",
+    slug: "business-growth",
+    name: "Shri Sukt Path for Job & Business Growth",
+    category: "Daily Puja",
+    shortDescription:
+      "Sacred fire ritual for purification, health and spiritual upliftment.",
+    price: "₹ 2,100",
+    duration: "1–2 hours",
+    image: "/images/kanakdhara.jpg",
+  },
+  {
+    id: "34",
+    slug: "grah-klesh-nivaran",
+    name: "Grah Klesh Nivaran / Lakshmi Narayan Puja Yagya",
+    category: "Home / Auspicious",
+    shortDescription:
+      "Sacred fire ritual for purification, health and spiritual upliftment.",
+    price: "₹ 2,100",
+    duration: "1–2 hours",
+    image: "/images/griha.jpg",
+  },
+  {
+    id: "34",
+    slug: "shatru-nivaran-baglamukhi-puja",
+    name: "Shatru Nivaran Baglamukhi Puja / Havan",
+    category: "Home / Auspicious",
+    shortDescription:
+      "Sacred fire ritual for purification, health and spiritual upliftment.",
+    price: "₹ 2,100",
+    duration: "1–2 hours",
+    image: "/images/griha.jpg",
+  },
+  {
+    id: "34",
+    slug: "grah-klesh-nivaran",
+    name: "Grah Klesh Nivaran / Lakshmi Narayan Puja Yagya",
+    category: "Home / Auspicious",
+    shortDescription:
+      "Sacred fire ritual for purification, health and spiritual upliftment.",
+    price: "₹ 2,100",
+    duration: "1–2 hours",
+    image: "/images/griha.jpg",
   }
 
 ];

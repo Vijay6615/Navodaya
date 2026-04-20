@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 
 export default function ContactPage() {
@@ -43,19 +43,18 @@ export default function ContactPage() {
   const sendEmail = (e) => {
     e.preventDefault();
 
-    setLoading(true); // START LOADING
+    setLoading(true);
 
     emailjs
       .send(
-        "service_lsuicww",      // your service id
-        "template_2ki9qd8",     // your template id
+        "service_lsuicww",
+        "template_2ki9qd8",
         form,
-        "gGm69Djy_97dOYF1O"     // your public key
+        "gGm69Djy_97dOYF1O"
       )
       .then(() => {
         showToast("success", "Message sent successfully 🙏");
 
-        // reset form
         setForm({
           name: "",
           surname: "",
@@ -67,27 +66,13 @@ export default function ContactPage() {
           message: "",
         });
 
-        setLoading(false); // STOP LOADING
+        setLoading(false);
       })
       .catch(() => {
         showToast("error", "Something went wrong 😔 Try again");
-        setLoading(false); // STOP LOADING
+        setLoading(false);
       });
   };
-
-  // ---------- SCROLL ANIMATION ----------
-  useEffect(() => {
-    const items = document.querySelectorAll(".fade-up");
-    const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach(
-          (e) => e.isIntersecting && e.target.classList.add("visible")
-        ),
-      { threshold: 0.2 }
-    );
-    items.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
 
   // ---------- PUJA OPTIONS ----------
   const pujas = [
@@ -120,13 +105,13 @@ export default function ContactPage() {
   return (
     <section className="min-h-screen w-full py-12 px-5 bg-gradient-to-br from-orange-50 via-rose-50 to-yellow-50">
 
-      {/* 🌟 TOAST POPUP */}
+      {/* TOAST */}
       {toast.show && (
         <div
           className={`
             fixed top-6 right-6 z-[9999]
             px-5 py-3 rounded-2xl shadow-2xl
-            text-white flex items-center gap-3 animate-slide
+            text-white flex items-center gap-3
             ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}
           `}
         >
@@ -141,8 +126,7 @@ export default function ContactPage() {
       )}
 
       {/* Title */}
-      <div className="text-center mb-10 fade-up">
-        {/* <p className="text-orange-600 font-semibold">Contact Panditji</p> */}
+      <div className="text-center mb-10">
         <h1 className="text-4xl font-extrabold text-gray-800 mt-1">
           Book Puja • Ask a Question • Get Guidance
         </h1>
@@ -155,7 +139,7 @@ export default function ContactPage() {
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
 
         {/* LEFT INFO */}
-        <div className="fade-up rounded-3xl p-7 shadow-xl bg-white/80 backdrop-blur-xl border border-white/40">
+        <div className="rounded-3xl p-7 shadow-xl bg-white/80 backdrop-blur-xl border border-white/40">
           <h2 className="text-2xl font-bold text-gray-800 mb-5">📞 Contact Information</h2>
 
           <ul className="space-y-2 text-gray-700">
@@ -167,14 +151,14 @@ export default function ContactPage() {
 
           <a
             href="https://wa.me/919594943609"
-            className="inline-block mt-6 px-5 py-2 rounded-full bg-green-500 text-white hover:bg-green-600"
+            className="inline-block mt-6 px-5 py-2 rounded-full bg-green-500 text-white"
           >
             Chat on WhatsApp
           </a>
         </div>
 
         {/* RIGHT FORM */}
-        <form onSubmit={sendEmail} className="fade-up rounded-3xl p-7 shadow-xl bg-white/90 backdrop-blur-xl border border-white/40">
+        <form onSubmit={sendEmail} className="rounded-3xl p-7 shadow-xl bg-white/90 backdrop-blur-xl border border-white/40">
 
           <h2 className="text-2xl font-bold mb-4 text-gray-800">✍️ Booking / Contact Form</h2>
 
@@ -197,7 +181,7 @@ export default function ContactPage() {
 
             <input name="phone" placeholder="Phone Number" required value={form.phone} onChange={handleChange} className="input" />
 
-            {/* 🔍 SEARCHABLE PUJA SELECT */}
+            {/* PUJA SEARCH */}
             <div className="relative md:col-span-2">
               <input
                 type="text"
@@ -215,7 +199,7 @@ export default function ContactPage() {
                     .map((p, i) => (
                       <p
                         key={i}
-                        className="px-3 py-2 cursor-pointer hover:bg-orange-100"
+                        className="px-3 py-2 cursor-pointer"
                         onClick={() => {
                           setForm({ ...form, puja: p });
                           setShowList(false);
@@ -239,34 +223,15 @@ export default function ContactPage() {
             className="input mt-2"
           />
 
-          {/* 🔥 LOADING BUTTON */}
+          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
             className={`mt-4 w-full py-3 rounded-full text-white font-semibold ${
-              loading ? "bg-gray-400" : "bg-orange-600 hover:bg-orange-700"
+              loading ? "bg-gray-400" : "bg-orange-600"
             }`}
           >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  className="animate-spin h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="white"
-                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l3 3-3 3v-4a8 8 0 01-8-8z"
-                  ></path>
-                </svg>
-                Sending…
-              </span>
-            ) : (
-              "Send"
-            )}
+            {loading ? "Sending…" : "Send"}
           </button>
         </form>
       </div>

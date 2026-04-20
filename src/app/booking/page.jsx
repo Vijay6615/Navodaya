@@ -75,9 +75,7 @@ function BookingForm() {
 
         {/* header */}
         <div className="text-center mb-3">
-          <span className="px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-700 font-semibold">
-            Step 1 • Booking Details
-          </span>
+          
 
           <h1 className="text-3xl font-extrabold mt-2 text-gray-800">
             Book Your Puja 🙏
@@ -162,7 +160,7 @@ function BookingForm() {
           <textarea
             name="message"
             rows="3"
-            placeholder="Any special instructions?"
+            placeholder="Any special requirements?"
             value={form.message}
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-orange-400 outline-none"
