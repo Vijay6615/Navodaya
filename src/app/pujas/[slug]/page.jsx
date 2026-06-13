@@ -85,7 +85,7 @@ export default async function PujaDetail({ params }) {
                 hover:bg-orange-700 transition
                 shadow-md
               ">
-                Book This Puja 🙏
+                Book This Puja 
               </button>
             </Link>
 

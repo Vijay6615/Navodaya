@@ -88,12 +88,12 @@ export default function Hero() {
 
         <div className="mt-6 flex gap-3 justify-center flex-wrap">
           <a href="/contact">
-            <button className="px-6 py-3 rounded-full font-semibold text-white bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/40">
+            <button className="px-6 py-3 rounded-full font-semibold text-white  bg-orange-500 hover:bg-amber-300 shadow-lg shadow-orange-500/40">
               Book a Puja →
             </button>
           </a>
           <a href="/pujas">
-            <button className="px-6 py-3 rounded-full font-semibold border border-white/60 text-white hover:bg-white hover:bg-orange-600 shadow-lg">
+            <button className="px-6 py-3 rounded-full font-semibold  text-white bg-orange-500 hover:bg-amber-300 shadow-lg shadow-orange-500/40">
               Explore Pujas
             </button>
           </a>

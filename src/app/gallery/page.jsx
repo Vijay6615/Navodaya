@@ -71,7 +71,7 @@ export default function GalleryPage() {
   });
 
   return (
-    <section className="min-h-screen w-full py-12 px-6 bg-gradient-to-br from-orange-50 via-rose-50 to-yellow-50">
+    <section className="min-h-screen w-full py-12 px-2 bg-gradient-to-br from-orange-50 via-rose-50 to-yellow-50">
 
       {/* Title */}
       <div className="text-center mb-10">
