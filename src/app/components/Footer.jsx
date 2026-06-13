@@ -5,7 +5,7 @@ export default function Footer() {
       <div className="footer-grid">
         <div>
           <div className="brand-logo small"><b>Navodaya Puja</b></div>
-          <p>Bringing divine blessings to your doorstep.</p>
+          <p>Bringing divine blessings to your doorsteps.</p>
         </div>
 
         <div>
@@ -33,14 +33,14 @@ export default function Footer() {
           <h4>Contact Us</h4>
           <ul>
             <li>📞 +91 95949 43609</li>
-            <li>✉️ panditji@puja.com</li>
+            <li>✉️ navodayapuja@gmail.com</li>
             <li>📍 123 Temple Street, Mumbai, India</li>
           </ul>
         </div>
       </div>
 
       <p className="footer-bottom">
-        © 2025 Panditji Puja Services. All rights reserved.
+        © 2025 Navodaya Puja Services. All rights reserved.
       </p>
     </footer>
   );
