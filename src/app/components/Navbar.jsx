@@ -2,12 +2,14 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+
 import {
   Home,
   Sparkles,
   CalendarCheck,
   LayoutGrid,
   User,
+  Download,
 } from "lucide-react";
 
 /* =========================================================
@@ -47,7 +49,6 @@ export default function Navbar() {
 
   /* =========================================================
      ACTIVE ROUTE CHECK
-     /pujas/ganesh-puja par bhi Pujas active rahega
   ========================================================= */
   const isActiveRoute = (href) => {
     if (href === "/") {
@@ -89,7 +90,49 @@ export default function Navbar() {
           "
         >
           {/* =================================================
-              LEFT SPACE — DESKTOP BALANCE
+              MOBILE DOWNLOAD BUTTON — LEFT
+          ================================================== */}
+          <a
+            href="/downloads/navodaya-puja.apk"
+            download="navodaya-puja.apk"
+            aria-label="Download Navodaya Puja App"
+            title="Download App"
+            className="
+              md:hidden
+
+              relative
+              z-20
+
+              w-10
+              h-10
+
+              flex
+              items-center
+              justify-center
+
+              rounded-full
+
+              bg-orange-50
+
+              border
+              border-orange-100
+
+              text-orange-600
+
+              transition-all
+              duration-300
+
+              active:scale-90
+            "
+          >
+            <Download
+              size={19}
+              strokeWidth={2.3}
+            />
+          </a>
+
+          {/* =================================================
+              DESKTOP LEFT SPACE
           ================================================== */}
           <div className="hidden md:block md:flex-1" />
 
@@ -214,9 +257,64 @@ export default function Navbar() {
           </ul>
 
           {/* =================================================
-              DESKTOP BOOK BUTTON
+              DESKTOP ACTION BUTTONS
           ================================================== */}
-          <div className="hidden md:block ml-2">
+          <div
+            className="
+              hidden
+              md:flex
+              items-center
+              gap-2
+              ml-3
+            "
+          >
+            {/* DOWNLOAD APP */}
+            <a
+              href="/downloads/navodaya-puja.apk"
+              download="navodaya-puja.apk"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+
+                px-4
+                py-2.5
+
+                rounded-full
+
+                bg-white
+
+                border
+                border-orange-200
+
+                text-orange-600
+
+                text-[13px]
+                font-bold
+
+                shadow-sm
+
+                transition-all
+                duration-300
+
+                hover:bg-orange-50
+                hover:border-orange-300
+                hover:-translate-y-0.5
+                hover:shadow-md
+
+                active:scale-95
+              "
+            >
+              <Download
+                size={15}
+                strokeWidth={2.4}
+              />
+
+              Download App
+            </a>
+
+            {/* BOOK NOW */}
             <Link
               href="/contact"
               className="
