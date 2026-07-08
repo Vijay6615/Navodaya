@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.11.2",
     "@emailjs/browser": "^4.4.1",
     "framer-motion": "^12.23.12",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.542.0",
+    "mongodb": "^6.21.0",
     "mongoose": "^9.0.2",
     "next": "latest",
+    "next-auth": "^4.24.14",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

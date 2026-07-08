@@ -27,43 +27,73 @@ function BookingForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const sendEmail = (e) => {
-    e.preventDefault();
-    setLoading(true);
+const sendEmail = async (e) => {
+e.preventDefault();
+setLoading(true);
 
-    emailjs
-      .send(
-        "service_lsuicww",
-        "template_3zsnbxq",
-        form,
-        "gGm69Djy_97dOYF1O"
-      )
-      .then(() => {
-        emailjs.send(
-          "service_lsuicww",
-          "template_autoreply123",
-          form,
-          "gGm69Djy_97dOYF1O"
-        );
+try {
+// Save booking in MongoDB
+const res = await fetch("/api/bookings", {
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+},
+body: JSON.stringify({
+pujaName: form.puja,
+pujaSlug: form.puja.toLowerCase().replace(/\s+/g, "-"),
+price: "Contact",
+date: form.date,
+timeSlot: "Flexible",
+address: form.address,
+phone: form.phone,
+}),
+});
 
-        setSent(true);
-        setLoading(false);
 
-        setForm({
-          name: "",
-          phone: "",
-          email: "",
-          date: "",
-          address: "",
-          puja: selectedPuja,
-          message: "",
-        });
-      })
-      .catch(() => {
-        alert("Error sending booking request");
-        setLoading(false);
-      });
-  };
+const data = await res.json();
+
+if (!res.ok) {
+  throw new Error(data.error || "Booking failed");
+}
+
+await emailjs.send(
+  "service_lsuicww",
+  "template_3zsnbxq",
+  form,
+  "gGm69Djy_97dOYF1O"
+);
+
+await emailjs.send(
+  "service_lsuicww",
+  "template_autoreply123",
+  form,
+  "gGm69Djy_97dOYF1O"
+);
+
+setSent(true);
+
+alert(`Booking Successful!\nBooking ID: ${data.bookingId}`);
+
+
+setForm({
+  name: "",
+  phone: "",
+  email: "",
+  date: "",
+  address: "",
+  puja: selectedPuja,
+  message: "",
+});
+
+
+} catch (error) {
+console.error(error);
+alert(error.message);
+} finally {
+setLoading(false);
+}
+};
+
 
   return (
     <section className="min-h-screen flex justify-center items-center px-5 bg-gradient-to-br from-orange-50 via-rose-50 to-yellow-50 relative">
