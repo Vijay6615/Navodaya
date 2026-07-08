@@ -2,24 +2,24 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
+import bcrypt from "bcryptjs";
 
 const handler = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
 
   providers: [
-    // ==========================================
+    // =========================
     // GOOGLE LOGIN
-    // ==========================================
+    // =========================
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
 
-    // ==========================================
+    // =========================
     // EMAIL + PASSWORD LOGIN
-    // ==========================================
+    // =========================
     CredentialsProvider({
       name: "Credentials",
 
@@ -36,41 +36,27 @@ const handler = NextAuth({
 
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required");
+          return null;
         }
 
-        const email = credentials.email
-          .toLowerCase()
-          .trim();
-
         const client = await clientPromise;
-
-        // IMPORTANT:
-        // MongoDB Adapter default database
         const db = client.db();
 
         const user = await db.collection("users").findOne({
-          email,
+          email: credentials.email.toLowerCase().trim(),
         });
 
-        if (!user) {
-          throw new Error("Invalid email or password");
+        if (!user || !user.password) {
+          return null;
         }
 
-        // Google-created users may not have password
-        if (!user.password) {
-          throw new Error(
-            "This account uses Google login"
-          );
-        }
-
-        const passwordMatch = await bcrypt.compare(
+        const isPasswordCorrect = await bcrypt.compare(
           credentials.password,
           user.password
         );
 
-        if (!passwordMatch) {
-          throw new Error("Invalid email or password");
+        if (!isPasswordCorrect) {
+          return null;
         }
 
         return {
@@ -83,16 +69,26 @@ const handler = NextAuth({
     }),
   ],
 
-  // ==========================================
-  // JWT SESSION
-  // ==========================================
+  // =========================
+  // SESSION SETTINGS
+  // =========================
   session: {
     strategy: "jwt",
+
+    // 30 days tak login remembered
+    maxAge: 30 * 24 * 60 * 60,
+
+    // session refresh
+    updateAge: 24 * 60 * 60,
   },
 
-  // ==========================================
-  // CALLBACKS
-  // ==========================================
+  // =========================
+  // JWT SETTINGS
+  // =========================
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60,
+  },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -111,9 +107,6 @@ const handler = NextAuth({
     },
   },
 
-  // ==========================================
-  // CUSTOM LOGIN PAGE
-  // ==========================================
   pages: {
     signIn: "/login",
   },
