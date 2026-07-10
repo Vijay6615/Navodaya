@@ -16,10 +16,13 @@ import {
   LogOut,
   X,
   Share2,
+  ChevronRight,
+  CircleUserRound,
+  Menu,
 } from "lucide-react";
 
 /* =========================================================
-   MOBILE BOTTOM NAV ITEMS
+   MOBILE BOTTOM NAVIGATION
 ========================================================= */
 const navItems = [
   {
@@ -50,17 +53,50 @@ const navItems = [
   },
 ];
 
+/* =========================================================
+   DESKTOP NAVIGATION
+========================================================= */
+const desktopLinks = [
+  {
+    label: "Home",
+    href: "/",
+  },
+  {
+    label: "Pujas",
+    href: "/pujas",
+  },
+  {
+    label: "About Panditji",
+    href: "/aboutpanditji",
+  },
+  {
+    label: "Gallery",
+    href: "/gallery",
+  },
+];
+
 export default function Navbar() {
   const path = usePathname();
 
-  const { data: session } = useSession();
+  const {
+    data: session,
+    status,
+  } = useSession();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const settingsRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   /* =========================================================
-     ACTIVE ROUTE CHECK
+     AUTH STATE
+  ========================================================= */
+  const isLoggedIn =
+    status === "authenticated" && !!session?.user;
+
+  /* =========================================================
+     ACTIVE ROUTE
   ========================================================= */
   const isActiveRoute = (href) => {
     if (href === "/") {
@@ -71,7 +107,24 @@ export default function Navbar() {
   };
 
   /* =========================================================
-     CLOSE SETTINGS ON OUTSIDE CLICK
+     USER DATA
+  ========================================================= */
+  const userName =
+    session?.user?.name ||
+    session?.user?.email?.split("@")[0] ||
+    "Guest User";
+
+  const userEmail =
+    session?.user?.email ||
+    "Login to manage your account";
+
+  const userImage = session?.user?.image;
+
+  const firstLetter =
+    userName?.charAt(0)?.toUpperCase() || "N";
+
+  /* =========================================================
+     CLOSE POPUPS ON OUTSIDE CLICK
   ========================================================= */
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -81,10 +134,24 @@ export default function Navbar() {
       ) {
         setSettingsOpen(false);
       }
+
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setMobileMenuOpen(false);
+      }
     };
 
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.addEventListener("touchstart", handleOutsideClick);
+    document.addEventListener(
+      "mousedown",
+      handleOutsideClick
+    );
+
+    document.addEventListener(
+      "touchstart",
+      handleOutsideClick
+    );
 
     return () => {
       document.removeEventListener(
@@ -100,38 +167,25 @@ export default function Navbar() {
   }, []);
 
   /* =========================================================
-     CLOSE SETTINGS WHEN ROUTE CHANGES
+     CLOSE ON ROUTE CHANGE
   ========================================================= */
   useEffect(() => {
     setSettingsOpen(false);
+    setMobileMenuOpen(false);
   }, [path]);
-
-  /* =========================================================
-     USER DATA
-  ========================================================= */
-  const userName =
-    session?.user?.name ||
-    session?.user?.email?.split("@")[0] ||
-    "Navodaya User";
-
-  const userEmail =
-    session?.user?.email ||
-    "Welcome to Navodaya Puja";
-
-  const userImage = session?.user?.image;
-
-  const firstLetter =
-    userName?.charAt(0)?.toUpperCase() || "N";
 
   /* =========================================================
      SHARE APP
   ========================================================= */
   const handleShareApp = async () => {
-    const appUrl = typeof window !== "undefined" ? window.location.origin : "";
+    const appUrl =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "";
 
     const shareData = {
-      title: "Navodaya Puja",
-      text: "Book authentic Vedic pujas with Navodaya Puja App 🙏",
+      title: "Puja Dham",
+      text: "Experience authentic Vedic pujas with Puja Dham 🙏",
       url: appUrl,
     };
 
@@ -140,8 +194,9 @@ export default function Navbar() {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(appUrl);
-        alert("App link copied!");
+        alert("Puja Dham link copied!");
       }
+
       setSettingsOpen(false);
     } catch (error) {
       if (error?.name !== "AbortError") {
@@ -153,33 +208,38 @@ export default function Navbar() {
   return (
     <>
       {/* =====================================================
-          TOP NAVBAR
+          PREMIUM FIXED TOP NAVBAR
       ====================================================== */}
       <header
         className="
-          sticky
+          fixed
           top-0
-          z-50
-
+          left-0
+          right-0
+          z-[100]
           w-full
 
-          bg-white/90
+          bg-[#fffdf9]/88
           backdrop-blur-xl
+          supports-[backdrop-filter]:bg-[#fffdf9]/78
 
           border-b
-          border-black/[0.06]
+          border-orange-950/[0.08]
 
-          shadow-[0_2px_16px_rgba(0,0,0,0.04)]
+          shadow-[0_4px_30px_rgba(91,44,12,0.06)]
+
+          pt-[env(safe-area-inset-top)]
         "
       >
         <nav
           className="
             relative
 
-            max-w-6xl
+            max-w-7xl
             mx-auto
 
-            h-[72px]
+            h-[68px]
+            md:h-[76px]
 
             flex
             items-center
@@ -187,86 +247,14 @@ export default function Navbar() {
 
             px-4
             sm:px-6
+            lg:px-8
           "
         >
           {/* =================================================
-              MOBILE LEFT EMPTY SPACE
-              Keeps brand perfectly centered
+              MOBILE LEFT MENU
           ================================================== */}
           <div
-            className="
-              md:hidden
-
-              w-10
-              h-10
-
-              shrink-0
-            "
-          />
-
-          {/* =================================================
-              DESKTOP LEFT SPACE
-          ================================================== */}
-          <div className="hidden md:block md:flex-1" />
-
-          {/* =================================================
-              CENTER BRAND
-          ================================================== */}
-          <Link
-            href="/"
-            aria-label="Navodaya Puja Home"
-            className="
-              absolute
-
-              left-1/2
-              top-1/2
-
-              -translate-x-1/2
-              -translate-y-1/2
-
-              group
-
-              flex
-              items-center
-              justify-center
-
-              whitespace-nowrap
-            "
-          >
-            <span
-              className="
-                text-[20px]
-                sm:text-[22px]
-                md:text-[23px]
-
-                font-black
-
-                text-gray-900
-
-                tracking-[0.03em]
-
-                leading-none
-
-                transition-all
-                duration-300
-
-                group-hover:text-orange-600
-                group-hover:tracking-[0.05em]
-              "
-              style={{
-                fontFamily:
-                  'Georgia, "Times New Roman", ui-serif, serif',
-              }}
-            >
-              NAVODAYA PUJA
-            </span>
-          </Link>
-
-          {/* =================================================
-              MOBILE SETTINGS BUTTON — RIGHT
-          ================================================== */}
-          <div
-            ref={settingsRef}
+            ref={mobileMenuRef}
             className="
               relative
               z-30
@@ -275,75 +263,56 @@ export default function Navbar() {
           >
             <button
               type="button"
-              onClick={() =>
-                setSettingsOpen((prev) => !prev)
-              }
-              aria-label="Open Settings"
-              title="Settings"
-              className={`
+              onClick={() => {
+                setMobileMenuOpen((prev) => !prev);
+                setSettingsOpen(false);
+              }}
+              aria-label="Open navigation menu"
+              className="
                 w-10
                 h-10
+
+                rounded-full
 
                 flex
                 items-center
                 justify-center
 
-                rounded-full
+                bg-orange-50/90
 
                 border
+                border-orange-100
+
+                text-[#9a4b16]
 
                 transition-all
                 duration-300
 
                 active:scale-90
-
-                ${
-                  settingsOpen
-                    ? `
-                      bg-orange-600
-                      border-orange-600
-                      text-white
-                      shadow-lg
-                      shadow-orange-200
-                    `
-                    : `
-                      bg-orange-50
-                      border-orange-100
-                      text-orange-600
-                    `
-                }
-              `}
+              "
             >
-              {settingsOpen ? (
-                <X
-                  size={19}
-                  strokeWidth={2.4}
-                />
+              {mobileMenuOpen ? (
+                <X size={19} strokeWidth={2.2} />
               ) : (
-                <Settings
-                  size={19}
-                  strokeWidth={2.3}
-                />
+                <Menu size={20} strokeWidth={2.2} />
               )}
             </button>
 
-            {/* =============================================
-                MOBILE SETTINGS DROPDOWN
-            ============================================= */}
-            {settingsOpen && (
+            {/* MOBILE MENU */}
+            {mobileMenuOpen && (
               <div
                 className="
                   absolute
 
                   top-[50px]
-                  right-0
+                  left-0
 
-                  w-[280px]
+                  w-[250px]
                   max-w-[calc(100vw-32px)]
 
-                  overflow-hidden
+                  p-2
 
-                  rounded-[24px]
+                  rounded-[22px]
 
                   bg-white/95
                   backdrop-blur-2xl
@@ -351,529 +320,954 @@ export default function Navbar() {
                   border
                   border-orange-100
 
-                  shadow-[0_20px_60px_rgba(0,0,0,0.18)]
-
-                  animate-[fadeIn_0.2s_ease-out]
+                  shadow-[0_20px_60px_rgba(58,29,8,0.18)]
                 "
               >
-                {/* PROFILE AREA */}
-                <div
-                  className="
-                    p-4
+                {desktopLinks.map((item) => {
+                  const active = isActiveRoute(item.href);
 
-                    bg-gradient-to-br
-                    from-orange-50
-                    via-white
-                    to-amber-50
-
-                    border-b
-                    border-orange-100
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                    "
-                  >
-                    {/* USER AVATAR */}
-                    {userImage ? (
-                      <img
-                        src={userImage}
-                        alt={userName}
-                        referrerPolicy="no-referrer"
-                        className="
-                          w-14
-                          h-14
-
-                          rounded-full
-
-                          object-cover
-
-                          border-[3px]
-                          border-white
-
-                          shadow-md
-                        "
-                      />
-                    ) : (
-                      <div
-                        className="
-                          w-14
-                          h-14
-
-                          shrink-0
-
-                          rounded-full
-
-                          flex
-                          items-center
-                          justify-center
-
-                          bg-gradient-to-br
-                          from-orange-500
-                          to-orange-700
-
-                          text-white
-
-                          text-xl
-                          font-black
-
-                          border-[3px]
-                          border-white
-
-                          shadow-md
-                        "
-                      >
-                        {firstLetter}
-                      </div>
-                    )}
-
-                    {/* USER INFO */}
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className="
-                          text-[15px]
-                          font-extrabold
-                          text-gray-900
-
-                          truncate
-                        "
-                      >
-                        {userName}
-                      </p>
-
-                      <p
-                        className="
-                          mt-0.5
-
-                          text-[11px]
-                          font-medium
-                          text-gray-500
-
-                          truncate
-                        "
-                      >
-                        {userEmail}
-                      </p>
-
-                      <div
-                        className="
-                          mt-2
-
-                          inline-flex
-                          items-center
-
-                          px-2.5
-                          py-1
-
-                          rounded-full
-
-                          bg-orange-100
-
-                          text-[9px]
-                          font-bold
-                          text-orange-700
-
-                          uppercase
-                          tracking-wide
-                        "
-                      >
-                        Navodaya Member
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* MENU ACTIONS */}
-                <div className="p-2.5">
-                  {/* DOWNLOAD APP */}
-                  <a
-                    href="/downloads/navodaya-puja.apk"
-                    download="navodaya-puja.apk"
-                    onClick={() =>
-                      setSettingsOpen(false)
-                    }
-                    className="
-                      w-full
-
-                      flex
-                      items-center
-                      gap-3
-
-                      px-3
-                      py-3
-
-                      rounded-2xl
-
-                      text-gray-700
-
-                      transition-all
-                      duration-200
-
-                      hover:bg-orange-50
-                      hover:text-orange-600
-
-                      active:scale-[0.98]
-                    "
-                  >
-                    <div
-                      className="
-                        w-10
-                        h-10
-
-                        shrink-0
-
-                        rounded-xl
-
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`
                         flex
                         items-center
-                        justify-center
+                        justify-between
 
-                        bg-orange-100
+                        px-4
+                        py-3
 
-                        text-orange-600
-                      "
+                        rounded-2xl
+
+                        text-[13px]
+                        font-bold
+
+                        transition-all
+
+                        ${
+                          active
+                            ? `
+                              bg-orange-50
+                              text-orange-700
+                            `
+                            : `
+                              text-gray-700
+                              hover:bg-orange-50
+                              hover:text-orange-700
+                            `
+                        }
+                      `}
                     >
-                      <Download
-                        size={18}
-                        strokeWidth={2.3}
+                      {item.label}
+
+                      <ChevronRight
+                        size={15}
+                        strokeWidth={2}
                       />
-                    </div>
-
-                    <div className="text-left">
-                      <p
-                        className="
-                          text-[13px]
-                          font-bold
-                        "
-                      >
-                        Download App
-                      </p>
-
-                      <p
-                        className="
-                          mt-0.5
-
-                          text-[10px]
-                          text-gray-400
-                        "
-                      >
-                        Install Navodaya Puja APK
-                      </p>
-                    </div>
-                  </a>
-
-                  {/* SHARE APP */}
-                  <button
-                    type="button"
-                    onClick={handleShareApp}
-                    className="
-                      w-full
-                      flex
-                      items-center
-                      gap-3
-                      px-3
-                      py-3
-                      rounded-2xl
-                      text-gray-700
-                      transition-all
-                      duration-200
-                      hover:bg-orange-50
-                      hover:text-orange-600
-                      active:scale-[0.98]
-                    "
-                  >
-                    <div
-                      className="
-                        w-10
-                        h-10
-                        shrink-0
-                        rounded-xl
-                        flex
-                        items-center
-                        justify-center
-                        bg-orange-100
-                        text-orange-600
-                      "
-                    >
-                      <Share2 size={18} strokeWidth={2.3} />
-                    </div>
-
-                    <div className="text-left">
-                      <p className="text-[13px] font-bold">
-                        Share App
-                      </p>
-                      <p className="mt-0.5 text-[10px] text-gray-400">
-                        Share Navodaya Puja with others
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* LOGOUT */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSettingsOpen(false);
-
-                      signOut({
-                        callbackUrl: "/login",
-                      });
-                    }}
-                    className="
-                      w-full
-
-                      flex
-                      items-center
-                      gap-3
-
-                      px-3
-                      py-3
-
-                      rounded-2xl
-
-                      text-red-600
-
-                      transition-all
-                      duration-200
-
-                      hover:bg-red-50
-
-                      active:scale-[0.98]
-                    "
-                  >
-                    <div
-                      className="
-                        w-10
-                        h-10
-
-                        shrink-0
-
-                        rounded-xl
-
-                        flex
-                        items-center
-                        justify-center
-
-                        bg-red-50
-
-                        text-red-600
-                      "
-                    >
-                      <LogOut
-                        size={18}
-                        strokeWidth={2.3}
-                      />
-                    </div>
-
-                    <div className="text-left">
-                      <p
-                        className="
-                          text-[13px]
-                          font-bold
-                        "
-                      >
-                        Logout
-                      </p>
-
-                      <p
-                        className="
-                          mt-0.5
-
-                          text-[10px]
-                          text-red-400
-                        "
-                      >
-                        Sign out from your account
-                      </p>
-                    </div>
-                  </button>
-                </div>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* =================================================
-              DESKTOP LINKS
+              DESKTOP LEFT LOGO
+          ================================================== */}
+          <Link
+            href="/"
+            aria-label="Puja Dham Home"
+            className="
+              hidden
+              md:flex
+
+              absolute
+              left-6
+              lg:left-8
+              top-1/2
+              -translate-y-1/2
+
+              items-center
+              justify-start
+
+              z-20
+              group
+            "
+          >
+            <img
+              src="/pujadham1.png"
+              alt="Puja Dham Logo"
+              className="
+                block
+                w-auto
+                h-[60px]
+                lg:h-[58px]
+                max-w-[170px]
+                lg:max-w-[200px]
+                object-contain
+                transition-transform
+                duration-300
+                group-hover:scale-[1.03]
+              "
+            />
+          </Link>
+
+          {/* =================================================
+              MOBILE / IPHONE CENTER LOGO
+          ================================================== */}
+          <Link
+            href="/"
+            aria-label="Puja Dham Home"
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              -translate-x-1/2
+              -translate-y-1/2
+              md:hidden
+              z-20
+              flex
+              items-center
+              justify-center
+            "
+          >
+            <img
+              src="/pujadham1.png"
+              alt="Puja Dham Logo"
+              className="
+              block
+              w-auto
+              h-[60px]
+              min-[390px]:h-[62px]
+              max-w-[190px]
+              min-[390px]:max-w-[210px]
+              object-contain
+"
+            />
+          </Link>
+
+          {/* =================================================
+              DESKTOP CENTER LINKS
           ================================================== */}
           <ul
             className="
               hidden
               md:flex
 
+              absolute
+
+              left-1/2
+              top-1/2
+
+              -translate-x-1/2
+              -translate-y-1/2
+
               items-center
 
               gap-1
-
-              ml-auto
             "
           >
-            {[
-              {
-                label: "Home",
-                href: "/",
-              },
-              {
-                label: "Pujas",
-                href: "/pujas",
-              },
-              {
-                label: "About Panditji",
-                href: "/aboutpanditji",
-              },
-              {
-                label: "Gallery",
-                href: "/gallery",
-              },
-            ].map(({ label, href }) => {
-              const active = isActiveRoute(href);
+            {desktopLinks.map((item) => {
+              const active = isActiveRoute(item.href);
 
               return (
-                <li key={href}>
+                <li key={item.href}>
                   <Link
-                    href={href}
+                    href={item.href}
                     className={`
+                      relative
+
                       px-3
-                      py-2
+                      lg:px-4
+
+                      py-2.5
 
                       rounded-full
 
                       text-[13px]
+
                       font-semibold
 
+                      whitespace-nowrap
+
                       transition-all
-                      duration-200
+                      duration-300
 
                       ${
                         active
                           ? `
+                            text-orange-700
                             bg-orange-50
-                            text-orange-600
                           `
                           : `
-                            text-gray-600
+                            text-[#655246]
+                            hover:text-orange-700
                             hover:bg-orange-50/70
-                            hover:text-orange-600
                           `
                       }
                     `}
                   >
-                    {label}
+                    {item.label}
+
+                    {active && (
+                      <span
+                        className="
+                          absolute
+
+                          left-1/2
+                          -translate-x-1/2
+
+                          -bottom-1
+
+                          w-1
+                          h-1
+
+                          rounded-full
+
+                          bg-orange-600
+                        "
+                      />
+                    )}
                   </Link>
                 </li>
               );
             })}
-          </ul>
-
-          {/* =================================================
-              DESKTOP ACTION BUTTONS
+          </ul>          {/* =================================================
+              RIGHT ACTIONS
           ================================================== */}
           <div
             className="
-              hidden
-              md:flex
+              ml-auto
 
+              flex
               items-center
 
               gap-2
-              ml-3
+
+              relative
+              z-30
             "
           >
-            {/* DOWNLOAD APP */}
-            <a
-              href="/downloads/navodaya-puja.apk"
-              download="navodaya-puja.apk"
-              className="
-                flex
-                items-center
-                justify-center
-
-                gap-2
-
-                px-4
-                py-2.5
-
-                rounded-full
-
-                bg-white
-
-                border
-                border-orange-200
-
-                text-orange-600
-
-                text-[13px]
-                font-bold
-
-                shadow-sm
-
-                transition-all
-                duration-300
-
-                hover:bg-orange-50
-                hover:border-orange-300
-                hover:-translate-y-0.5
-                hover:shadow-md
-
-                active:scale-95
-              "
-            >
-              <Download
-                size={15}
-                strokeWidth={2.4}
-              />
-
-              Download App
-            </a>
-
-            {/* BOOK NOW */}
+            {/* DESKTOP BOOK CTA */}
             <Link
               href="/contact"
               className="
-                flex
+                hidden
+                md:flex
+
                 items-center
                 justify-center
 
                 gap-2
 
                 px-4
-                py-2.5
+                lg:px-5
+
+                h-10
 
                 rounded-full
 
-                bg-orange-600
+                bg-gradient-to-r
+                from-[#d85a16]
+                to-[#a93d10]
 
                 text-white
 
-                text-[13px]
+                text-[12px]
+                lg:text-[13px]
+
                 font-bold
 
-                shadow-md
-                shadow-orange-200
+                shadow-[0_8px_20px_rgba(194,74,18,0.22)]
 
                 transition-all
                 duration-300
 
-                hover:bg-orange-700
                 hover:-translate-y-0.5
+                hover:shadow-[0_12px_28px_rgba(194,74,18,0.30)]
 
                 active:scale-95
               "
             >
               <CalendarCheck
-                size={15}
-                strokeWidth={2.3}
+                size={16}
+                strokeWidth={2.2}
               />
 
-              Book Now
+              Book Puja
             </Link>
+
+            {/* =================================================
+                SETTINGS / PROFILE
+            ================================================== */}
+            <div
+              ref={settingsRef}
+              className="relative"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setSettingsOpen((prev) => !prev);
+                  setMobileMenuOpen(false);
+                }}
+                aria-label="Open settings"
+                className={`
+                  w-10
+                  h-10
+
+                  md:w-11
+                  md:h-11
+
+                  rounded-full
+
+                  flex
+                  items-center
+                  justify-center
+
+                  overflow-hidden
+
+                  border
+
+                  transition-all
+                  duration-300
+
+                  active:scale-90
+
+                  ${
+                    settingsOpen
+                      ? `
+                        bg-[#9f3e12]
+                        border-[#9f3e12]
+                        text-white
+
+                        shadow-lg
+                        shadow-orange-200
+                      `
+                      : `
+                        bg-orange-50/90
+                        border-orange-100
+                        text-[#9a4b16]
+
+                        hover:bg-orange-100
+                      `
+                  }
+                `}
+              >
+                {isLoggedIn && userImage ? (
+                  <img
+                    src={userImage}
+                    alt={userName}
+                    referrerPolicy="no-referrer"
+                    className="
+                      w-full
+                      h-full
+
+                      object-cover
+                    "
+                  />
+                ) : settingsOpen ? (
+                  <X
+                    size={19}
+                    strokeWidth={2.3}
+                  />
+                ) : (
+                  <Settings
+                    size={19}
+                    strokeWidth={2.2}
+                  />
+                )}
+              </button>
+
+              {/* =============================================
+                  SETTINGS PANEL
+              ============================================= */}
+              {settingsOpen && (
+                <div
+                  className="
+                    absolute
+
+                    top-[52px]
+                    right-0
+
+                    w-[300px]
+                    sm:w-[320px]
+
+                    max-w-[calc(100vw-24px)]
+
+                    overflow-hidden
+
+                    rounded-[26px]
+
+                    bg-white/95
+                    backdrop-blur-2xl
+
+                    border
+                    border-orange-100
+
+                    shadow-[0_24px_70px_rgba(60,30,10,0.20)]
+                  "
+                >
+                  {/* =========================================
+                      PROFILE / GUEST HEADER
+                  ========================================= */}
+                  <div
+                    className="
+                      p-4
+
+                      bg-gradient-to-br
+                      from-[#fff7ed]
+                      via-white
+                      to-[#fff4e6]
+
+                      border-b
+                      border-orange-100
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        items-center
+
+                        gap-3
+                      "
+                    >
+                      {/* AVATAR */}
+                      {isLoggedIn && userImage ? (
+                        <img
+                          src={userImage}
+                          alt={userName}
+                          referrerPolicy="no-referrer"
+                          className="
+                            w-14
+                            h-14
+
+                            rounded-full
+
+                            object-cover
+
+                            border-[3px]
+                            border-white
+
+                            shadow-md
+                          "
+                        />
+                      ) : (
+                        <div
+                          className="
+                            w-14
+                            h-14
+
+                            shrink-0
+
+                            rounded-full
+
+                            flex
+                            items-center
+                            justify-center
+
+                            bg-gradient-to-br
+                            from-orange-500
+                            to-[#9f3e12]
+
+                            text-white
+
+                            shadow-md
+
+                            border-[3px]
+                            border-white
+                          "
+                        >
+                          {isLoggedIn ? (
+                            <span
+                              className="
+                                text-xl
+                                font-black
+                              "
+                            >
+                              {firstLetter}
+                            </span>
+                          ) : (
+                            <CircleUserRound
+                              size={26}
+                              strokeWidth={1.8}
+                            />
+                          )}
+                        </div>
+                      )}
+
+                      {/* USER INFO */}
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className="
+                            text-[15px]
+
+                            font-extrabold
+
+                            text-[#3b2417]
+
+                            truncate
+                          "
+                        >
+                          {isLoggedIn
+                            ? userName
+                            : "Welcome"}
+                        </p>
+
+                        <p
+                          className="
+                            mt-0.5
+
+                            text-[11px]
+
+                            font-medium
+
+                            text-gray-500
+
+                            truncate
+                          "
+                        >
+                          {isLoggedIn
+                            ? userEmail
+                            : "Login or create your account"}
+                        </p>
+
+                        <span
+                          className="
+                            inline-flex
+
+                            mt-2
+
+                            px-2.5
+                            py-1
+
+                            rounded-full
+
+                            bg-orange-100
+
+                            text-[9px]
+
+                            font-bold
+
+                            uppercase
+
+                            tracking-wide
+
+                            text-orange-700
+                          "
+                        >
+                          {isLoggedIn
+                            ? "Puja Dham Member"
+                            : "Guest Mode"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* =========================================
+                      SETTINGS ACTIONS
+                  ========================================= */}
+                  <div className="p-2.5">
+
+                    {/* ACCOUNT */}
+                    <Link
+                      href={
+                        isLoggedIn
+                          ? "/account"
+                          : "/login"
+                      }
+                      onClick={() =>
+                        setSettingsOpen(false)
+                      }
+                      className="
+                        w-full
+
+                        flex
+                        items-center
+
+                        gap-3
+
+                        px-3
+                        py-3
+
+                        rounded-2xl
+
+                        text-gray-700
+
+                        transition-all
+                        duration-200
+
+                        hover:bg-orange-50
+                        hover:text-orange-700
+
+                        active:scale-[0.98]
+                      "
+                    >
+                      <div
+                        className="
+                          w-10
+                          h-10
+
+                          shrink-0
+
+                          rounded-xl
+
+                          flex
+                          items-center
+                          justify-center
+
+                          bg-orange-100
+
+                          text-orange-700
+                        "
+                      >
+                        <CircleUserRound
+                          size={19}
+                          strokeWidth={2.2}
+                        />
+                      </div>
+
+                      <div
+                        className="
+                          min-w-0
+                          flex-1
+
+                          text-left
+                        "
+                      >
+                        <p
+                          className="
+                            text-[13px]
+                            font-bold
+                          "
+                        >
+                          Account
+                        </p>
+
+                        <p
+                          className="
+                            mt-0.5
+
+                            text-[10px]
+
+                            text-gray-400
+                          "
+                        >
+                          {isLoggedIn
+                            ? "View and manage your profile"
+                            : "Login or create an account"}
+                        </p>
+                      </div>
+
+                      <ChevronRight
+                        size={16}
+                        className="text-gray-300"
+                      />
+                    </Link>
+
+                    {/* DOWNLOAD APP */}
+                    <a
+                      href="/downloads/navodaya-puja.apk"
+                      download="navodaya-puja.apk"
+                      onClick={() =>
+                        setSettingsOpen(false)
+                      }
+                      className="
+                        w-full
+
+                        flex
+                        items-center
+
+                        gap-3
+
+                        px-3
+                        py-3
+
+                        rounded-2xl
+
+                        text-gray-700
+
+                        transition-all
+                        duration-200
+
+                        hover:bg-orange-50
+                        hover:text-orange-700
+
+                        active:scale-[0.98]
+                      "
+                    >
+                      <div
+                        className="
+                          w-10
+                          h-10
+
+                          shrink-0
+
+                          rounded-xl
+
+                          flex
+                          items-center
+                          justify-center
+
+                          bg-orange-100
+
+                          text-orange-700
+                        "
+                      >
+                        <Download
+                          size={18}
+                          strokeWidth={2.3}
+                        />
+                      </div>
+
+                      <div
+                        className="
+                          min-w-0
+                          flex-1
+
+                          text-left
+                        "
+                      >
+                        <p
+                          className="
+                            text-[13px]
+                            font-bold
+                          "
+                        >
+                          Download App
+                        </p>
+
+                        <p
+                          className="
+                            mt-0.5
+
+                            text-[10px]
+
+                            text-gray-400
+                          "
+                        >
+                          Install Puja Dham
+                        </p>
+                      </div>
+
+                      <ChevronRight
+                        size={16}
+                        className="text-gray-300"
+                      />
+                    </a>
+
+                    {/* SHARE APP */}
+                    <button
+                      type="button"
+                      onClick={handleShareApp}
+                      className="
+                        w-full
+
+                        flex
+                        items-center
+
+                        gap-3
+
+                        px-3
+                        py-3
+
+                        rounded-2xl
+
+                        text-gray-700
+
+                        transition-all
+                        duration-200
+
+                        hover:bg-orange-50
+                        hover:text-orange-700
+
+                        active:scale-[0.98]
+                      "
+                    >
+                      <div
+                        className="
+                          w-10
+                          h-10
+
+                          shrink-0
+
+                          rounded-xl
+
+                          flex
+                          items-center
+                          justify-center
+
+                          bg-orange-100
+
+                          text-orange-700
+                        "
+                      >
+                        <Share2
+                          size={18}
+                          strokeWidth={2.3}
+                        />
+                      </div>
+
+                      <div
+                        className="
+                          min-w-0
+                          flex-1
+
+                          text-left
+                        "
+                      >
+                        <p
+                          className="
+                            text-[13px]
+                            font-bold
+                          "
+                        >
+                          Share App
+                        </p>
+
+                        <p
+                          className="
+                            mt-0.5
+
+                            text-[10px]
+
+                            text-gray-400
+                          "
+                        >
+                          Share Puja Dham
+                        </p>
+                      </div>
+
+                      <ChevronRight
+                        size={16}
+                        className="text-gray-300"
+                      />
+                    </button>
+
+                    {/* LOGOUT — ONLY LOGGED IN */}
+                    {isLoggedIn && (
+                      <>
+                        <div
+                          className="
+                            my-2
+
+                            h-px
+
+                            bg-gray-100
+                          "
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSettingsOpen(false);
+
+                            signOut({
+                              callbackUrl: "/",
+                            });
+                          }}
+                          className="
+                            w-full
+
+                            flex
+                            items-center
+
+                            gap-3
+
+                            px-3
+                            py-3
+
+                            rounded-2xl
+
+                            text-red-600
+
+                            transition-all
+                            duration-200
+
+                            hover:bg-red-50
+
+                            active:scale-[0.98]
+                          "
+                        >
+                          <div
+                            className="
+                              w-10
+                              h-10
+
+                              shrink-0
+
+                              rounded-xl
+
+                              flex
+                              items-center
+                              justify-center
+
+                              bg-red-50
+
+                              text-red-600
+                            "
+                          >
+                            <LogOut
+                              size={18}
+                              strokeWidth={2.3}
+                            />
+                          </div>
+
+                          <div
+                            className="
+                              min-w-0
+                              flex-1
+
+                              text-left
+                            "
+                          >
+                            <p
+                              className="
+                                text-[13px]
+                                font-bold
+                              "
+                            >
+                              Logout
+                            </p>
+
+                            <p
+                              className="
+                                mt-0.5
+
+                                text-[10px]
+
+                                text-red-400
+                              "
+                            >
+                              Sign out from your account
+                            </p>
+                          </div>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </header>
 
       {/* =====================================================
+          FIXED TOP NAVBAR SPACER
+          Isse page ka first content navbar ke neeche start hoga.
+          Scroll par content translucent navbar ke piche dikhega.
+      ====================================================== */}
+      <div
+        className="
+          h-[68px]
+          md:h-[76px]
+          pt-[env(safe-area-inset-top)]
+        "
+        aria-hidden="true"
+      />      {/* =====================================================
           MOBILE BOTTOM NAVIGATION
+          Android + iOS Safe Area
       ====================================================== */}
       <nav
         className="
@@ -890,13 +1284,14 @@ export default function Navbar() {
       >
         <div
           className="
-            bg-white/95
-            backdrop-blur-xl
+            bg-[#fffdf9]/95
+
+            backdrop-blur-2xl
 
             border-t
-            border-black/[0.06]
+            border-orange-950/[0.07]
 
-            shadow-[0_-4px_20px_rgba(0,0,0,0.07)]
+            shadow-[0_-8px_30px_rgba(73,36,10,0.08)]
 
             pb-[env(safe-area-inset-bottom)]
           "
@@ -912,6 +1307,7 @@ export default function Navbar() {
               items-end
 
               px-1
+
               pt-2
               pb-2
             "
@@ -919,11 +1315,11 @@ export default function Navbar() {
             {navItems.map((item) => {
               const Icon = item.icon;
 
-              const isActive =
+              const active =
                 isActiveRoute(item.href);
 
               /* =============================================
-                 CENTER BOOK BUTTON
+                 CENTER BOOK CTA
               ============================================= */
               if (item.isBookCTA) {
                 return (
@@ -943,17 +1339,14 @@ export default function Navbar() {
                       min-w-0
                     "
                   >
-                    {/* BOOK CTA */}
                     <div
                       className="
                         relative
 
-                        -mt-5
+                        -mt-6
 
-                        min-w-[54px]
-                        h-[40px]
-
-                        px-4
+                        w-[56px]
+                        h-[44px]
 
                         rounded-full
 
@@ -961,16 +1354,16 @@ export default function Navbar() {
                         items-center
                         justify-center
 
-                        bg-gradient-to-r
-                        from-orange-500
-                        to-orange-700
+                        bg-gradient-to-br
+                        from-[#e5681c]
+                        to-[#a93d10]
 
                         text-white
 
-                        border-[3px]
-                        border-white
+                        border-[4px]
+                        border-[#fffdf9]
 
-                        shadow-[0_8px_20px_rgba(234,88,12,0.32)]
+                        shadow-[0_10px_24px_rgba(181,65,14,0.34)]
 
                         transition-all
                         duration-300
@@ -979,7 +1372,7 @@ export default function Navbar() {
                       "
                     >
                       <Icon
-                        size={19}
+                        size={20}
                         strokeWidth={2.4}
                       />
                     </div>
@@ -992,7 +1385,7 @@ export default function Navbar() {
 
                         font-bold
 
-                        text-orange-600
+                        text-orange-700
 
                         leading-none
                       "
@@ -1004,7 +1397,7 @@ export default function Navbar() {
               }
 
               /* =============================================
-                 REGULAR NAV ITEM
+                 REGULAR ITEM
               ============================================= */
               return (
                 <Link
@@ -1023,7 +1416,6 @@ export default function Navbar() {
                     min-w-0
                   "
                 >
-                  {/* ICON PILL */}
                   <div
                     className={`
                       w-[52px]
@@ -1041,7 +1433,7 @@ export default function Navbar() {
                       group-active:scale-90
 
                       ${
-                        isActive
+                        active
                           ? `
                             bg-orange-100
                           `
@@ -1054,26 +1446,25 @@ export default function Navbar() {
                     <Icon
                       size={21}
                       strokeWidth={
-                        isActive ? 2.4 : 1.8
+                        active ? 2.4 : 1.8
                       }
                       className={`
                         transition-colors
                         duration-300
 
                         ${
-                          isActive
+                          active
                             ? `
-                              text-orange-600
+                              text-orange-700
                             `
                             : `
-                              text-gray-400
+                              text-[#9c8b80]
                             `
                         }
                       `}
                     />
                   </div>
 
-                  {/* LABEL */}
                   <span
                     className={`
                       mt-1.5
@@ -1089,14 +1480,14 @@ export default function Navbar() {
                       duration-300
 
                       ${
-                        isActive
+                        active
                           ? `
                             font-bold
-                            text-orange-600
+                            text-orange-700
                           `
                           : `
                             font-medium
-                            text-gray-400
+                            text-[#9c8b80]
                           `
                       }
                     `}
@@ -1111,9 +1502,15 @@ export default function Navbar() {
       </nav>
 
       {/* =====================================================
-          MOBILE BOTTOM SPACER
+          MOBILE SAFE CONTENT SPACER
+          Bottom nav content ko cover nahi karega
       ====================================================== */}
-      <div className="h-[72px] md:hidden" />
+      <div
+        className="
+          h-[72px]
+          md:hidden
+        "
+      />
     </>
   );
 }

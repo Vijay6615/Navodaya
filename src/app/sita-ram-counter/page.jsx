@@ -217,7 +217,7 @@ export default function SitaRamCounterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fffaf2] pb-28">
+    <main className="min-h-screen bg-[#fffaf2] pb-28 md:pb-12">
 
       {/* ================= AUDIO ================= */}
       <audio
@@ -231,7 +231,7 @@ export default function SitaRamCounterPage() {
 
       {/* ================= TOP NAV ================= */}
       <header className="sticky top-0 z-40 bg-[#fffaf2]/90 backdrop-blur-xl border-b border-orange-100">
-        <div className="max-w-md mx-auto h-16 px-4 flex items-center justify-between">
+        <div className="w-full max-w-7xl mx-auto h-16 sm:h-[72px] px-4 sm:px-6 lg:px-8 flex items-center justify-between">
 
           <Link
             href="/"
@@ -282,11 +282,11 @@ export default function SitaRamCounterPage() {
         </div>
       </header>
 
-      <div className="max-w-md mx-auto">
+      <div className="w-full max-w-7xl mx-auto px-0 sm:px-2 lg:px-6 xl:px-8">
 
         {/* ================= HERO IMAGE ================= */}
-        <section className="px-4 pt-4">
-          <div className="relative h-52 rounded-[28px] overflow-hidden shadow-xl">
+        <section className="px-4 sm:px-6 lg:px-4 pt-4 sm:pt-6">
+          <div className="relative h-52 sm:h-72 lg:h-[420px] rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-xl">
 
             <img
               src="/images/Ram.jpg"
@@ -296,7 +296,7 @@ export default function SitaRamCounterPage() {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-            <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 lg:p-10 text-white">
 
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={15} />
@@ -306,11 +306,11 @@ export default function SitaRamCounterPage() {
                 </span>
               </div>
 
-              <h1 className="text-3xl font-black">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black">
                 सीता राम
               </h1>
 
-              <p className="text-white/80 text-sm mt-1">
+              <p className="text-white/80 text-sm sm:text-base lg:text-lg mt-1">
                 हर नाम एक आध्यात्मिक जमा
               </p>
 
@@ -319,7 +319,7 @@ export default function SitaRamCounterPage() {
         </section>
 
         {/* ================= DEVOTIONAL AUDIO ================= */}
-<section className="px-4 mt-4">
+<section className="px-4 sm:px-6 lg:px-4 mt-4 sm:mt-6">
   <div
     className="
       overflow-hidden
@@ -344,7 +344,7 @@ export default function SitaRamCounterPage() {
       <iframe
         src="https://audio.com/embed/audio/1843013813563986?theme=image"
         title="Shri Ram Devotional Audio"
-        className="block w-full h-[204px] border-0"
+        className="block w-full h-[204px] sm:h-[260px] lg:h-[320px] border-0"
         allow="autoplay"
         loading="lazy"
       />
@@ -371,8 +371,8 @@ export default function SitaRamCounterPage() {
 </section>
 
         {/* ================= BANK STATS ================= */}
-        <section className="px-4 mt-4">
-          <div className="grid grid-cols-2 gap-3">
+        <section className="px-4 sm:px-6 lg:px-4 mt-4 sm:mt-6">
+          <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3 sm:gap-4">
 
             {/* LAST DEPOSIT */}
             <div className="bg-white rounded-[22px] p-4 border border-orange-100 shadow-sm">
@@ -423,7 +423,7 @@ export default function SitaRamCounterPage() {
         </section>
 
         {/* ================= COUNTER ================= */}
-        <section className="px-4 mt-4">
+        <section className="px-4 sm:px-6 lg:px-4 mt-4 sm:mt-6">
 
           <div
             className="
@@ -435,8 +435,8 @@ export default function SitaRamCounterPage() {
               via-[#dc4b27]
               to-[#8f1d1d]
               shadow-2xl
-              px-5
-              py-6
+              px-4 sm:px-6 lg:px-10
+              py-6 sm:py-8 lg:py-10
             "
           >
 
@@ -471,7 +471,7 @@ export default function SitaRamCounterPage() {
               {/* COUNT */}
               <div className="text-center mt-5">
 
-                <p className="text-7xl font-black text-white tracking-tight">
+                <p className="text-6xl min-[380px]:text-7xl sm:text-8xl lg:text-9xl font-black text-white tracking-tight">
                   {count.toLocaleString("en-IN")}
                 </p>
 
@@ -598,7 +598,7 @@ export default function SitaRamCounterPage() {
         )}
 
         {/* ================= MALA SUMMARY ================= */}
-        <section className="px-4 mt-6">
+        <section className="px-4 sm:px-6 lg:px-4 mt-6 sm:mt-8">
 
           <div className="flex items-end justify-between mb-3">
 
@@ -620,12 +620,12 @@ export default function SitaRamCounterPage() {
 
           <div className="bg-white border border-orange-100 rounded-[26px] overflow-hidden shadow-sm">
 
-            <div className="grid grid-cols-[110px_1fr]">
+            <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] lg:grid-cols-[260px_1fr]">
 
               <img
                 src="/images/hanuman.jpg"
                 alt="Hanuman"
-                className="w-full h-full min-h-[145px] object-cover"
+                className="w-full h-48 sm:h-full sm:min-h-[180px] lg:min-h-[220px] object-cover"
               />
 
               <div className="p-4">
@@ -658,7 +658,7 @@ export default function SitaRamCounterPage() {
         </section>
 
         {/* ================= RECENT DEPOSITS ================= */}
-        <section className="px-4 mt-7">
+        <section className="px-4 sm:px-6 lg:px-4 mt-7 sm:mt-9">
 
           <div className="flex items-center justify-between mb-3">
 
@@ -702,7 +702,7 @@ export default function SitaRamCounterPage() {
 
           ) : (
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 
               {history.slice(0, 5).map((item, index) => (
 
@@ -726,7 +726,7 @@ export default function SitaRamCounterPage() {
 
                     <div>
                       <p className="font-bold text-[#4a2118]">
-                        {item.count.toLocaleString("en-IN")} नाम
+                        {Number(item.count).toLocaleString("en-IN")} नाम
                       </p>
 
                       <p className="text-xs text-gray-400">
@@ -751,25 +751,25 @@ export default function SitaRamCounterPage() {
         </section>
 
         {/* ================= DEVOTIONAL QUOTE ================= */}
-        <section className="px-4 mt-7">
+        <section className="px-4 sm:px-6 lg:px-4 mt-7 sm:mt-9">
 
-          <div className="relative h-48 rounded-[28px] overflow-hidden shadow-lg">
+          <div className="relative h-48 sm:h-64 lg:h-80 rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-lg">
 
             <img
-              src="/images\akhand-ramayan-path.jpg"
+              src="/images/akhand-ramayan-path.jpg"
               alt="Sita Ram devotion"
               className="absolute inset-0 w-full h-full object-cover"
             />
 
             <div className="absolute inset-0 bg-black/60" />
 
-            <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
+            <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-7 lg:p-10 text-white">
 
               <p className="text-xs text-orange-200 font-bold tracking-wider uppercase">
                 Daily Inspiration
               </p>
 
-              <p className="text-xl font-black mt-2 leading-snug">
+              <p className="text-xl sm:text-2xl lg:text-4xl font-black mt-2 leading-snug">
                 “राम नाम से बढ़कर कोई धन नहीं”
               </p>
 
