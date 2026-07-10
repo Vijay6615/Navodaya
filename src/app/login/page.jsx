@@ -517,77 +517,80 @@ export default function LoginPage() {
                 -top-10
                 -right-10
 
-                w-48
-                h-48
+                w-48                h-48
 
                 rounded-full
 
                 border
-                border-white/15
+                border-white/10
               "
             />
 
             <div
               className="
                 absolute
-                -bottom-28
-                -left-28
+                -bottom-32
+                -left-32
 
-                w-80
-                h-80
+                w-96
+                h-96
 
                 rounded-full
 
-                bg-white/5
+                bg-white/[0.06]
+
+                blur-2xl
               "
             />
 
-            {/* TOP BRAND */}
+            <div
+              className="
+                absolute
+                bottom-24
+                right-12
+
+                w-28
+                h-28
+
+                rounded-full
+
+                border
+                border-orange-100/20
+              "
+            />
+
+            {/* TOP BRAND LOGO */}
             <div className="relative z-10">
               <Link
                 href="/"
+                aria-label="Puja Dham Home"
                 className="
                   inline-flex
-                  flex-col
-
+                  items-center
                   group
                 "
               >
-                <span
+                <img
+                  src="/pujadham.png"
+                  alt="Puja Dham Logo"
                   className="
-                    text-[24px]
+                    block
+                    w-auto
 
-                    font-black
+                    h-[78px]
+                    xl:h-[88px]
 
-                    tracking-[0.09em]
+                    max-w-[240px]
+                    xl:max-w-[280px]
 
-                    leading-none
+                    object-contain
+
+                    transition-transform
+                    duration-300
+
+                    group-hover:scale-[1.03]
                   "
-                  style={{
-                    fontFamily:
-                      'Georgia, "Times New Roman", ui-serif, serif',
-                  }}
-                >
-                  NAVODAYA PUJA
-                </span>
-
-                <span
-                  className="
-                    mt-2
-
-                    text-[9px]
-
-                    font-bold
-
-                    uppercase
-
-                    tracking-[0.34em]
-
-                    text-orange-100
-                  "
-                >
-                  Vedic Traditions
-                </span>
+                />
               </Link>
             </div>
 
@@ -607,33 +610,43 @@ export default function LoginPage() {
 
                   gap-2
 
-                  px-3.5
+                  px-3
                   py-2
 
                   rounded-full
 
                   bg-white/10
-                  backdrop-blur-xl
 
                   border
                   border-white/15
 
-                  text-[11px]
-
-                  font-bold
-
-                  tracking-wide
+                  backdrop-blur-xl
                 "
               >
                 <Sparkles
                   size={15}
                   strokeWidth={2}
+                  className="text-orange-100"
                 />
 
-                Authentic Vedic Experiences
+                <span
+                  className="
+                    text-[11px]
+
+                    font-bold
+
+                    uppercase
+
+                    tracking-[0.14em]
+
+                    text-orange-50
+                  "
+                >
+                  Sacred Rituals • Divine Blessings
+                </span>
               </div>
 
-              <h2
+              <h1
                 className="
                   mt-6
 
@@ -642,43 +655,196 @@ export default function LoginPage() {
 
                   font-black
 
-                  leading-[1.08]
+                  leading-[1.05]
 
-                  tracking-[-0.03em]
+                  tracking-[-0.035em]
+
+                  text-white
                 "
                 style={{
                   fontFamily:
                     'Georgia, "Times New Roman", ui-serif, serif',
                 }}
               >
-                Sacred traditions,
-                <br />
-                thoughtfully
-                <br />
-                preserved.
-              </h2>
+                Your sacred
+                <span
+                  className="
+                    block
+                    text-orange-100
+                  "
+                >
+                  journey begins here.
+                </span>
+              </h1>
 
               <p
                 className="
                   mt-5
 
-                  max-w-sm
+                  max-w-[430px]
 
-                  text-[15px]
+                  text-[14px]
+                  xl:text-[15px]
 
                   leading-7
 
-                  text-orange-50/85
+                  text-orange-50/80
                 "
               >
-                Sign in to book authentic pujas,
-                manage your ceremonies and stay
-                connected with timeless Vedic
-                traditions.
+                Book authentic Vedic pujas, connect with
+                trusted Pandit Ji, and bring divine traditions
+                closer to your home with Puja Dham.
               </p>
+
+              {/* FEATURES */}
+              <div
+                className="
+                  mt-8
+
+                  grid
+                  grid-cols-1
+                  xl:grid-cols-2
+
+                  gap-3
+                "
+              >
+                <div
+                  className="
+                    flex
+                    items-center
+
+                    gap-3
+
+                    px-4
+                    py-3
+
+                    rounded-2xl
+
+                    bg-white/[0.08]
+
+                    border
+                    border-white/[0.10]
+
+                    backdrop-blur-xl
+                  "
+                >
+                  <div
+                    className="
+                      w-9
+                      h-9
+
+                      shrink-0
+
+                      rounded-xl
+
+                      flex
+                      items-center
+                      justify-center
+
+                      bg-white/10
+
+                      text-orange-100
+                    "
+                  >
+                    <ShieldCheck
+                      size={18}
+                      strokeWidth={2}
+                    />
+                  </div>
+
+                  <div>
+                    <p
+                      className="
+                        text-[12px]
+                        font-bold
+                        text-white
+                      "
+                    >
+                      Secure Access
+                    </p>
+
+                    <p
+                      className="
+                        mt-0.5
+                        text-[9px]
+                        text-orange-50/60
+                      "
+                    >
+                      Protected account login
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="
+                    flex
+                    items-center
+
+                    gap-3
+
+                    px-4
+                    py-3
+
+                    rounded-2xl
+
+                    bg-white/[0.08]
+
+                    border
+                    border-white/[0.10]
+
+                    backdrop-blur-xl
+                  "
+                >
+                  <div
+                    className="
+                      w-9
+                      h-9
+
+                      shrink-0
+
+                      rounded-xl
+
+                      flex
+                      items-center
+                      justify-center
+
+                      bg-white/10
+
+                      text-orange-100
+                    "
+                  >
+                    <Sparkles
+                      size={18}
+                      strokeWidth={2}
+                    />
+                  </div>
+
+                  <div>
+                    <p
+                      className="
+                        text-[12px]
+                        font-bold
+                        text-white
+                      "
+                    >
+                      Vedic Traditions
+                    </p>
+
+                    <p
+                      className="
+                        mt-0.5
+                        text-[9px]
+                        text-orange-50/60
+                      "
+                    >
+                      Authentic sacred rituals
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* BOTTOM TRUST */}
+            {/* BOTTOM TRUST TEXT */}
             <div
               className="
                 relative
@@ -692,55 +858,81 @@ export default function LoginPage() {
             >
               <div
                 className="
-                  w-10
-                  h-10
-
-                  rounded-full
-
                   flex
-                  items-center
-                  justify-center
-
-                  bg-white/10
-
-                  border
-                  border-white/15
+                  -space-x-2
                 "
               >
-                <ShieldCheck
-                  size={19}
-                  strokeWidth={2}
+                <div
+                  className="
+                    w-8
+                    h-8
+
+                    rounded-full
+
+                    border-2
+                    border-[#c45719]
+
+                    bg-orange-100
+                  "
+                />
+
+                <div
+                  className="
+                    w-8
+                    h-8
+
+                    rounded-full
+
+                    border-2
+                    border-[#c45719]
+
+                    bg-amber-100
+                  "
+                />
+
+                <div
+                  className="
+                    w-8
+                    h-8
+
+                    rounded-full
+
+                    border-2
+                    border-[#c45719]
+
+                    bg-rose-100
+                  "
                 />
               </div>
 
               <div>
                 <p
                   className="
-                    text-[12px]
-
+                    text-[11px]
                     font-bold
+                    text-white
                   "
                 >
-                  Secure & Private
+                  Trusted spiritual experience
                 </p>
 
                 <p
                   className="
                     mt-0.5
 
-                    text-[10px]
+                    text-[9px]
 
-                    text-orange-100/75
+                    text-orange-50/60
                   "
                 >
-                  Your account is protected
+                  Devotion • Tradition • Trust
                 </p>
               </div>
             </div>
           </div>
 
           {/* =================================================
-              RIGHT AUTH PANEL
+              RIGHT LOGIN / SIGNUP PANEL
           ================================================== */}
           <div
             className="
@@ -751,29 +943,33 @@ export default function LoginPage() {
               justify-center
 
               px-5
+              sm:px-8
+              lg:px-10
+              xl:px-14
+
               py-7
-
-              sm:px-10
               sm:py-10
+              lg:py-12
 
-              lg:px-12
-              xl:px-16
-
-              bg-white/80
+              bg-white/90
             "
           >
             <div
               className="
                 w-full
-                max-w-[420px]
+                max-w-[430px]
               "
             >
               {/* =============================================
-                  MOBILE TOP BAR
+                  MOBILE / IOS TOP BAR
               ============================================= */}
               <div
                 className="
+                  relative
+
                   mb-7
+
+                  min-h-[60px]
 
                   flex
                   items-center
@@ -782,10 +978,14 @@ export default function LoginPage() {
                   lg:hidden
                 "
               >
+                {/* BACK BUTTON */}
                 <Link
                   href="/"
                   aria-label="Back to home"
                   className="
+                    relative
+                    z-30
+
                     w-10
                     h-10
 
@@ -803,6 +1003,9 @@ export default function LoginPage() {
                     text-orange-700
 
                     transition-all
+                    duration-300
+
+                    hover:bg-orange-100
 
                     active:scale-90
                   "
@@ -813,63 +1016,53 @@ export default function LoginPage() {
                   />
                 </Link>
 
+                {/* MOBILE CENTER LOGO */}
                 <Link
                   href="/"
+                  aria-label="Puja Dham Home"
                   className="
                     absolute
+
                     left-1/2
+                    top-1/2
 
                     -translate-x-1/2
+                    -translate-y-1/2
 
-                    text-center
+                    flex
+                    items-center
+                    justify-center
 
-                    whitespace-nowrap
+                    z-20
                   "
                 >
-                  <span
+                  <img
+                    src="/pujadham.png"
+                    alt="Puja Dham Logo"
                     className="
                       block
+                      w-auto
 
-                      text-[18px]
+                      h-[54px]
+                      min-[390px]:h-[60px]
 
-                      font-black
+                      max-w-[170px]
+                      min-[390px]:max-w-[195px]
 
-                      tracking-[0.06em]
-
-                      leading-none
-
-                      text-[#3b2417]
+                      object-contain
                     "
-                    style={{
-                      fontFamily:
-                        'Georgia, "Times New Roman", ui-serif, serif',
-                    }}
-                  >
-                    NAVODAYA PUJA
-                  </span>
-
-                  <span
-                    className="
-                      block
-
-                      mt-1
-
-                      text-[7px]
-
-                      font-bold
-
-                      uppercase
-
-                      tracking-[0.28em]
-
-                      text-orange-600
-                    "
-                  >
-                    Vedic Traditions
-                  </span>
+                  />
                 </Link>
 
-                <div className="w-10 h-10" />
+                {/* RIGHT EMPTY SPACE
+                    Keeps logo perfectly centered */}
+                <div
+                  className="
+                    w-10
+                    h-10
+                  "
+                  aria-hidden="true"
+                />
               </div>
 
               {/* =============================================
@@ -877,81 +1070,93 @@ export default function LoginPage() {
               ============================================= */}
               <div
                 className="
-                  mb-6
-
                   text-center
-                  sm:text-left
+                  lg:text-left
                 "
               >
-                <p
+                <div
                   className="
-                    text-[11px]
+                    inline-flex
 
-                    font-extrabold
+                    items-center
+
+                    gap-2
+
+                    px-3
+                    py-1.5
+
+                    rounded-full
+
+                    bg-orange-50
+
+                    border
+                    border-orange-100
+
+                    text-[10px]
+
+                    font-bold
 
                     uppercase
 
-                    tracking-[0.22em]
+                    tracking-[0.12em]
 
-                    text-orange-600
+                    text-orange-700
                   "
                 >
-                  {activeTab === "login"
-                    ? "Welcome Back"
-                    : "Join Navodaya"}
-                </p>
+                  <Sparkles
+                    size={13}
+                    strokeWidth={2.2}
+                  />
 
-                <h1
+                  Welcome to Puja Dham
+                </div>
+
+                <h2
                   className="
-                    mt-2
+                    mt-4
 
                     text-[30px]
                     sm:text-[34px]
+                    lg:text-[38px]
 
                     font-black
 
-                    tracking-[-0.035em]
-
                     leading-tight
 
-                    text-[#2f211a]
+                    tracking-[-0.035em]
+
+                    text-[#2f1b12]
                   "
-                  style={{
-                    fontFamily:
-                      'Georgia, "Times New Roman", ui-serif, serif',
-                  }}
                 >
                   {activeTab === "login"
-                    ? "Sign in to your account"
+                    ? "Welcome back"
                     : "Create your account"}
-                </h1>
+                </h2>
 
                 <p
                   className="
                     mt-2
 
-                    text-[13px]
-                    sm:text-[14px]
+                    text-[12px]
+                    sm:text-[13px]
 
                     leading-6
 
-                    text-[#806f64]
+                    text-[#8a7060]
                   "
                 >
                   {activeTab === "login"
-                    ? "Continue your spiritual journey with Navodaya Puja."
-                    : "Create an account to manage pujas and bookings."}
+                    ? "Login to manage your puja bookings and spiritual journey."
+                    : "Join Puja Dham and begin your sacred journey with us."}
                 </p>
               </div>
 
               {/* =============================================
-                  TABS
+                  LOGIN / SIGNUP TABS
               ============================================= */}
               <div
                 className="
-                  relative
-
-                  mb-5
+                  mt-6
 
                   grid
                   grid-cols-2
@@ -960,7 +1165,7 @@ export default function LoginPage() {
 
                   rounded-2xl
 
-                  bg-[#fff5ea]
+                  bg-[#fff7ed]
 
                   border
                   border-orange-100
@@ -976,7 +1181,7 @@ export default function LoginPage() {
 
                     rounded-xl
 
-                    text-[13px]
+                    text-[12px]
 
                     font-bold
 
@@ -987,13 +1192,12 @@ export default function LoginPage() {
                       activeTab === "login"
                         ? `
                           bg-white
-
                           text-orange-700
 
-                          shadow-[0_4px_16px_rgba(154,75,22,0.10)]
+                          shadow-[0_6px_20px_rgba(130,62,18,0.10)]
                         `
                         : `
-                          text-[#9a887c]
+                          text-[#9b8171]
 
                           hover:text-orange-700
                         `
@@ -1013,7 +1217,7 @@ export default function LoginPage() {
 
                     rounded-xl
 
-                    text-[13px]
+                    text-[12px]
 
                     font-bold
 
@@ -1024,13 +1228,12 @@ export default function LoginPage() {
                       activeTab === "signup"
                         ? `
                           bg-white
-
                           text-orange-700
 
-                          shadow-[0_4px_16px_rgba(154,75,22,0.10)]
+                          shadow-[0_6px_20px_rgba(130,62,18,0.10)]
                         `
                         : `
-                          text-[#9a887c]
+                          text-[#9b8171]
 
                           hover:text-orange-700
                         `
@@ -1042,25 +1245,27 @@ export default function LoginPage() {
               </div>
 
               {/* =============================================
-                  MESSAGE
+                  MESSAGE BOX
               ============================================= */}
               {message && (
                 <div
                   className={`
-                    mb-5
-
-                    px-4
-                    py-3
-
-                    rounded-2xl
+                    mt-4
 
                     flex
                     items-start
 
                     gap-2.5
 
-                    text-[12px]
-                    sm:text-[13px]
+                    px-4
+                    py-3
+
+                    rounded-2xl
+
+                    border
+
+                    text-[11px]
+                    sm:text-[12px]
 
                     font-semibold
 
@@ -1068,37 +1273,33 @@ export default function LoginPage() {
                       messageType === "success"
                         ? `
                           bg-emerald-50
-
+                          border-emerald-100
                           text-emerald-700
-
-                          border
-                          border-emerald-200
                         `
                         : `
                           bg-red-50
-
-                          text-red-700
-
-                          border
-                          border-red-200
+                          border-red-100
+                          text-red-600
                         `
                     }
                   `}
                 >
                   {messageType === "success" ? (
                     <CheckCircle2
-                      size={18}
+                      size={17}
+                      strokeWidth={2.2}
                       className="
-                        shrink-0
                         mt-0.5
+                        shrink-0
                       "
                     />
                   ) : (
                     <AlertCircle
-                      size={18}
+                      size={17}
+                      strokeWidth={2.2}
                       className="
-                        shrink-0
                         mt-0.5
+                        shrink-0
                       "
                     />
                   )}
@@ -1113,25 +1314,23 @@ export default function LoginPage() {
               {activeTab === "login" && (
                 <form
                   onSubmit={handleLogin}
-                  className="space-y-4"
+                  className="
+                    mt-5
+                    space-y-4
+                  "
                 >
                   {/* EMAIL */}
                   <div>
                     <label
                       className="
-                        block
-
                         mb-2
+                        block
 
                         text-[11px]
 
                         font-bold
 
-                        uppercase
-
-                        tracking-[0.08em]
-
-                        text-[#69584e]
+                        text-[#5c4335]
                       "
                     >
                       Email Address
@@ -1142,6 +1341,8 @@ export default function LoginPage() {
                         size={17}
                         strokeWidth={2}
                         className="
+                          pointer-events-none
+
                           absolute
 
                           left-4
@@ -1149,13 +1350,12 @@ export default function LoginPage() {
 
                           -translate-y-1/2
 
-                          text-[#b39d8e]
+                          text-[#b39a8a]
                         "
                       />
 
                       <input
                         type="email"
-                        placeholder="you@example.com"
                         value={loginForm.email}
                         onChange={(e) =>
                           setLoginForm({
@@ -1163,6 +1363,7 @@ export default function LoginPage() {
                             email: e.target.value,
                           })
                         }
+                        placeholder="Enter your email"
                         autoComplete="email"
                         className="
                           w-full
@@ -1178,23 +1379,22 @@ export default function LoginPage() {
                           pl-11
                           pr-4
 
-                          text-[14px]
+                          text-[13px]
 
-                          text-[#33251d]
-
-                          placeholder:text-[#b6a69b]
+                          text-[#3b2417]
 
                           outline-none
 
                           transition-all
                           duration-300
 
+                          placeholder:text-[#bca99c]
+
+                          focus:border-orange-300
                           focus:bg-white
 
-                          focus:border-orange-400
-
                           focus:ring-4
-                          focus:ring-orange-100
+                          focus:ring-orange-100/70
                         "
                       />
                     </div>
@@ -1217,11 +1417,7 @@ export default function LoginPage() {
 
                           font-bold
 
-                          uppercase
-
-                          tracking-[0.08em]
-
-                          text-[#69584e]
+                          text-[#5c4335]
                         "
                       >
                         Password
@@ -1230,11 +1426,13 @@ export default function LoginPage() {
                       <Link
                         href="/forgot-password"
                         className="
-                          text-[11px]
+                          text-[10px]
 
                           font-bold
 
                           text-orange-600
+
+                          transition-colors
 
                           hover:text-orange-700
                         "
@@ -1248,6 +1446,8 @@ export default function LoginPage() {
                         size={17}
                         strokeWidth={2}
                         className="
+                          pointer-events-none
+
                           absolute
 
                           left-4
@@ -1255,7 +1455,7 @@ export default function LoginPage() {
 
                           -translate-y-1/2
 
-                          text-[#b39d8e]
+                          text-[#b39a8a]
                         "
                       />
 
@@ -1265,7 +1465,6 @@ export default function LoginPage() {
                             ? "text"
                             : "password"
                         }
-                        placeholder="Enter your password"
                         value={loginForm.password}
                         onChange={(e) =>
                           setLoginForm({
@@ -1274,6 +1473,7 @@ export default function LoginPage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Enter your password"
                         autoComplete="current-password"
                         className="
                           w-full
@@ -1289,23 +1489,22 @@ export default function LoginPage() {
                           pl-11
                           pr-12
 
-                          text-[14px]
+                          text-[13px]
 
-                          text-[#33251d]
-
-                          placeholder:text-[#b6a69b]
+                          text-[#3b2417]
 
                           outline-none
 
                           transition-all
                           duration-300
 
+                          placeholder:text-[#bca99c]
+
+                          focus:border-orange-300
                           focus:bg-white
 
-                          focus:border-orange-400
-
                           focus:ring-4
-                          focus:ring-orange-100
+                          focus:ring-orange-100/70
                         "
                       />
 
@@ -1324,22 +1523,38 @@ export default function LoginPage() {
                         className="
                           absolute
 
-                          right-4
+                          right-3
                           top-1/2
 
                           -translate-y-1/2
 
-                          text-[#9f8b7e]
+                          w-9
+                          h-9
 
-                          transition-colors
+                          rounded-full
 
+                          flex
+                          items-center
+                          justify-center
+
+                          text-[#9f8879]
+
+                          transition-all
+
+                          hover:bg-orange-50
                           hover:text-orange-700
                         "
                       >
                         {showPassword ? (
-                          <EyeOff size={18} />
+                          <EyeOff
+                            size={17}
+                            strokeWidth={2}
+                          />
                         ) : (
-                          <Eye size={18} />
+                          <Eye
+                            size={17}
+                            strokeWidth={2}
+                          />
                         )}
                       </button>
                     </div>
@@ -1360,88 +1575,74 @@ export default function LoginPage() {
                       justify-center
 
                       bg-gradient-to-r
-                      from-[#df651b]
+                      from-[#dd641d]
                       to-[#a93d10]
 
-                      text-white
-
-                      text-[14px]
+                      text-[13px]
 
                       font-extrabold
 
-                      shadow-[0_10px_24px_rgba(181,65,14,0.24)]
+                      text-white
+
+                      shadow-[0_12px_30px_rgba(181,65,14,0.24)]
 
                       transition-all
                       duration-300
 
                       hover:-translate-y-0.5
 
-                      hover:shadow-[0_14px_30px_rgba(181,65,14,0.30)]
+                      hover:shadow-[0_16px_36px_rgba(181,65,14,0.30)]
 
                       active:scale-[0.98]
 
+                      disabled:cursor-not-allowed
                       disabled:opacity-60
-                      disabled:pointer-events-none
+                      disabled:hover:translate-y-0
                     "
                   >
                     {loading ? (
                       <span
                         className="
-                          flex
-                          items-center
+                          w-5
+                          h-5
 
-                          gap-2
+                          rounded-full
+
+                          border-2
+                          border-white/40
+                          border-t-white
+
+                          animate-spin
                         "
-                      >
-                        <span
-                          className="
-                            w-4
-                            h-4
-
-                            rounded-full
-
-                            border-2
-                            border-white/40
-                            border-t-white
-
-                            animate-spin
-                          "
-                        />
-
-                        Signing in...
-                      </span>
+                      />
                     ) : (
-                      "Sign In"
+                      "Login"
                     )}
                   </button>
                 </form>
-              )}
-
-              {/* =============================================
+              )}              {/* =============================================
                   SIGNUP FORM
               ============================================= */}
               {activeTab === "signup" && (
                 <form
                   onSubmit={handleSignup}
-                  className="space-y-4"
+                  className="
+                    mt-5
+                    space-y-4
+                  "
                 >
-                  {/* NAME */}
+                  {/* FULL NAME */}
                   <div>
                     <label
                       className="
-                        block
-
                         mb-2
+                        block
 
                         text-[11px]
 
                         font-bold
 
-                        uppercase
-
-                        tracking-[0.08em]
-
-                        text-[#69584e]
+                        text-[#5c4335]
                       "
                     >
                       Full Name
@@ -1452,6 +1653,8 @@ export default function LoginPage() {
                         size={17}
                         strokeWidth={2}
                         className="
+                          pointer-events-none
+
                           absolute
 
                           left-4
@@ -1459,13 +1662,12 @@ export default function LoginPage() {
 
                           -translate-y-1/2
 
-                          text-[#b39d8e]
+                          text-[#b39a8a]
                         "
                       />
 
                       <input
                         type="text"
-                        placeholder="Your full name"
                         value={signupForm.name}
                         onChange={(e) =>
                           setSignupForm({
@@ -1473,6 +1675,7 @@ export default function LoginPage() {
                             name: e.target.value,
                           })
                         }
+                        placeholder="Enter your full name"
                         autoComplete="name"
                         className="
                           w-full
@@ -1488,23 +1691,22 @@ export default function LoginPage() {
                           pl-11
                           pr-4
 
-                          text-[14px]
+                          text-[13px]
 
-                          text-[#33251d]
-
-                          placeholder:text-[#b6a69b]
+                          text-[#3b2417]
 
                           outline-none
 
                           transition-all
                           duration-300
 
+                          placeholder:text-[#bca99c]
+
+                          focus:border-orange-300
                           focus:bg-white
 
-                          focus:border-orange-400
-
                           focus:ring-4
-                          focus:ring-orange-100
+                          focus:ring-orange-100/70
                         "
                       />
                     </div>
@@ -1514,19 +1716,14 @@ export default function LoginPage() {
                   <div>
                     <label
                       className="
-                        block
-
                         mb-2
+                        block
 
                         text-[11px]
 
                         font-bold
 
-                        uppercase
-
-                        tracking-[0.08em]
-
-                        text-[#69584e]
+                        text-[#5c4335]
                       "
                     >
                       Email Address
@@ -1537,6 +1734,8 @@ export default function LoginPage() {
                         size={17}
                         strokeWidth={2}
                         className="
+                          pointer-events-none
+
                           absolute
 
                           left-4
@@ -1544,13 +1743,12 @@ export default function LoginPage() {
 
                           -translate-y-1/2
 
-                          text-[#b39d8e]
+                          text-[#b39a8a]
                         "
                       />
 
                       <input
                         type="email"
-                        placeholder="you@example.com"
                         value={signupForm.email}
                         onChange={(e) =>
                           setSignupForm({
@@ -1558,6 +1756,7 @@ export default function LoginPage() {
                             email: e.target.value,
                           })
                         }
+                        placeholder="Enter your email"
                         autoComplete="email"
                         className="
                           w-full
@@ -1573,23 +1772,22 @@ export default function LoginPage() {
                           pl-11
                           pr-4
 
-                          text-[14px]
+                          text-[13px]
 
-                          text-[#33251d]
-
-                          placeholder:text-[#b6a69b]
+                          text-[#3b2417]
 
                           outline-none
 
                           transition-all
                           duration-300
 
+                          placeholder:text-[#bca99c]
+
+                          focus:border-orange-300
                           focus:bg-white
 
-                          focus:border-orange-400
-
                           focus:ring-4
-                          focus:ring-orange-100
+                          focus:ring-orange-100/70
                         "
                       />
                     </div>
@@ -1599,19 +1797,14 @@ export default function LoginPage() {
                   <div>
                     <label
                       className="
-                        block
-
                         mb-2
+                        block
 
                         text-[11px]
 
                         font-bold
 
-                        uppercase
-
-                        tracking-[0.08em]
-
-                        text-[#69584e]
+                        text-[#5c4335]
                       "
                     >
                       Password
@@ -1622,6 +1815,8 @@ export default function LoginPage() {
                         size={17}
                         strokeWidth={2}
                         className="
+                          pointer-events-none
+
                           absolute
 
                           left-4
@@ -1629,7 +1824,7 @@ export default function LoginPage() {
 
                           -translate-y-1/2
 
-                          text-[#b39d8e]
+                          text-[#b39a8a]
                         "
                       />
 
@@ -1639,7 +1834,6 @@ export default function LoginPage() {
                             ? "text"
                             : "password"
                         }
-                        placeholder="Minimum 6 characters"
                         value={signupForm.password}
                         onChange={(e) =>
                           setSignupForm({
@@ -1648,6 +1842,7 @@ export default function LoginPage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Create a password"
                         autoComplete="new-password"
                         className="
                           w-full
@@ -1663,23 +1858,22 @@ export default function LoginPage() {
                           pl-11
                           pr-12
 
-                          text-[14px]
+                          text-[13px]
 
-                          text-[#33251d]
-
-                          placeholder:text-[#b6a69b]
+                          text-[#3b2417]
 
                           outline-none
 
                           transition-all
                           duration-300
 
+                          placeholder:text-[#bca99c]
+
+                          focus:border-orange-300
                           focus:bg-white
 
-                          focus:border-orange-400
-
                           focus:ring-4
-                          focus:ring-orange-100
+                          focus:ring-orange-100/70
                         "
                       />
 
@@ -1698,20 +1892,38 @@ export default function LoginPage() {
                         className="
                           absolute
 
-                          right-4
+                          right-3
                           top-1/2
 
                           -translate-y-1/2
 
-                          text-[#9f8b7e]
+                          w-9
+                          h-9
 
+                          rounded-full
+
+                          flex
+                          items-center
+                          justify-center
+
+                          text-[#9f8879]
+
+                          transition-all
+
+                          hover:bg-orange-50
                           hover:text-orange-700
                         "
                       >
                         {showPassword ? (
-                          <EyeOff size={18} />
+                          <EyeOff
+                            size={17}
+                            strokeWidth={2}
+                          />
                         ) : (
-                          <Eye size={18} />
+                          <Eye
+                            size={17}
+                            strokeWidth={2}
+                          />
                         )}
                       </button>
                     </div>
@@ -1721,29 +1933,26 @@ export default function LoginPage() {
                   <div>
                     <label
                       className="
-                        block
-
                         mb-2
+                        block
 
                         text-[11px]
 
                         font-bold
 
-                        uppercase
-
-                        tracking-[0.08em]
-
-                        text-[#69584e]
+                        text-[#5c4335]
                       "
                     >
                       Confirm Password
                     </label>
 
                     <div className="relative">
-                      <LockKeyhole
+                      <ShieldCheck
                         size={17}
                         strokeWidth={2}
                         className="
+                          pointer-events-none
+
                           absolute
 
                           left-4
@@ -1751,7 +1960,7 @@ export default function LoginPage() {
 
                           -translate-y-1/2
 
-                          text-[#b39d8e]
+                          text-[#b39a8a]
                         "
                       />
 
@@ -1761,7 +1970,6 @@ export default function LoginPage() {
                             ? "text"
                             : "password"
                         }
-                        placeholder="Repeat your password"
                         value={
                           signupForm.confirmPassword
                         }
@@ -1772,6 +1980,7 @@ export default function LoginPage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Confirm your password"
                         autoComplete="new-password"
                         className="
                           w-full
@@ -1787,23 +1996,22 @@ export default function LoginPage() {
                           pl-11
                           pr-12
 
-                          text-[14px]
+                          text-[13px]
 
-                          text-[#33251d]
-
-                          placeholder:text-[#b6a69b]
+                          text-[#3b2417]
 
                           outline-none
 
                           transition-all
                           duration-300
 
+                          placeholder:text-[#bca99c]
+
+                          focus:border-orange-300
                           focus:bg-white
 
-                          focus:border-orange-400
-
                           focus:ring-4
-                          focus:ring-orange-100
+                          focus:ring-orange-100/70
                         "
                       />
 
@@ -1816,32 +2024,50 @@ export default function LoginPage() {
                         }
                         aria-label={
                           showConfirmPassword
-                            ? "Hide password"
-                            : "Show password"
+                            ? "Hide confirm password"
+                            : "Show confirm password"
                         }
                         className="
                           absolute
 
-                          right-4
+                          right-3
                           top-1/2
 
                           -translate-y-1/2
 
-                          text-[#9f8b7e]
+                          w-9
+                          h-9
 
+                          rounded-full
+
+                          flex
+                          items-center
+                          justify-center
+
+                          text-[#9f8879]
+
+                          transition-all
+
+                          hover:bg-orange-50
                           hover:text-orange-700
                         "
                       >
                         {showConfirmPassword ? (
-                          <EyeOff size={18} />
+                          <EyeOff
+                            size={17}
+                            strokeWidth={2}
+                          />
                         ) : (
-                          <Eye size={18} />
+                          <Eye
+                            size={17}
+                            strokeWidth={2}
+                          />
                         )}
                       </button>
                     </div>
                   </div>
 
-                  {/* CREATE ACCOUNT */}
+                  {/* CREATE ACCOUNT BUTTON */}
                   <button
                     type="submit"
                     disabled={loading}
@@ -1856,54 +2082,46 @@ export default function LoginPage() {
                       justify-center
 
                       bg-gradient-to-r
-                      from-[#df651b]
+                      from-[#dd641d]
                       to-[#a93d10]
 
-                      text-white
-
-                      text-[14px]
+                      text-[13px]
 
                       font-extrabold
 
-                      shadow-[0_10px_24px_rgba(181,65,14,0.24)]
+                      text-white
+
+                      shadow-[0_12px_30px_rgba(181,65,14,0.24)]
 
                       transition-all
                       duration-300
 
                       hover:-translate-y-0.5
 
+                      hover:shadow-[0_16px_36px_rgba(181,65,14,0.30)]
+
                       active:scale-[0.98]
 
+                      disabled:cursor-not-allowed
                       disabled:opacity-60
-                      disabled:pointer-events-none
+                      disabled:hover:translate-y-0
                     "
                   >
                     {loading ? (
                       <span
                         className="
-                          flex
-                          items-center
+                          w-5
+                          h-5
 
-                          gap-2
+                          rounded-full
+
+                          border-2
+                          border-white/40
+                          border-t-white
+
+                          animate-spin
                         "
-                      >
-                        <span
-                          className="
-                            w-4
-                            h-4
-
-                            rounded-full
-
-                            border-2
-                            border-white/40
-                            border-t-white
-
-                            animate-spin
-                          "
-                        />
-
-                        Creating account...
-                      </span>
+                      />
                     ) : (
                       "Create Account"
                     )}
@@ -1926,10 +2144,9 @@ export default function LoginPage() {
               >
                 <div
                   className="
-                    flex-1
                     h-px
-
-                    bg-[#eadfd7]
+                    flex-1
+                    bg-[#eee2da]
                   "
                 />
 
@@ -1937,13 +2154,13 @@ export default function LoginPage() {
                   className="
                     text-[10px]
 
-                    font-bold
+                    font-semibold
 
                     uppercase
 
-                    tracking-[0.16em]
+                    tracking-[0.12em]
 
-                    text-[#aa988c]
+                    text-[#aa9486]
                   "
                 >
                   Or continue with
@@ -1951,10 +2168,9 @@ export default function LoginPage() {
 
                 <div
                   className="
-                    flex-1
                     h-px
-
-                    bg-[#eadfd7]
+                    flex-1
+                    bg-[#eee2da]
                   "
                 />
               </div>
@@ -1972,78 +2188,80 @@ export default function LoginPage() {
 
                   rounded-2xl
 
-                  border
-                  border-[#e4d8cf]
-
-                  bg-white
-
                   flex
                   items-center
                   justify-center
 
                   gap-3
 
-                  text-[13px]
+                  border
+                  border-[#e8ddd5]
+
+                  bg-white
+
+                  text-[12px]
 
                   font-bold
 
-                  text-[#49382e]
+                  text-[#4b3529]
 
-                  shadow-[0_4px_16px_rgba(68,42,25,0.04)]
+                  shadow-[0_6px_20px_rgba(70,40,20,0.05)]
 
                   transition-all
                   duration-300
 
-                  hover:bg-[#fffaf6]
-
+                  hover:-translate-y-0.5
                   hover:border-orange-200
+                  hover:bg-orange-50/40
 
                   active:scale-[0.98]
 
+                  disabled:cursor-not-allowed
                   disabled:opacity-60
                 "
               >
                 {googleLoading ? (
-                  <>
-                    <span
-                      className="
-                        w-5
-                        h-5
+                  <span
+                    className="
+                      w-5
+                      h-5
 
-                        rounded-full
+                      rounded-full
 
-                        border-2
-                        border-gray-200
-                        border-t-orange-600
+                      border-2
+                      border-gray-200
+                      border-t-orange-600
 
-                        animate-spin
-                      "
-                    />
-
-                    Connecting...
-                  </>
+                      animate-spin
+                    "
+                  />
                 ) : (
                   <>
+                    {/* GOOGLE LOGO */}
                     <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 18 18"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         fill="#4285F4"
-                        d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.85 2.08-1.81 2.72v2.26h2.92c1.71-1.57 2.69-3.89 2.69-6.62z"
+                        d="M21.35 12.2c0-.74-.07-1.45-.19-2.13H12v4.03h5.24a4.48 4.48 0 0 1-1.94 2.94v2.62h3.14c1.84-1.69 2.91-4.19 2.91-7.46Z"
                       />
+
                       <path
                         fill="#34A853"
-                        d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33C2.44 15.98 5.48 18 9 18z"
+                        d="M12 21.7c2.62 0 4.82-.87 6.43-2.35l-3.14-2.62c-.87.58-1.98.93-3.29.93-2.53 0-4.67-1.71-5.44-4.01H3.32v2.7A9.7 9.7 0 0 0 12 21.7Z"
                       />
+
                       <path
                         fill="#FBBC05"
-                        d="M3.97 10.71c-.18-.54-.28-1.11-.28-1.71s.1-1.17.28-1.71V4.96H.96C.35 6.18 0 7.55 0 9s.35 2.82.96 4.04l3.01-2.33z"
+                        d="M6.56 13.65A5.82 5.82 0 0 1 6.25 12c0-.57.1-1.12.31-1.65v-2.7H3.32A9.7 9.7 0 0 0 2.3 12c0 1.56.37 3.04 1.02 4.35l3.24-2.7Z"
                       />
+
                       <path
                         fill="#EA4335"
-                        d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.96l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"
+                        d="M12 6.34c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.82 3.43 14.62 2.3 12 2.3a9.7 9.7 0 0 0-8.68 5.35l3.24 2.7c.77-2.3 2.91-4.01 5.44-4.01Z"
                       />
                     </svg>
 
@@ -2051,6 +2269,52 @@ export default function LoginPage() {
                   </>
                 )}
               </button>
+
+              {/* =============================================
+                  SWITCH LOGIN / SIGNUP TEXT
+              ============================================= */}
+              <p
+                className="
+                  mt-6
+
+                  text-center
+
+                  text-[11px]
+                  sm:text-[12px]
+
+                  text-[#927b6d]
+                "
+              >
+                {activeTab === "login"
+                  ? "Don't have an account?"
+                  : "Already have an account?"}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    changeTab(
+                      activeTab === "login"
+                        ? "signup"
+                        : "login"
+                    )
+                  }
+                  className="
+                    ml-1.5
+
+                    font-extrabold
+
+                    text-orange-600
+
+                    transition-colors
+
+                    hover:text-orange-700
+                  "
+                >
+                  {activeTab === "login"
+                    ? "Create Account"
+                    : "Login"}
+                </button>
+              </p>
 
               {/* =============================================
                   SECURITY NOTE
@@ -2065,48 +2329,72 @@ export default function LoginPage() {
 
                   gap-2
 
-                  text-[10px]
-                  sm:text-[11px]
+                  text-[9px]
+                  sm:text-[10px]
 
                   font-medium
 
-                  text-[#9d8b7f]
+                  text-[#ad988b]
                 "
               >
                 <ShieldCheck
-                  size={14}
+                  size={13}
                   strokeWidth={2}
-                  className="text-orange-600"
+                  className="text-orange-500"
                 />
 
-                Secure access by Navodaya Puja
+                Your account information is securely protected.
               </div>
 
-              {/* MOBILE HOME LINK */}
-              <div
+              {/* =============================================
+                  TERMS / PRIVACY NOTE
+              ============================================= */}
+              <p
                 className="
-                  mt-5
+                  mt-4
 
                   text-center
 
-                  lg:hidden
+                  text-[9px]
+                  sm:text-[10px]
+
+                  leading-5
+
+                  text-[#b09b8e]
                 "
               >
+                By continuing, you agree to Puja Dham&apos;s{" "}
                 <Link
-                  href="/"
+                  href="/terms"
                   className="
-                    text-[11px]
+                    font-semibold
+                    text-orange-600
 
-                    font-bold
+                    transition-colors
 
-                    text-orange-700
-
-                    hover:underline
+                    hover:text-orange-700
                   "
                 >
-                  Continue without login
+                  Terms of Service
                 </Link>
-              </div>
+
+                {" "}and{" "}
+
+                <Link
+                  href="/privacy"
+                  className="
+                    font-semibold
+                    text-orange-600
+
+                    transition-colors
+
+                    hover:text-orange-700
+                  "
+                >
+                  Privacy Policy
+                </Link>
+                .
+              </p>
             </div>
           </div>
         </div>
