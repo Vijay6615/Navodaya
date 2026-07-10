@@ -967,8 +967,8 @@ export default function Navbar() {
 
                     {/* DOWNLOAD APP */}
                     <a
-                      href="/downloads/navodaya-puja.apk"
-                      download="navodaya-puja.apk"
+                      href="/downloads/puja-dham.apk"
+                      download="puja-dham.apk"
                       onClick={() =>
                         setSettingsOpen(false)
                       }

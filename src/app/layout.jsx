@@ -3,7 +3,7 @@ import Providers from "./providers";
 import AppShell from "./components/AppShell";
 
 export const metadata = {
-  title: "Navodaya Puja",
+  title: "Puja Dham",
   description: "Puja booking website",
 };
 

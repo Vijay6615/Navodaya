@@ -255,7 +255,7 @@ export default function SitaRamCounterPage() {
             </p>
 
             <p className="text-[10px] tracking-[0.18em] text-orange-600 font-bold uppercase">
-              Navodaya Puja
+              Puja Dham
             </p>
           </div>
 
