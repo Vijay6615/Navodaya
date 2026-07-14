@@ -275,7 +275,7 @@ export default function Footer() {
                     "
                   />
 
-                  About Panditji
+                  About us
                 </Link>
               </li>
 
@@ -337,7 +337,7 @@ export default function Footer() {
                     "
                   />
 
-                  Gallery
+                Gallery
                 </Link>
               </li>
             </ul>
@@ -532,7 +532,7 @@ export default function Footer() {
                   </span>
 
                   <span className="pt-2">
-                    +91 95949 43609
+                    Click to call
                   </span>
                 </a>
               </li>
@@ -589,7 +589,7 @@ export default function Footer() {
                       break-all
                     "
                   >
-                    navodayapuja@gmail.com
+                    pujadham@gmail.com
                   </span>
                 </a>
               </li>
@@ -637,7 +637,7 @@ export default function Footer() {
                     leading-5
                   "
                 >
-                  123 Temple Street,
+                  A/101,102, Shree Krishna Darshan, Behind Anthony School, Nagindas, NSP(E)
                   <br />
                   Mumbai, India
                 </span>
@@ -697,30 +697,32 @@ export default function Footer() {
           </p>
 
           <p
-            className="
-              flex
-              items-center
-
-              gap-1.5
-
-              text-[10px]
-              sm:text-[11px]
-
-              text-orange-50/40
-            "
-          >
-            Made with
-
-            <Heart
-              size={12}
-              className="
-                fill-orange-500
-                text-orange-500
-              "
-            />
-
-            for divine traditions
-          </p>
+  className="
+    text-[10px]
+    sm:text-[11px]
+    text-orange-50/40
+  "
+>
+  Designed & Developed by{" "}
+  <a
+    href="https://vijayshukla-portfolio.vercel.app"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      text-blue-400
+      underline
+      underline-offset-4
+      decoration-blue-400
+      hover:text-blue-300
+      hover:decoration-blue-300
+      transition-colors
+      duration-300
+      font-medium
+    "
+  >
+    Vijay Shukla
+  </a>
+</p>
         </div>
       </div>
 

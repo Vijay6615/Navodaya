@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Hero from "./components/Hero";
 import FrostCard from "./components/FrostCard";
 import ConsultHero from "./components/ConsultHero";
-import Testimonials from "./components/Testimonials";
+// import Testimonials from "./components/Testimonials";
 
 export default function Page() {
 
@@ -40,9 +40,9 @@ useEffect(() => {
         <ConsultHero />
       </section>
 
-      <section className="fade-up">
+      {/* <section className="fade-up">
         <Testimonials />
-      </section>
+      </section> */}
     </>
   );
 }

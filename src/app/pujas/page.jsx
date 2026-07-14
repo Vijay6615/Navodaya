@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { PUJAS } from "../pujasData";
 import { useRouter } from "next/navigation";
+import { Cormorant_Garamond } from "next/font/google";
 import {
   Search,
   Check,
@@ -11,6 +13,11 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+
+const displayFont = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
 
 const CATEGORY_LIST = [
   "All",
@@ -22,11 +29,19 @@ const CATEGORY_LIST = [
 
 export default function PujasPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const [selectedCategories, setSelectedCategories] =
     useState([]);
 
   const [search, setSearch] = useState("");
+  const [pageReady, setPageReady] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setPageReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   /* =========================================================
      CATEGORY TOGGLE
@@ -67,6 +82,27 @@ export default function PujasPage() {
     );
   });
 
+  const requireLogin = (callback) => {
+    if (!session) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    callback();
+  };
+
+  const openPuja = (puja) => {
+    requireLogin(() => router.push(`/pujas/${puja.slug}`));
+  };
+
+  const bookPuja = (puja) => {
+  requireLogin(() =>
+    router.push(
+      `/booking?puja=${encodeURIComponent(puja.slug)}`
+    )
+  );
+};
+
   const sectionLabel =
     selectedCategories.length === 0
       ? "All services"
@@ -77,7 +113,7 @@ export default function PujasPage() {
       className="
         min-h-screen
 
-        bg-[#FFF8F4]
+        bg-white
 
         pb-28
         md:pb-16
@@ -89,170 +125,47 @@ export default function PujasPage() {
           PAGE CONTAINER
       ====================================================== */}
       <div
-        className="
-          w-full
+        className={`
+        w-full
+        max-w-[1180px]
+        mx-auto
 
-          max-w-[1180px]
+        px-4
+        sm:px-5
+        md:px-6
+        lg:px-8
 
-          mx-auto
+        transition-all
+        duration-700
+        ease-out
 
-          px-4
-          sm:px-5
-          md:px-6
-          lg:px-8
-        "
+        ${
+          pageReady
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-4"
+        }
+      `}
       >
-        {/* =================================================
-            TOP BAR
-        ================================================== */}
-        <div
-          className="
-            pt-1
-            md:pt-8
-            lg:pt-10
-
-            flex
-            items-center
-            justify-between
-
-            gap-4
-          "
-        >
-          <div>
-            {/* DESKTOP SMALL LABEL */}
-            <div
-              className="
-                hidden
-                md:inline-flex
-
-                items-center
-
-                gap-2
-
-                mb-2
-
-                px-3
-                py-1.5
-
-                rounded-full
-
-                bg-orange-100/70
-
-                border
-                border-orange-200/70
-
-                text-[10px]
-
-                font-bold
-
-                uppercase
-
-                tracking-[0.14em]
-
-                text-orange-700
-              "
-            >
-              <Sparkles
-                size={12}
-                strokeWidth={2.2}
-              />
-
-              Sacred Services
-            </div>
-
-            <h1
-              className="
-                text-[22px]
-                sm:text-[24px]
-                md:text-[32px]
-                lg:text-[36px]
-
-                font-bold
-                md:font-black
-
-                tracking-tight
-
-                text-gray-900
-
-                leading-tight
-              "
-            >
-              पूजा सेवाएं
-            </h1>
-
-            <p
-              className="
-                mt-0.5
-                md:mt-1.5
-
-                text-xs
-                md:text-sm
-
-                text-[#8a7060]
-              "
-            >
-              {filteredPujas.length} services available
-            </p>
-          </div>
-
-          {/* PROFILE BADGE */}
-          <div
-            className="
-              w-9
-              h-9
-
-              md:w-11
-              md:h-11
-
-              rounded-full
-
-              bg-gradient-to-br
-              from-orange-500
-              to-orange-700
-
-              flex
-              items-center
-              justify-center
-
-              text-white
-
-              text-sm
-              md:text-[15px]
-
-              font-bold
-
-              shadow-md
-
-              flex-shrink-0
-
-              ring-4
-              ring-orange-100/70
-            "
-          >
-            PD
-          </div>
-        </div>
-
         {/* =================================================
             DESKTOP SEARCH + FILTER AREA
         ================================================== */}
         <div
           className="
-            mt-3
-            md:mt-7
+            mt-8
+            md:mt-12
 
             md:p-4
 
             md:rounded-[22px]
 
-            md:bg-white/75
+            md:bg-white
 
             md:border
             md:border-black/[0.05]
 
             md:shadow-[0_10px_35px_rgba(83,45,20,0.06)]
 
-            md:backdrop-blur-xl
+            
           "
         >
           {/* SEARCH BAR */}
@@ -287,13 +200,16 @@ export default function PujasPage() {
 
                 shadow-sm
 
-                focus-within:ring-2
-                focus-within:ring-orange-300
-
-                focus-within:border-orange-200
-
                 transition-all
-                duration-300
+duration-500
+ease-out
+
+focus-within:scale-[1.015]
+focus-within:shadow-[0_14px_40px_rgba(168,68,27,0.12)]
+
+focus-within:ring-2
+focus-within:ring-orange-300
+focus-within:border-orange-200
               "
             >
               <Search
@@ -546,13 +462,12 @@ export default function PujasPage() {
           {filteredPujas.map((puja, index) => (
             <article
               key={puja.slug || index}
-              onClick={() =>
-                router.push(
-                  `/pujas/${puja.slug}`
-                )
-              }
+              onClick={() => openPuja(puja)}
+              style={{ animationDelay: `${Math.min(index * 55, 550)}ms` }}
               className="
                 group
+
+                puja-premium-card
 
                 relative
 
@@ -581,9 +496,9 @@ export default function PujasPage() {
 
                 active:scale-[0.97]
 
-                md:hover:-translate-y-2
+                md:hover:-translate-y-1.5 md:hover:scale-[1.015]
 
-                md:hover:shadow-[0_20px_45px_rgba(76,40,18,0.14)]
+                md:hover:shadow-[0_24px_60px_rgba(76,40,18,0.13)]
 
                 md:hover:border-orange-200/80
               "
@@ -796,56 +711,17 @@ export default function PujasPage() {
                   {puja.shortDescription}
                 </p>
 
-                {/* PRICE */}
-                <div
-                  className="
-                    flex
-                    items-center
-                    justify-between
+                {/* ONLINE PRICE — DISCOUNT STYLE */}
+                <div className="mb-[10px] md:mb-3">
+                  <div className="flex flex-wrap items-baseline gap-2">
+                    <span className="text-[16px] md:text-[19px] font-extrabold tracking-tight text-[#a8441b]">
+                      {puja.onlinePrice}
+                    </span>
 
-                    gap-2
-
-                    mb-[10px]
-                    md:mb-3
-                  "
-                >
-                  <p
-                    className="
-                      text-[15px]
-                      md:text-[17px]
-
-                      font-bold
-                      md:font-extrabold
-
-                      text-orange-600
-
-                      tracking-tight
-                    "
-                  >
-                    {puja.price}
-                  </p>
-
-                  <ArrowRight
-                    size={16}
-                    strokeWidth={2}
-
-                    className="
-                      hidden
-                      md:block
-
-                      text-orange-400
-
-                      opacity-0
-
-                      -translate-x-2
-
-                      transition-all
-                      duration-300
-
-                      group-hover:opacity-100
-                      group-hover:translate-x-0
-                    "
-                  />
+                    <span className="text-[11px] md:text-[12px] font-medium text-gray-400 line-through decoration-red-400 decoration-[1.5px]">
+                      {puja.offlinePrice}
+                    </span>
+                  </div>
                 </div>
 
                 {/* BOOK NOW */}
@@ -854,11 +730,7 @@ export default function PujasPage() {
                   onClick={(e) => {
                     e.stopPropagation();
 
-                    router.push(
-                      `/booking?puja=${encodeURIComponent(
-                        puja.name
-                      )}`
-                    );
+                    bookPuja(puja);
                   }}
                   className="
                     w-full
@@ -868,12 +740,12 @@ export default function PujasPage() {
 
                     rounded-full
 
-                    bg-white
+                    bg-[#fff8f2]
 
-                    text-yellow-800
+                    text-[#a8441b]
 
                     border
-                    border-emerald-200
+                    border-orange-200
 
                     text-[12px]
                     md:text-[12px]
@@ -889,9 +761,11 @@ export default function PujasPage() {
                     items-center
                     justify-center
 
-                    hover:bg-orange-700
-                    hover:border-orange-700
+                    hover:bg-[#a8441b]
+                    hover:border-[#a8441b]
                     hover:text-white
+                    hover:shadow-[0_10px_24px_rgba(168,68,27,0.20)]
+                    md:group-hover:translate-y-[-1px]
 
                     active:scale-95
                   "
@@ -1000,6 +874,260 @@ export default function PujasPage() {
           </div>
         )}
       </div>
+
+      {showLoginModal && (
+        <div
+          className="login-drawer-backdrop fixed inset-0 z-[9999] bg-[#24140d]/35 backdrop-blur-[5px]"
+          onClick={() => setShowLoginModal(false)}
+        >
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="login-required-title"
+            onClick={(e) => e.stopPropagation()}
+            className="
+              login-auth-drawer
+              relative
+              flex
+              min-h-full
+              w-full
+              max-w-[590px]
+              flex-col
+              overflow-hidden
+              border-r
+              border-[#eee8e2]
+              bg-[#fffdfb]
+              shadow-[35px_0_100px_rgba(43,20,9,0.22)]
+              sm:w-[88%]
+              lg:w-1/2
+              lg:max-w-[720px]
+            "
+          >
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              <div className="absolute -left-36 -top-36 h-[430px] w-[430px] rounded-full bg-[#fff2e9] blur-[110px]" />
+              <div className="absolute -bottom-40 -right-28 h-[470px] w-[470px] rounded-full bg-[#f8eee8] blur-[120px]" />
+            </div>
+
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setShowLoginModal(false)}
+              className="
+                absolute
+                right-5
+                top-5
+                z-30
+                flex
+                h-10
+                w-10
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-[#e9ddd6]
+                bg-white/90
+                text-[#8a7060]
+                shadow-sm
+                backdrop-blur-md
+                transition-all
+                duration-300
+                hover:rotate-90
+                hover:border-[#a8441b]/30
+                hover:text-[#a8441b]
+                active:scale-90
+                sm:right-7
+                sm:top-7
+              "
+            >
+              <X size={18} />
+            </button>
+
+            <div className="relative flex flex-1 flex-col px-6 pb-8 pt-7 sm:px-10 sm:pb-10 sm:pt-9 lg:px-14">
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => router.push("/")}
+                  className="group"
+                  aria-label="Go to home"
+                >
+                  <img
+                    src="/pujadham1.png"
+                    alt="Puja Dham"
+                    className="h-[88px] w-auto object-contain transition-transform duration-500 group-hover:scale-[1.035] sm:h-[104px]"
+                  />
+                </button>
+              </div>
+
+              <div className="login-drawer-content my-auto py-10 text-center sm:py-12">
+                <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#eadbd2] bg-white/80 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-[#a8441b] shadow-[0_8px_24px_rgba(83,45,20,0.04)]">
+                  <Sparkles size={13} strokeWidth={1.7} />
+                  Sacred booking
+                </div>
+
+                <h2
+                  id="login-required-title"
+                  className={`${displayFont.className} mx-auto mt-7 max-w-[500px] text-[45px] font-semibold leading-[0.92] tracking-[-0.035em] text-[#28221f] sm:text-[58px] lg:text-[66px]`}
+                >
+                  Continue your
+                  <span className="block text-[#a8441b]">
+                    sacred journey.
+                  </span>
+                </h2>
+
+                <p className="mx-auto mt-6 max-w-[430px] text-[14px] leading-7 text-[#756a63] sm:text-[15px]">
+                  Login to explore puja details and continue your booking.
+                  Your sacred bookings and updates stay connected to your
+                  account.
+                </p>
+
+                <div className="mx-auto mt-10 w-full max-w-[430px] space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/login")}
+                    className="
+                      group
+                      flex
+                      h-[54px]
+                      w-full
+                      items-center
+                      justify-center
+                      gap-3
+                      rounded-full
+                      bg-[#431407]
+                      px-7
+                      text-[13px]
+                      font-bold
+                      text-white
+                      shadow-[0_16px_35px_rgba(67,20,7,0.20)]
+                      transition-all
+                      duration-300
+                      hover:-translate-y-1
+                      hover:bg-[#5b1d0b]
+                      hover:shadow-[0_22px_45px_rgba(67,20,7,0.25)]
+                      active:scale-[0.98]
+                    "
+                  >
+                    Login to continue
+                    <ArrowRight
+                      size={16}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => router.push("/register")}
+                    className="
+                      h-[54px]
+                      w-full
+                      rounded-full
+                      border
+                      border-[#dfcec4]
+                      bg-white
+                      px-7
+                      text-[13px]
+                      font-bold
+                      text-[#a8441b]
+                      shadow-[0_8px_24px_rgba(83,45,20,0.04)]
+                      transition-all
+                      duration-300
+                      hover:-translate-y-1
+                      hover:border-[#a8441b]/45
+                      hover:bg-[#fff8f3]
+                      hover:shadow-[0_14px_30px_rgba(83,45,20,0.08)]
+                      active:scale-[0.98]
+                    "
+                  >
+                    Create an account
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginModal(false)}
+                    className="w-full py-3 text-[12px] font-semibold text-[#9a8a81] transition-colors duration-300 hover:text-[#431407]"
+                  >
+                    Maybe later
+                  </button>
+                </div>
+              </div>
+
+              <div className="border-t border-[#eee8e2] pt-5 text-center">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.19em] text-[#9a8a81] sm:text-[10px]">
+                  Secure account · Personal bookings · Puja updates
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      <style>{`
+        .puja-premium-card {
+          opacity: 0;
+          transform: translateY(26px) scale(0.985);
+          animation: pujaPremiumReveal 760ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          will-change: transform, opacity;
+        }
+
+        @keyframes pujaPremiumReveal {
+          0% {
+            opacity: 0;
+            transform: translateY(26px) scale(0.985);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .login-drawer-backdrop {
+          animation: loginDrawerBackdropIn 320ms ease-out both;
+        }
+
+        .login-auth-drawer {
+          animation: loginDrawerIn 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          will-change: transform;
+        }
+
+        .login-drawer-content {
+          animation: loginDrawerContentIn 800ms 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes loginDrawerBackdropIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes loginDrawerIn {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes loginDrawerContentIn {
+          from {
+            opacity: 0;
+            transform: translateX(-28px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .puja-premium-card,
+          .login-auth-drawer,
+          .login-drawer-content {
+            opacity: 1;
+            transform: none;
+            animation: none;
+          }
+        }
+      `}</style>
 </section>
   );
 }

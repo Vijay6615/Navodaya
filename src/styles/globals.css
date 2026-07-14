@@ -63,6 +63,21 @@ button {
 .animate-zoom      { animation: zoom      0.25s ease-out; }
 .animate-slide     { animation: slide     0.25s ease-out; }
 
+.marquee-track {
+  animation: infiniteMarquee 28s linear infinite;
+  will-change: transform;
+}
+
+@keyframes infiniteMarquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* ─── SCROLL FADE ─── */
 .fade-up {
   opacity: 0;
