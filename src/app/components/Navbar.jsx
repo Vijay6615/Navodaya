@@ -31,8 +31,13 @@ export default function Navbar() {
   const path = usePathname();
   const { data: session, status } = useSession();
 
+const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
 const isAdmin =
-  session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  status === "authenticated" &&
+  !!session?.user?.email &&
+  !!adminEmail &&
+  session.user.email.toLowerCase() === adminEmail.toLowerCase();
 
   const links = [
     { label: "Home", href: "/" },
