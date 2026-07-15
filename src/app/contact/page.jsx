@@ -21,6 +21,7 @@ const displayFont = Cormorant_Garamond({
 });
 
 const pujas = [
+  "Others",
   "Ganesh Puja",
   "Satyanarayan Puja",
   "Rudrabhishek",

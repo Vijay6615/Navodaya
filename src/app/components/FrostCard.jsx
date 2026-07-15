@@ -232,20 +232,8 @@ export default function MonthlyEventsSection() {
   // ================= BOOK BUTTON =================
 
   const openBooking = (event) => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (!session?.user) {
-      setShowLogin(true);
-
-      return;
-    }
-
     setSelectedEvent(event);
-
     setSuccess(false);
-
     setError("");
   };
 
@@ -267,6 +255,16 @@ export default function MonthlyEventsSection() {
     e.preventDefault();
 
     if (!selectedEvent) {
+      return;
+    }
+
+    if (status === "loading") {
+      return;
+    }
+
+    if (!session?.user) {
+      setSelectedEvent(null);
+      setShowLogin(true);
       return;
     }
 
@@ -632,7 +630,7 @@ export default function MonthlyEventsSection() {
               <button
                 type="button"
                 onClick={() =>
-                  router.push("/register")
+                  router.push("/login")
                 }
                 className="mt-3 h-[54px] w-full border border-[#ddd3cd] bg-white text-[11px] font-semibold uppercase tracking-[0.15em] text-[#6c4c3d] transition hover:bg-[#fff8f4]"
               >

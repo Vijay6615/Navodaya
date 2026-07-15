@@ -82,25 +82,12 @@ export default function PujasPage() {
     );
   });
 
-  const requireLogin = (callback) => {
-    if (!session) {
-      setShowLoginModal(true);
-      return;
-    }
-
-    callback();
-  };
-
   const openPuja = (puja) => {
-    requireLogin(() => router.push(`/pujas/${puja.slug}`));
-  };
+  router.push(`/pujas/${puja.slug}`);
+};
 
-  const bookPuja = (puja) => {
-  requireLogin(() =>
-    router.push(
-      `/booking?puja=${encodeURIComponent(puja.slug)}`
-    )
-  );
+const bookPuja = (puja) => {
+  router.push(`/pujas/${puja.slug}`);
 };
 
   const sectionLabel =

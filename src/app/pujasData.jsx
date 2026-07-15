@@ -167,7 +167,7 @@ export const PUJAS = [
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
-    image: "/images/shanishanti.jpg",
+    image: "/images/Shanishanti.jpg",
   },
   {
     id: "13",
