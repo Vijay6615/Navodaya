@@ -7,558 +7,590 @@ export const PUJAS = [
     name: "Ganesh Puja",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Invoke the blessings of Lord Ganesha to remove obstacles and welcome success, wisdom, and prosperity into every new beginning.",
+    description:
+      "Ganesh Puja is one of the most auspicious Vedic rituals dedicated to Lord Ganesha, the remover of obstacles and the deity of wisdom, intellect, and prosperity. This sacred puja is traditionally performed before starting a new business, entering a new home, beginning education, marriage, or any important life event. Through Vedic mantras, offerings, and prayers, devotees seek Lord Ganesha's blessings for success, peace, good fortune, and protection from negative influences. Performing Ganesh Puja with proper rituals helps create a positive environment, removes hurdles from personal and professional life, and brings happiness, stability, and spiritual growth.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/ganesh-puja.jpg",
-  },
-  {
+},
+{
     id: "2",
     slug: "laghrudra-abhishek",
     name: "Laghrudra Abhishek",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful Lord Shiva Abhishek for health, prosperity, peace, and protection from negative energies.",
+    description:
+      "Laghrudra Abhishek is a highly revered Vedic ritual dedicated to Lord Shiva. It involves the chanting of Sri Rudram along with the sacred Abhishek using milk, curd, honey, ghee, sugar, holy water, and other auspicious offerings. This puja is believed to remove planetary afflictions, negative karma, and obstacles while promoting good health, prosperity, inner peace, and spiritual upliftment. It is commonly performed for family welfare, career growth, business success, and overall well-being. The powerful vibrations created through Rudra chanting purify the surroundings and invoke Lord Shiva's divine blessings.",
     onlinePrice: "₹ 25,000",
     offlinePrice: "₹ 41,000",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "4–5 hours",
     image: "/images/LaghrudraAbhishek.jpg",
-  },
-  {
+},
+{
     id: "3",
     slug: "vastu-shanti-puja",
     name: "Vastu Shanti Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Traditional Vastu Puja to remove Vastu doshas and invite harmony, prosperity, and positive energy.",
+    description:
+      "Vastu Shanti Puja is performed to eliminate Vastu defects and balance the energies of a home, office, shop, or commercial property. According to Vedic traditions, imbalances in Vastu can affect health, relationships, finances, and peace of mind. This sacred ceremony invokes various deities and the five elements to purify the space and remove negative influences. It is highly recommended before entering a new property, after renovations, or when experiencing repeated difficulties. The puja helps create a spiritually vibrant atmosphere filled with happiness, prosperity, and positive vibrations.",
     onlinePrice: "₹ 11,000",
     offlinePrice: "₹ 31,000",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/vastu-shanti-puja.png",
-  },
-  {
+},
+{
     id: "4",
     slug: "bhoomi-puja",
     name: "Bhoomi Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred land worship performed before construction to seek divine blessings and success.",
+    description:
+      "Bhoomi Puja is an important Vedic ritual conducted before beginning the construction of a house, office, factory, or any building. Mother Earth is worshipped with gratitude and respect while seeking forgiveness for disturbing the land during construction. Lord Ganesha, Vastu Devta, and other deities are invoked to bless the project with success, safety, prosperity, and freedom from obstacles. Performing Bhoomi Puja is believed to ensure smooth construction, financial stability, and long-lasting peace and happiness for the future occupants.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/bhumipuja.png",
-  },
-  {
+},
+{
     id: "5",
     slug: "satyanarayan-puja",
     name: "Satyanarayan Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred worship of Lord Vishnu for family happiness, prosperity, and fulfillment of wishes.",
+    description:
+      "Satyanarayan Puja is one of the most widely performed Vedic rituals dedicated to Lord Vishnu in his Satyanarayan form. It is traditionally conducted during housewarming ceremonies, marriages, birthdays, festivals, business inaugurations, or after achieving important milestones. The puja includes the recitation of the Satyanarayan Katha, devotional prayers, and offerings to seek divine blessings for prosperity, family harmony, financial growth, and fulfillment of desires. Performing this sacred ceremony with devotion is believed to remove difficulties, bring peace, and ensure lasting happiness for the entire family.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,500",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/satyanarayan.jpg",
-  },
-  {
+},
+{
     id: "6",
     slug: "lakshmi-puja",
     name: "Lakshmi Prapti Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Invoke Goddess Lakshmi for wealth, abundance, financial stability, and lasting prosperity.",
+    description:
+      "Lakshmi Prapti Puja is dedicated to Goddess Mahalakshmi, the divine goddess of wealth, fortune, prosperity, and abundance. This sacred ritual is performed to remove financial obstacles, attract prosperity, increase business growth, and bless the household with happiness and success. It is especially beneficial during Diwali, Akshaya Tritiya, Fridays, or before starting a new business or investment. Through Vedic mantras, offerings, and prayers, devotees seek Goddess Lakshmi's blessings for continuous wealth, peace, good fortune, and spiritual abundance.",
     onlinePrice: "₹ 2,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/laxmi.jpg",
-  },
-  {
+},
+{
     id: "7",
     slug: "shiv-puja",
     name: "Shiv Puja / Rudrabhishek",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred worship of Lord Shiva for health, protection, peace, and spiritual growth.",
+    description:
+      "Shiv Puja, also known as Rudrabhishek, is a highly auspicious Vedic ritual dedicated to Lord Shiva. The ceremony includes Abhishek with milk, honey, curd, ghee, holy water, Bilva leaves, and continuous chanting of powerful Shiva mantras. This puja removes negative energies, grants inner peace, improves health, fulfills wishes, and protects devotees from hardships. It is especially recommended during Mondays, Shravan month, Mahashivratri, and important life events to receive Lord Shiva's divine blessings.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/rudraabhishek.jpg",
-  },
-  {
+},
+{
     id: "8",
     slug: "durga-puja",
     name: "Durga Puja",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Seek the blessings of Goddess Durga for courage, protection, victory, and family well-being.",
+    description:
+      "Durga Puja is performed to worship Goddess Durga, the divine embodiment of strength, protection, and victory over evil. This sacred ceremony invokes the blessings of the Divine Mother for courage, prosperity, family harmony, good health, and protection from negative energies. Devotees perform this puja during Navratri, Durga Ashtami, or whenever seeking divine guidance and protection. The rituals include chanting Durga Saptashati, offering flowers, fruits, sweets, and performing Aarti with devotion.",
     onlinePrice: "₹ 2,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/Durga_Puja.jpg",
-  },  
-  {
+},
+{
     id: "9",
     slug: "vishnu-puja",
     name: "Vishnu Puja",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Dedicated worship of Lord Vishnu for peace, prosperity, protection, and family happiness.",
+    description:
+      "Vishnu Puja is a sacred Vedic ritual performed to seek the blessings of Lord Vishnu, the preserver of the universe. This puja is believed to remove obstacles, promote harmony, improve relationships, and bless devotees with prosperity, health, and spiritual progress. It includes chanting Vishnu Sahasranama, offering Tulsi leaves, flowers, and sacred prayers. Performing Vishnu Puja regularly strengthens faith, protects the family, and brings lasting peace and success in life.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/vishnupuja.jpg",
-  },
-  {
+},
+{
     id: "10",
     slug: "rahu-ketu-shanti-puja",
     name: "Rahu–Ketu Shanti Puja",
     category: "Astrology",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful Vedic ritual to reduce the adverse effects of Rahu and Ketu in the horoscope.",
+    description:
+      "Rahu–Ketu Shanti Puja is performed to pacify the malefic effects of Rahu and Ketu, the shadow planets in Vedic astrology. This sacred ritual helps reduce problems related to career, marriage, health, finances, education, mental stress, and unexpected obstacles caused by planetary doshas. Through powerful Vedic mantras, homa, and offerings, the puja restores planetary balance and invites peace, prosperity, confidence, and spiritual protection. It is highly recommended for those experiencing Rahu Mahadasha, Ketu Mahadasha, or Kaal Sarp Dosha.",
     onlinePrice: "₹ 5,100",
     offlinePrice: "₹ 11,000",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "3–4 hours",
     image: "/images/rahu-ketu-shanti.png",
-  },
-  {
+},
+{
     id: "11",
     slug: "navagraha-shanti-puja",
     name: "Navagraha Shanti Puja",
     category: "Astrology",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Seek harmony from all nine planets for peace, success, health, and prosperity.",
+    description:
+      "Navagraha Shanti Puja is a powerful Vedic ritual dedicated to the nine celestial planets—Surya, Chandra, Mangal, Budh, Brihaspati, Shukra, Shani, Rahu, and Ketu. It is performed to reduce the malefic effects of planetary doshas and strengthen favorable planetary influences. This puja is highly beneficial for those facing career obstacles, financial instability, health concerns, delays in marriage, or recurring difficulties. By chanting sacred mantras and offering prayers to the Navagrahas, devotees receive blessings for success, peace, prosperity, and overall well-being.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/Navgraha.jpg",
-  },
-  {
+},
+{
     id: "12",
     slug: "shani-shanti-puja",
     name: "Shani Shanti Puja",
     category: "Astrology",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful worship of Lord Shani for relief from Saturn's adverse effects and life's obstacles.",
+    description:
+      "Shani Shanti Puja is performed to reduce the negative influence of Planet Saturn (Shani Dev) during Sade Sati, Dhaiya, or difficult planetary periods. This sacred ritual includes Vedic mantra chanting, oil offerings, sesame seeds, and prayers to Lord Shani for protection and blessings. Performing this puja helps remove delays, financial struggles, legal issues, career setbacks, and health problems while promoting stability, discipline, success, and peace of mind.",
     onlinePrice: "₹ 2,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/Shanishanti.jpg",
-  },
-  {
+},
+{
     id: "13",
     slug: "mangal-dosh-nivaran",
     name: "Mangal Dosh Nivaran",
     category: "Astrology",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Special Vedic ritual to reduce Mangal Dosha and bring harmony in married life.",
+    description:
+      "Mangal Dosh Nivaran Puja is performed to minimize the adverse effects of Manglik Dosha in one's horoscope. It is especially recommended for individuals facing delays in marriage, relationship conflicts, or family disputes due to Mars-related planetary influences. Through Vedic rituals, mantra chanting, and sacred offerings, the puja helps balance Mars energy, ensuring marital harmony, emotional stability, career growth, and overall prosperity.",
     onlinePrice: "₹ 2,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/mangaldosh.jpg",
-  },
-  {
+},
+{
     id: "14",
     slug: "kaal-sarp-dosh-puja",
     name: "Kaal Sarp Dosh Shanti Puja",
     category: "Astrology",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Ancient Vedic remedy to reduce the effects of Kaal Sarp Dosha and restore positivity.",
+    description:
+      "Kaal Sarp Dosh Shanti Puja is one of the most significant Vedic remedies for individuals affected by Kaal Sarp Dosha in their birth chart. This sacred ritual helps remove persistent obstacles, career setbacks, financial losses, health issues, relationship conflicts, and mental stress associated with the dosha. Performed by experienced Vedic priests with powerful mantras and Havan, this puja invokes divine blessings for protection, success, stability, and spiritual growth.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/kaalsarp.jpg",
-  },
-  {
+},
+{
     id: "15",
     slug: "maha-mrityunjaya-havan",
     name: "Mahamrityunjaya Mantra Jaap for Health & Protection",
     category: "Havan Ceremonies",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Mahamrityunjaya Havan for health, healing, protection, and longevity.",
+    description:
+      "Mahamrityunjaya Mantra Jaap and Havan is one of the most powerful Vedic rituals dedicated to Lord Shiva. It is performed to seek divine protection against illness, accidents, fear, negative energies, and untimely difficulties. Continuous chanting of the Mahamrityunjaya Mantra along with sacred Havan creates positive vibrations that promote physical healing, mental peace, emotional strength, and spiritual upliftment. This puja is highly recommended for individuals facing serious health concerns or seeking long life and divine protection.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "2–3 hours",
     image: "/images/Maha_Mrityunjaya_Jaap.jpg",
-  },
-  {
+},
+{
     id: "16",
     slug: "gayatri-havan",
     name: "Gayatri Havan",
     category: "Havan Ceremonies",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Gayatri Havan for wisdom, inner peace, positive energy, and spiritual growth.",
+    description:
+      "Gayatri Havan is a powerful Vedic fire ritual dedicated to Goddess Gayatri, the embodiment of divine wisdom and knowledge. The ceremony includes chanting the Gayatri Mantra while offering sacred herbs into the holy fire. It helps purify the mind, remove negative energies, improve concentration, enhance spiritual awareness, and attract peace and prosperity. Students, professionals, and families perform this Havan to receive divine blessings for success, health, happiness, and enlightenment.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/gayatripuja.jpg",
-  },
-  {
+},
+{
     id: "17",
     slug: "dhan-prapti-havan",
     name: "Dhan Prapti Havan",
     category: "Havan Ceremonies",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful prosperity Havan for wealth, financial stability, and business success.",
+    description:
+      "Dhan Prapti Havan is performed to seek divine blessings for financial growth, abundance, and prosperity. This sacred fire ritual invokes Goddess Lakshmi and Lord Kubera through Vedic mantras to remove financial obstacles, increase income, improve business opportunities, and attract wealth. The Havan creates positive vibrations that support career growth, business expansion, and long-term financial stability while promoting peace and happiness within the family.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/dhanprapti.jpg",
-  },
-  {
+},
+{
     id: "18",
     slug: "sarva-badha-nivaran-havan",
     name: "Sarva Badha Nivaran Havan",
     category: "Havan Ceremonies",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Havan to remove obstacles, negativity, and recurring difficulties from life.",
+    description:
+      "Sarva Badha Nivaran Havan is a highly effective Vedic ritual performed to eliminate all forms of obstacles, negativity, evil influences, and recurring problems. Through sacred mantras and offerings into the holy fire, divine blessings are invoked for protection, peace, health, prosperity, and success. This Havan is especially recommended for individuals facing continuous failures, legal disputes, financial hardships, family conflicts, or unexplained negative energies.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/vastu.jpeg",
-  },
-    {
+},
+{
     id: "19",
     slug: "shanti-havan",
     name: "Naugraha Shanti Havan",
     category: "Havan Ceremonies",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful Navagraha Havan for planetary harmony, protection, and overall well-being.",
+    description:
+      "Navagraha Shanti Havan is a sacred fire ceremony performed to pacify the nine planets and reduce the effects of unfavorable planetary positions in one's horoscope. This Vedic ritual helps overcome career problems, health concerns, financial instability, delays in marriage, and mental stress. The Havan strengthens positive planetary influences while promoting peace, prosperity, success, and spiritual protection for the entire family.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/LakshmiNarayanYagya.jpg",
-  },
-  {
+},
+{
     id: "20",
     slug: "rudraabhishek",
     name: "Rudrabhishek Puja for Wish Fulfillment",
     category: "Havan & Special",
     shortDescription:
-      "Lord Shiva puja for fulfillment of wishes, peace, prosperity and spiritual growth.",
+      "Sacred Rudrabhishek dedicated to Lord Shiva for wish fulfillment and divine blessings.",
+    description:
+      "Rudrabhishek is one of the most powerful forms of worship dedicated to Lord Shiva. During this sacred ritual, the Shiva Lingam is ceremonially bathed with milk, honey, curd, ghee, holy water, Bilva leaves, and other auspicious offerings while chanting Sri Rudram and other Vedic mantras. It is believed to remove obstacles, fulfill heartfelt wishes, improve health, bring prosperity, protect from negative influences, and grant peace, spiritual growth, and divine grace to devotees and their families.",
     onlinePrice: "₹ 2,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/rudraabhishek.jpg",
-  },
-  // {
-  //   id: "21",
-  //   slug: "durga-puja-2",
-  //   name: "Durga Puja",
-  //   category: "Havan & Special",
-  //   shortDescription:
-  //     "Sacred fire ritual for purification, health and spiritual upliftment.",
-  //   onlinePrice: "₹ 2,100",
-  //   offlinePrice: "₹ 3,100",
-  //   onlineAvailable: true,
-  //   offlineAvailable: true,
-  //   duration: "1–2 hours",
-  //   image: "/images/Durga_Puja.jpg",
-  // },
-  {
+},
+{
     id: "22",
     slug: "saraswati-puja",
     name: "Saraswati Puja",
     category: "Havan & Special",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred worship of Goddess Saraswati for wisdom, education, creativity, and success.",
+    description:
+      "Saraswati Puja is dedicated to Goddess Saraswati, the divine goddess of wisdom, learning, music, arts, and knowledge. This auspicious puja is especially beneficial for students, teachers, artists, musicians, writers, and professionals seeking excellence in education and creativity. The ritual includes Vedic mantra chanting, flower offerings, and prayers to invoke divine blessings for intelligence, concentration, confidence, and success in academics and career. Performing Saraswati Puja regularly removes obstacles in learning and promotes spiritual enlightenment.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/saraswati-puja.jpg",
-  },
-  // {
-  //   id: "23",
-  //   slug: "navagraha-shanti",
-  //   name: "Navagraha Shanti",
-  //   category: "Havan & Special",
-  //   shortDescription:
-  //     "Sacred fire ritual for purification, health and spiritual upliftment.",
-  //   onlinePrice: "₹ 1,100",
-  //   offlinePrice: "₹ 2,100",
-  //   onlineAvailable: true,
-  //   offlineAvailable: true,
-  //   duration: "1–2 hours",
-  //   image: "/images/vastu.jpeg",
-  // },
-  {
+},
+{
     id: "24",
     slug: "maha-mrityunjaya-jaap",
     name: "Maha Mrityunjaya Jaap",
     category: "Daily Puja",
     shortDescription:
-      "ONE DAY maha mrityunjaya jaap for health, protection and spiritual upliftment.",
+      "Powerful Maha Mrityunjaya Jaap for healing, protection, longevity, and peace.",
+    description:
+      "Maha Mrityunjaya Jaap is one of the most sacred Vedic prayers dedicated to Lord Shiva. Continuous chanting of the Maha Mrityunjaya Mantra is believed to provide protection from diseases, accidents, untimely death, fear, and negative energies. It promotes physical healing, emotional stability, mental peace, and spiritual growth. This Jaap is commonly performed for individuals facing health concerns, surgeries, chronic illnesses, or seeking divine blessings for long life, happiness, and protection.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 3,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/Maha_Mrityunjaya_Jaap.jpg",
-  },
-  {
+},
+{
     id: "25",
     slug: "sundarKand-path",
     name: "SundarKand Path",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred recitation of Sundar Kand for protection, courage, and removal of obstacles.",
+    description:
+      "Sundar Kand Path is the devotional recitation of the Sundar Kand chapter from the Ramayana, describing the heroic journey of Lord Hanuman. This sacred path is performed to remove difficulties, overcome fear, improve confidence, and receive divine blessings for health, prosperity, family happiness, and success. It is believed that sincere recitation of Sundar Kand brings positive energy, fulfills wishes, and protects devotees from negative influences and hardships.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/SundarKandPath.jpg",
-  },
-  {
+},
+{
     id: "26",
     slug: "hanuman-chalisa-path",
     name: "Hanuman Chalisa Path",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Devotional Hanuman Chalisa recitation for strength, protection, and success.",
+    description:
+      "Hanuman Chalisa Path is a sacred devotional prayer dedicated to Lord Hanuman. Regular recitation is believed to remove fear, negative energies, evil influences, and obstacles while increasing courage, confidence, wisdom, and determination. This puja is especially beneficial for overcoming stress, health issues, financial difficulties, and spiritual challenges. Devotees perform Hanuman Chalisa Path to seek Lord Hanuman's blessings for protection, happiness, success, and inner strength.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/Hanuman-Ji.jpg",
-  },
-  {
+},
+{
     id: "27",
     slug: "ramayan-path",
     name: "Ramayan Path",
     category: "Havan & Special",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Ramayan Path for family harmony, devotion, peace, and spiritual prosperity.",
+    description:
+      "Ramayan Path is the devotional recitation of the holy Ramayana, celebrating the life and teachings of Lord Shri Ram. This sacred ritual fills the home with positive energy, strengthens family relationships, promotes peace, and inspires righteous living. It is performed during special occasions, festivals, housewarming ceremonies, and family events to receive divine blessings, remove negativity, and bring happiness, prosperity, and spiritual growth to every member of the family.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 4,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/akhand-ramayan-path.jpg",
-  },
-    {
+},
+{
     id: "28",
     slug: "nauchandi-path",
     name: "9 Chandi Path",
     category: "Havan & Special",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Chandi Path for divine protection, victory over obstacles, and spiritual strength.",
+    description:
+      "9 Chandi Path is a highly revered Vedic ritual dedicated to Goddess Durga through the recitation of the Durga Saptashati (Devi Mahatmyam). This powerful ceremony invokes the blessings of the Divine Mother for protection from negative energies, victory over enemies, removal of obstacles, and fulfillment of wishes. It is especially performed during Navratri, important family occasions, or when seeking courage, prosperity, and spiritual upliftment. The divine vibrations created through the Chandi Path bring peace, confidence, abundance, and protection to the entire family.",
     onlinePrice: "₹ 5,100",
     offlinePrice: "₹ 11,000",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/nauchandi.jpg",
-  },
-  // {
-  //   id: "29",
-  //   slug: "rahu-ketu-shanti",
-  //   name: "Rahu Ketu Shanti",
-  //   category: "Havan & Special",
-  //   shortDescription:
-  //     "Sacred fire ritual for purification, health and spiritual upliftment.",
-  //   onlinePrice: "₹ 3,100",
-  //   offlinePrice: "₹ 5,100",
-  //   onlineAvailable: true,
-  //   offlineAvailable: true,
-  //   duration: "1–2 hours",
-  //   image: "/images/rahu-ketu-shanti.png",
-  // },
-  {
+},
+{
     id: "30",
     slug: "bhoomi-pujan-construction-site-puja",
     name: "Bhoomi Pujan / Construction Site Puja",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Bhoomi Pujan before construction for success, protection, and positive beginnings.",
+    description:
+      "Bhoomi Pujan is an essential Vedic ritual performed before starting the construction of a house, office, commercial building, or industrial project. The ceremony honors Mother Earth and seeks blessings from Lord Ganesha, Vastu Devta, and other deities for a safe, successful, and obstacle-free construction journey. Performing Bhoomi Pujan ensures harmony, prosperity, protection from unforeseen challenges, and long-lasting peace for the future occupants of the property.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: false,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/office.jpg",
-  },
-  {
+},
+{
     id: "31",
     slug: "atharvashirsha-path",
     name: "Atharvashirsha Path",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Ganapati Atharvashirsha recitation for wisdom, prosperity, and removal of obstacles.",
+    description:
+      "Atharvashirsha Path is the devotional recitation of the sacred Ganapati Atharvashirsha, dedicated to Lord Ganesha. This Vedic prayer invokes divine blessings for wisdom, knowledge, success, prosperity, and protection from all obstacles. It is especially recommended before examinations, business ventures, housewarming ceremonies, and important life events. Regular recitation strengthens faith, improves concentration, and attracts positive energy into one's life.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,500",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/ganesh-puja.jpg",
-  },
-  {
+},
+{
     id: "32",
     slug: "kanakdhara-path",
     name: "Kanakdhara Path",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful Kanakdhara Stotram recitation for wealth, abundance, and Goddess Lakshmi's blessings.",
+    description:
+      "Kanakdhara Path is the sacred recitation of the Kanakdhara Stotram composed by Adi Shankaracharya to invoke the blessings of Goddess Mahalakshmi. This devotional ritual is believed to remove poverty, financial hardships, and obstacles while attracting wealth, prosperity, success, and abundance. Devotees perform this path to improve business growth, career opportunities, and family happiness while receiving the divine grace of Goddess Lakshmi.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,500",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/kanakdhara.jpg",
-  },
-  {
+},
+{
     id: "33",
     slug: "business-growth",
     name: "Shri Sukt Path for Job & Business Growth",
     category: "Daily Puja",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Shri Sukt Path for career success, business growth, prosperity, and financial stability.",
+    description:
+      "Shri Sukt Path is a highly auspicious Vedic recitation dedicated to Goddess Mahalakshmi for attracting prosperity, career advancement, business growth, and financial success. This sacred ritual helps remove obstacles in professional life, improves opportunities, strengthens financial stability, and blesses devotees with abundance and peace. It is especially beneficial for entrepreneurs, business owners, professionals, and individuals seeking success in their careers and economic well-being.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/kanakdhara.jpg",
-  },
-  {
+},
+{
     id: "34",
     slug: "grah-klesh-nivaran",
     name: "Grah Klesh Nivaran / Lakshmi Narayan Puja Yagya",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Lakshmi Narayan Yagya to remove family conflicts and restore peace, prosperity, and harmony.",
+    description:
+      "Grah Klesh Nivaran / Lakshmi Narayan Puja Yagya is a powerful Vedic ritual performed to eliminate negativity, misunderstandings, and recurring conflicts within the family. Dedicated to Lord Vishnu and Goddess Lakshmi, this sacred Yagya brings peace, unity, prosperity, and divine blessings into the household. It is highly recommended for families facing disputes, financial instability, relationship problems, or continuous stress. Through Vedic mantra chanting and Havan, the puja creates a positive environment and strengthens love, happiness, and spiritual well-being.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 2,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/griha.jpg",
-  },
-  {
+},
+{
     id: "35",
     slug: "shatru-nivaran-baglamukhi-puja",
     name: "Shatru Nivaran Baglamukhi Puja / Havan",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Powerful Baglamukhi Puja for victory over enemies, legal matters, and negative influences.",
+    description:
+      "Baglamukhi Puja is one of the most powerful Tantric and Vedic rituals dedicated to Goddess Baglamukhi, the deity who protects devotees from enemies, negativity, and harmful influences. This sacred ceremony is performed to overcome legal disputes, court cases, hidden enemies, business competition, black magic, and unexpected obstacles. It blesses devotees with courage, confidence, victory, success, and divine protection while strengthening spiritual energy and inner peace.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 4,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/Baglamukhi.jpg",
-  },
-  {
+},
+{
     id: "36",
     slug: "satya-narayan-katha",
     name: "Satya Narayan Katha",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred Satya Narayan Katha for prosperity, family happiness, and fulfillment of wishes.",
+    description:
+      "Satya Narayan Katha is a sacred devotional ceremony dedicated to Lord Vishnu in his Satya Narayan form. The ritual includes the recitation of the holy Satya Narayan Katha along with traditional Vedic worship. It is commonly performed during housewarming ceremonies, weddings, birthdays, anniversaries, business inaugurations, and other auspicious occasions. Devotees receive blessings for prosperity, peace, family harmony, success, and the fulfillment of heartfelt desires while removing obstacles from life.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/satyanarayan.jpg",
-  },
-  {
+},
+{
     id: "37",
     slug: "griha-pravesh-puja",
     name: "Griha Pravesh Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Traditional housewarming puja for peace, prosperity, and positive energy in your new home.",
+    description:
+      "Griha Pravesh Puja is an auspicious Vedic ceremony performed before entering a newly constructed or newly purchased home. The ritual invokes Lord Ganesha, Vastu Devta, and other divine deities to remove negative energies and bless the house with peace, prosperity, health, happiness, and protection. Performing Griha Pravesh according to Vedic traditions is believed to establish positive vibrations and ensure a joyful, harmonious, and prosperous life for every family member.",
     onlinePrice: "₹ 1,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/griha.jpg",
-  },
-  {
+},
+{
     id: "38",
     slug: "pittra-dosh-nivaran-tripindi-shradh",
     name: "Pittra Dosh Nivaran Tripindi Shradh",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Sacred ritual to seek ancestral blessings and remove Pitra Dosh from one's horoscope.",
+    description:
+      "Tripindi Shradh is an important Vedic ritual performed to satisfy departed ancestors and remove Pitra Dosh. According to Hindu scriptures, unresolved ancestral karma can create obstacles in marriage, career, health, finances, and family life. This sacred ceremony offers prayers, Tarpan, and Shradh rituals to bring peace to ancestral souls while seeking their blessings for prosperity, family harmony, good health, and spiritual progress. It is especially recommended when Pitra Dosh is indicated in one's horoscope.",
     onlinePrice: "₹ 0",
     offlinePrice: "₹ 21,000",
     onlineAvailable: false,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/PitraDoshNivaran.jpg",
-  },
-  {
+},
+{
     id: "39",
     slug: "kumbha-vivah-puja",
     name: "Kumbha Vivah Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Special Vedic remedy for Manglik Dosha and marriage-related astrological obstacles.",
+    description:
+      "Kumbha Vivah is a traditional Vedic ritual performed primarily as a remedy for Manglik Dosha and certain astrological combinations that may create obstacles in marriage. In this ceremony, symbolic marriage rituals are performed with a sacred Kalash (Kumbha) before the actual marriage. The ritual helps neutralize planetary doshas, removes marriage-related hurdles, promotes marital harmony, and invites blessings for a happy, peaceful, and successful married life.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/kumbhvivah.png",
-  },
-  {
+},
+{
     id: "40",
     slug: "ark-vivah-puja",
     name: "Ark Vivah Puja",
     category: "Home / Auspicious",
     shortDescription:
-      "Sacred fire ritual for purification, health and spiritual upliftment.",
+      "Ancient Vedic ritual to remove marriage doshas and ensure a happy married life.",
+    description:
+      "Ark Vivah Puja is an ancient Vedic remedial ceremony performed to reduce the effects of specific astrological doshas that may delay or disturb marriage. The ritual symbolically marries the individual to the Ark (Calotropis) plant before the actual marriage, thereby neutralizing adverse planetary influences. It is believed to remove obstacles, improve compatibility, ensure marital happiness, strengthen relationships, and bless devotees with a peaceful and prosperous married life.",
     onlinePrice: "₹ 3,100",
     offlinePrice: "₹ 5,100",
     onlineAvailable: true,
     offlineAvailable: true,
     duration: "1–2 hours",
     image: "/images/arkvivah.png",
-  },
+},
 ];

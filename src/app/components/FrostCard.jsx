@@ -23,14 +23,14 @@ const EVENTS = {
     {
       img: "/images/LaghrudraAbhishek.jpg",
       title: "Sawan Shivratri, Maha Rudra Abhishek & Havan",
-      desc: "Surya Dev arghya, daan and sacred grah shanti rituals for prosperity.",
+      desc: "Experience the divine blessings of Lord Shiva through Maha Rudra Abhishek and Havan during the sacred month of Sawan. This powerful ritual removes negativity, fulfills wishes, improves health, and brings peace, prosperity, and spiritual growth.",
       offer: "10% OFF this month",
       date: "2026-08-11",
     },
     {
       img: "/images/naappanchmi.png",
       title: "Nag Panchami Special Puja",
-      desc: "Sacred mantra jaap performed with traditional Vedic vidhi.",
+      desc: "Celebrate Nag Panchami with traditional Vedic rituals dedicated to the divine serpent deities. Seek protection from Kaal Sarp Dosha, receive blessings for prosperity, family well-being, and spiritual harmony through sacred mantra chanting.",
       offer: "10% OFF this month + Free Muhurat Consultation",
       date: "2026-08-17",
     },
@@ -40,34 +40,56 @@ const EVENTS = {
     {
       img: "/images/KrishnaJanmashtami.jpg",
       title: "Krishna Janmashtami Special Puja",
-      desc: "Sacred mantra jaap performed with traditional Vedic vidhi.",
+      desc: "Celebrate the birth of Lord Krishna with devotional puja, bhajans, mantra chanting, and sacred rituals. Receive blessings for happiness, prosperity, protection, and spiritual enlightenment while strengthening devotion towards Lord Krishna.",
       offer: "10% OFF this month",
       date: "2026-09-04",
     },
     {
       img: "/images/GaneshVisarjan.jpg",
       title: "Ganesh Visarjan",
-      desc: "Sacred mantra jaap performed with traditional Vedic vidhi.",
+      desc: "Offer a heartfelt farewell to Lord Ganesha with traditional Visarjan rituals, prayers, and Aarti. Seek blessings for wisdom, prosperity, success, and the removal of obstacles before bidding farewell to Bappa.",
       offer: "10% OFF this month",
       date: "2026-09-25",
     },
     {
       img: "/images/ganesh-puja.jpg",
       title: "Ganesh Chaturthi Special Puja",
-      desc: "Sacred mantra jaap performed with traditional Vedic vidhi.",
+      desc: "Celebrate Ganesh Chaturthi with sacred Vedic rituals, Ganapati Atharvashirsha recitation, and special puja to invite Lord Ganesha's blessings for success, happiness, wealth, and obstacle-free beginnings.",
       offer: "10% OFF this month + Free Muhurat Consultation",
       date: "2026-09-14",
     },
     {
       img: "/images/PitraDoshNivaran.jpg",
       title: "Pitru Paksha Special Puja",
-      desc: "Sacred mantra jaap performed with traditional Vedic vidhi.",
+      desc: "Honor your ancestors during Pitru Paksha with traditional Shradh, Tarpan, and Pitra Dosh Nivaran rituals. Seek ancestral blessings for family harmony, prosperity, health, and relief from karmic obstacles.",
       offer: "10% OFF this month",
       date: "2026-09-26",
     },
   ],
 
-  October: [],
+  October: [
+    {
+      img: "/images/Durga_Puja.jpg",
+      title: "Sharadiya Navratri & Durga Puja",
+      desc: "Celebrate the nine divine nights of Goddess Durga with Chandi Path, Durga Puja, and special Vedic rituals for protection, prosperity, courage, and victory over negativity.",
+      offer: "15% OFF this month",
+      date: "2026-10-03",
+    },
+    {
+      img: "/images/Dussehra.jpg",
+      title: "Vijayadashami (Dussehra) Special Puja",
+      desc: "Celebrate the victory of good over evil with Vijayadashami Puja. Seek blessings for success, new beginnings, career growth, courage, and prosperity through sacred Vedic rituals.",
+      offer: "10% OFF this month",
+      date: "2026-10-12",
+    },
+    {
+      img: "/images/laxmi.jpg",
+      title: "Diwali Lakshmi Puja",
+      desc: "Welcome Goddess Lakshmi into your home with traditional Diwali Lakshmi Puja. Receive blessings for wealth, abundance, business growth, happiness, and lasting prosperity.",
+      offer: "20% OFF this month + Free Muhurat Consultation",
+      date: "2026-10-20",
+    },
+  ],
 };
 
 const months = Object.keys(EVENTS);
