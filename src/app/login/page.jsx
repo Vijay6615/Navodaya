@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -18,7 +18,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-export default function LoginPage() {
+// 1️⃣ SUB-COMPONENT: Saari parameters dynamic logic bina kisi data change ke yahan hai
+function LoginFormContent() {
   const { status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams(); // 🔥 Auth errors tracking ke liye parameters index kiya
@@ -632,6 +633,21 @@ export default function LoginPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+// 2️⃣ MAIN EXPORT DEFAULT: Ab pure component ko bina data alteration ke Suspense wrapper mil gaya hai
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-white sm:bg-[#f8f4ef]">
+          <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-orange-100 border-t-[#b84b1b]" />
+        </div>
+      }
+    >
+      <LoginFormContent />
+    </Suspense>
   );
 }
 
