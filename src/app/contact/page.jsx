@@ -272,7 +272,7 @@ export default function ContactPage() {
                   <ContactItem
                     icon={<MapPin size={18} />}
                     label="Location"
-                    value="Mumbai / Varanasi"
+                    value="Mumbai / Palghar"
                   />
 
                   <ContactItem

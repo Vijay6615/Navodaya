@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Eye,
@@ -21,6 +21,7 @@ import {
 export default function LoginPage() {
   const { status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams(); // 🔥 Auth errors tracking ke liye parameters index kiya
 
   const [activeTab, setActiveTab] = useState("login");
   const [otpStep, setOtpStep] = useState(false);
@@ -47,6 +48,16 @@ export default function LoginPage() {
     password: "",
     confirmPassword: "",
   });
+
+  // 🔥 CRITICAL FIX: Next-Auth native error links check handles
+  useEffect(() => {
+    const errorType = searchParams.get("error");
+    if (errorType === "OAuthAccountNotLinked") {
+      showMessage("This email is linked with Google. Please click 'Continue with Google' to login.", "error");
+    } else if (errorType) {
+      showMessage("Authentication failed. Please try again.", "error");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (status === "authenticated") router.replace("/");
@@ -86,7 +97,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        showMessage("Invalid email or password");
+        showMessage("Invalid email or password. If registered with Google, use Google button.");
         return;
       }
 
@@ -403,7 +414,7 @@ export default function LoginPage() {
             {activeTab === "login" && !otpStep && (
               <form onSubmit={handleLogin} className="mt-5 space-y-4">
                 <FieldLabel>Email Address</FieldLabel>
-                <IconInput icon={<Mail size={17} />} className={inputClass}>
+                <IconInput icon={<Mail size={17} />}>
                   <input
                     type="email"
                     value={loginForm.email}
@@ -560,6 +571,7 @@ export default function LoginPage() {
                     setOtpStep(false);
                     setOtp("");
                     setMessage("");
+                    setMessageType("");
                   }}
                   className="mx-auto flex items-center gap-2 text-[11px] font-bold text-[#8b776b]"
                 >
