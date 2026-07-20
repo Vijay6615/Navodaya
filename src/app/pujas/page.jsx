@@ -19,13 +19,7 @@ const displayFont = Cormorant_Garamond({
   weight: ["500", "600", "700"],
 });
 
-const CATEGORY_LIST = [
-  "All",
-  "Daily Puja",
-  "Festival Puja",
-  "Astrology",
-  "Havan Ceremonies",
-];
+
 
 export default function PujasPage() {
   const router = useRouter();
@@ -285,82 +279,7 @@ focus-within:border-orange-200
               scrollbar-hide
             "
           >
-            {CATEGORY_LIST.map((cat) => {
-              const isActive =
-                cat === "All"
-                  ? selectedCategories.length === 0
-                  : selectedCategories.includes(cat);
-
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() =>
-                    toggleCategory(cat)
-                  }
-                  className={`
-                    flex
-                    items-center
-
-                    gap-1.5
-
-                    px-3
-                    md:px-4
-
-                    h-8
-                    md:h-9
-
-                    rounded-lg
-                    md:rounded-full
-
-                    text-xs
-
-                    font-medium
-                    md:font-semibold
-
-                    whitespace-nowrap
-
-                    flex-shrink-0
-
-                    border
-
-                    transition-all
-                    duration-300
-
-                    active:scale-95
-
-                    ${
-                      isActive
-                        ? `
-                          bg-[#431407]
-                          border-[#431407]
-                          text-white
-
-                          shadow-[0_5px_15px_rgba(67,20,7,0.16)]
-                        `
-                        : `
-                          bg-white
-                          border-gray-200
-                          text-gray-600
-
-                          hover:border-orange-300
-                          hover:text-orange-700
-                          hover:bg-orange-50/50
-                        `
-                    }
-                  `}
-                >
-                  {isActive && (
-                    <Check
-                      size={12}
-                      strokeWidth={2.5}
-                    />
-                  )}
-
-                  {cat}
-                </button>
-              );
-            })}
+            
           </div>
         </div>
 
