@@ -22,12 +22,38 @@ import {
   Truck,
   Wallet,
   ChevronDown,
+  Video,
+  Home,
 } from "lucide-react";
 
 const displayFont = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
+
+/* Collapsible section wrapper — same header look as before (icon + title),
+   just clickable now so the page doesn't feel so long. Closed by default. */
+function CollapsibleSection({ icon: Icon, iconColor, title, open, onToggle, children }) {
+  return (
+    <section>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="mb-6 flex w-full items-center justify-between gap-3 text-left"
+      >
+        <div className="flex items-center gap-2">
+          <Icon size={20} className={iconColor} />
+          <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>{title}</h2>
+        </div>
+        <ChevronDown
+          size={20}
+          className={`shrink-0 text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      <div className={open ? "block" : "hidden"}>{children}</div>
+    </section>
+  );
+}
 
 export default function PujaDetail() {
   const params = useParams();
@@ -36,6 +62,14 @@ export default function PujaDetail() {
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+
+  // These detail-heavy sections are collapsed by default (on every screen size)
+  // so the page doesn't feel so long. Content is untouched — just tucked behind a tap.
+  const [openIncludes, setOpenIncludes] = useState(false);
+  const [openSamagri, setOpenSamagri] = useState(false);
+  const [openTravel, setOpenTravel] = useState(false);
+  const [openPrice, setOpenPrice] = useState(false);
+  const [openProcess, setOpenProcess] = useState(false);
 
   const slug = params?.slug;
 
@@ -97,7 +131,7 @@ export default function PujaDetail() {
   return (
     <>
       <main className="min-h-screen bg-[#fffdfb] text-[#28221f]">
-        <section className="mx-auto max-w-[1320px] px-4 py-6 md:py-10">
+        <section className="mx-auto max-w-[1320px] px-4 py-6 pb-28 md:py-10 lg:pb-10">
           
           <Link
             href="/pujas"
@@ -157,25 +191,40 @@ export default function PujaDetail() {
                 ))}
               </div>
 
-              {/* TWO DYNAMIC BOOKING CARDS */}
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                
+              {/* TWO DYNAMIC BOOKING CARDS — compact, icon-led, quick to scan */}
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+
                 {/* Online option wrapper */}
-                <div className="rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9]">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-[#252525]">Online Puja</h3>
-                    <span className="rounded-full bg-green-50 border border-green-200 px-2.5 py-0.5 text-[10px] font-bold text-green-700">LIVE VIDEO</span>
+                <div className="group rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9] hover:shadow-[0_18px_36px_rgba(168,68,27,.1)]">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-50 border border-green-100">
+                        <Video size={16} className="text-green-600" />
+                      </div>
+                      <h3 className="truncate text-base font-bold text-[#252525]">Online Puja</h3>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-green-50 border border-green-200 px-2 py-0.5 text-[9px] font-bold text-green-700 whitespace-nowrap">LIVE VIDEO</span>
                   </div>
-                  <p className="mt-3 text-3xl font-extrabold text-[#a8441b]">
+
+                  <p className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#a8441b]">
                     {formatPrice(puja.onlinePrice)}
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-gray-400">
-                    Perform rituals via secure high-quality Video Call directly from your home with complete family Sankalp.
-                  </p>
+
+                  <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5">
+                    <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
+                      <Home size={12} className="text-[#a8441b] shrink-0" />
+                      Attend from home
+                    </span>
+                    <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
+                      <Users size={12} className="text-[#a8441b] shrink-0" />
+                      Full family Sankalp
+                    </span>
+                  </div>
+
                   <button
                     onClick={() => handleBooking("online")}
                     disabled={!puja.onlineAvailable}
-                    className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#a8441b] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#8d3816] disabled:bg-gray-200 disabled:text-gray-400"
+                    className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#a8441b] px-4 py-2.5 text-xs font-bold text-white transition group-hover:bg-[#8d3816] disabled:bg-gray-200 disabled:text-gray-400"
                   >
                     <span>Book Online Call</span>
                     <ArrowRight size={14} />
@@ -183,17 +232,32 @@ export default function PujaDetail() {
                 </div>
 
                 {/* Offline option wrapper */}
-                <div className="rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9]">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-[#252525]">Offline Puja</h3>
-                    <span className="rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[10px] font-bold text-blue-700">HOME VISIT</span>
+                <div className="group rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9] hover:shadow-[0_18px_36px_rgba(168,68,27,.1)]">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 border border-blue-100">
+                        <Home size={16} className="text-blue-600" />
+                      </div>
+                      <h3 className="truncate text-base font-bold text-[#252525]">Offline Puja</h3>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-blue-50 border border-blue-200 px-2 py-0.5 text-[9px] font-bold text-blue-700 whitespace-nowrap">HOME VISIT</span>
                   </div>
-                  <p className="mt-3 text-3xl font-extrabold text-[#a8441b]">
+
+                  <p className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#a8441b]">
                     {formatPrice(puja.offlinePrice)}
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-gray-400">
-                    Experienced Vedic Pandit Ji will personally visit your home or office location with full materials setup logs.
-                  </p>
+
+                  <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5">
+                    <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
+                      <BadgeCheck size={12} className="text-[#a8441b] shrink-0" />
+                      Pandit visits you
+                    </span>
+                    <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
+                      <PackageCheck size={12} className="text-[#a8441b] shrink-0" />
+                      Materials included
+                    </span>
+                  </div>
+
                   <button
                     onClick={() => handleBooking("offline")}
                     disabled={!puja.offlineAvailable}
@@ -209,7 +273,7 @@ export default function PujaDetail() {
           </div>
 
           {/* BLOCK INTERACTION PACK: Structured layouts to keep details brief and clean */}
-          <div className="mt-16 space-y-12 max-w-[960px]">
+          <div className="mt-12 space-y-8 max-w-[960px]">
             
             {/* ABOUT SECTION */}
             <article className="rounded-3xl border border-[#f0e6dd] bg-white p-6 md:p-8 shadow-sm">
@@ -276,11 +340,13 @@ export default function PujaDetail() {
             </section>
 
             {/* WHAT'S INCLUDED CONTAINER */}
-            <section>
-              <div className="mb-6 flex items-center gap-2">
-                <PackageCheck size={20} className="text-[#a8441b]" />
-                <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>What's Included in Package</h2>
-              </div>
+            <CollapsibleSection
+              icon={PackageCheck}
+              iconColor="text-[#a8441b]"
+              title="What's Included in Package"
+              open={openIncludes}
+              onToggle={() => setOpenIncludes((v) => !v)}
+            >
               <div className="grid gap-3 sm:grid-cols-2">
                 {puja.includes?.map((item, index) => (
                   <div key={index} className="flex items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-3.5 shadow-sm">
@@ -289,14 +355,16 @@ export default function PujaDetail() {
                   </div>
                 ))}
               </div>
-            </section>
+            </CollapsibleSection>
 
             {/* SAMAGRI INVENTORY SHEET */}
-            <section>
-              <div className="mb-6 flex items-center gap-2">
-                <Sparkles size={20} className="text-[#a8441b]" />
-                <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>Samagri Inventory Logs</h2>
-              </div>
+            <CollapsibleSection
+              icon={Sparkles}
+              iconColor="text-[#a8441b]"
+              title="Samagri Inventory Logs"
+              open={openSamagri}
+              onToggle={() => setOpenSamagri((v) => !v)}
+            >
               <div className="rounded-3xl border border-[#f0e6dd] bg-white p-5 shadow-sm">
                 <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 mb-6 bg-gray-50 p-4 rounded-2xl text-center">
                   <div>
@@ -322,14 +390,16 @@ export default function PujaDetail() {
                   ))}
                 </div>
               </div>
-            </section>
+            </CollapsibleSection>
 
             {/* TRAVEL CHARGES INDEX */}
-            <section>
-              <div className="mb-6 flex items-center gap-2">
-                <Truck size={20} className="text-[#a8441b]" />
-                <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>Travel Logistics Index</h2>
-              </div>
+            <CollapsibleSection
+              icon={Truck}
+              iconColor="text-[#a8441b]"
+              title="Travel Logistics Index"
+              open={openTravel}
+              onToggle={() => setOpenTravel((v) => !v)}
+            >
               <div className="grid gap-3 grid-cols-3 text-center">
                 {[
                   { title: "Transit Mode", val: puja.travel?.mode || "Cab/Auto" },
@@ -342,14 +412,16 @@ export default function PujaDetail() {
                   </div>
                 ))}
               </div>
-            </section>
+            </CollapsibleSection>
 
             {/* PRICE BREAKDOWN TABLEAU */}
-            <section>
-              <div className="mb-6 flex items-center gap-2">
-                <Wallet size={20} className="text-[#a8441b]" />
-                <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>Price Breakdown logs</h2>
-              </div>
+            <CollapsibleSection
+              icon={Wallet}
+              iconColor="text-[#a8441b]"
+              title="Price Breakdown logs"
+              open={openPrice}
+              onToggle={() => setOpenPrice((v) => !v)}
+            >
               <div className="rounded-3xl border border-[#f0e6dd] bg-white px-5 py-2 shadow-sm font-medium text-xs sm:text-sm text-gray-600">
                 {Object.entries(puja.priceBreakdown || {}).map(([key, value]) => (
                   <div key={key} className="flex items-center justify-between border-b border-gray-100 py-3 last:border-none">
@@ -358,14 +430,16 @@ export default function PujaDetail() {
                   </div>
                 ))}
               </div>
-            </section>
+            </CollapsibleSection>
 
             {/* PROCEDURAL SEQUENTIAL TIMELINE */}
-            <section>
-              <div className="mb-6 flex items-center gap-2">
-                <CalendarDays size={20} className="text-[#a8441b]" />
-                <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>Booking Process Steps</h2>
-              </div>
+            <CollapsibleSection
+              icon={CalendarDays}
+              iconColor="text-[#a8441b]"
+              title="Booking Process Steps"
+              open={openProcess}
+              onToggle={() => setOpenProcess((v) => !v)}
+            >
               <div className="space-y-3">
                 {puja.bookingProcess?.map((step, index) => (
                   <div key={index} className="flex gap-4 rounded-2xl border border-orange-100 bg-white p-4 shadow-sm items-center">
@@ -376,7 +450,7 @@ export default function PujaDetail() {
                   </div>
                 ))}
               </div>
-            </section>
+            </CollapsibleSection>
 
             {/* FAQ LOG WRAPPERS */}
             <section>
@@ -410,24 +484,25 @@ export default function PujaDetail() {
           {relatedPujas.length > 0 && (
             <section className="mt-16 border-t border-gray-100 pt-12">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className={`${displayFont.className} text-3xl font-bold text-[#252525]`}>Related Recommended Pujas</h2>
+                <h2 className={`${displayFont.className} text-3xl font-bold text-[#252525]`}>Related Pujas</h2>
                 <Link href="/pujas" className="text-xs font-bold uppercase tracking-wider text-[#a8441b] bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100 hover:bg-orange-100">View All</Link>
               </div>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Mobile: horizontal scroll, small peeking cards. sm+: normal grid. */}
+              <div className="related-scroll -mx-4 flex gap-4 overflow-x-auto px-4 pb-3 snap-x snap-mandatory sm:mx-0 sm:grid sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedPujas.map((item) => (
                   <Link
                     key={item.slug}
                     href={`/pujas/${item.slug}`}
-                    className="overflow-hidden rounded-3xl border border-[#f0e6dd] bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-md group"
+                    className="w-[62vw] max-w-[240px] shrink-0 snap-start overflow-hidden rounded-3xl border border-[#f0e6dd] bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-md group sm:w-auto sm:max-w-none sm:shrink"
                   >
-                    <img src={item.image} alt={item.name} className="h-48 w-full object-cover" />
-                    <div className="p-4">
-                      <span className="rounded-full bg-orange-50 border border-orange-100 px-2.5 py-0.5 text-[10px] font-bold text-[#a8441b] tracking-wide uppercase">{item.category}</span>
-                      <h3 className="mt-3 text-lg font-bold text-[#252525] group-hover:text-[#a8441b] transition-colors">{item.name}</h3>
-                      <p className="mt-1.5 line-clamp-2 text-xs text-gray-400 leading-5">{item.shortDescription}</p>
-                      <div className="mt-4 flex items-center justify-between pt-3 border-t border-gray-50">
-                        <span className="font-extrabold text-[#a8441b]">{formatPrice(item.onlinePrice)}</span>
-                        <span className="flex items-center gap-1 text-xs font-bold text-[#a8441b]">View <ArrowRight size={12} /></span>
+                    <img src={item.image} alt={item.name} className="h-32 sm:h-48 w-full object-cover" />
+                    <div className="p-3 sm:p-4">
+                      <span className="rounded-full bg-orange-50 border border-orange-100 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-[#a8441b] tracking-wide uppercase">{item.category}</span>
+                      <h3 className="mt-2 sm:mt-3 text-sm sm:text-lg font-bold text-[#252525] group-hover:text-[#a8441b] transition-colors truncate">{item.name}</h3>
+                      <p className="mt-1 sm:mt-1.5 hidden sm:line-clamp-2 sm:block text-xs text-gray-400 leading-5">{item.shortDescription}</p>
+                      <div className="mt-2.5 sm:mt-4 flex items-center justify-between pt-2.5 sm:pt-3 border-t border-gray-50">
+                        <span className="text-sm sm:text-base font-extrabold text-[#a8441b]">{formatPrice(item.onlinePrice)}</span>
+                        <span className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#a8441b]">View <ArrowRight size={12} /></span>
                       </div>
                     </div>
                   </Link>
@@ -455,6 +530,45 @@ export default function PujaDetail() {
           </section>
 
         </section>
+
+        {/* STICKY MOBILE BOOKING BAR — keeps booking one tap away on this long page */}
+        <div
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-orange-100 bg-white/95 px-4 py-3 backdrop-blur-sm lg:hidden"
+          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[10px] font-bold uppercase tracking-wider text-gray-400">Starting at</p>
+              <p className="truncate text-base font-extrabold text-[#a8441b]">
+                {formatPrice(puja.onlinePrice || puja.offlinePrice)}
+              </p>
+            </div>
+            <button
+              onClick={() => handleBooking("online")}
+              disabled={!puja.onlineAvailable}
+              className="shrink-0 rounded-full bg-[#a8441b] px-4 py-2.5 text-xs font-bold text-white transition active:scale-[0.98] disabled:bg-gray-200 disabled:text-gray-400"
+            >
+              Book Online
+            </button>
+            <button
+              onClick={() => handleBooking("offline")}
+              disabled={!puja.offlineAvailable}
+              className="shrink-0 rounded-full border border-[#a8441b] bg-white px-4 py-2.5 text-xs font-bold text-[#a8441b] transition active:scale-[0.98] disabled:border-gray-200 disabled:text-gray-400"
+            >
+              Home Visit
+            </button>
+          </div>
+        </div>
+
+        <style jsx global>{`
+          .related-scroll {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .related-scroll::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
 
         {/* AUTH GATE LIGHT MODAL CONTAINER */}
         {showLoginModal && (
