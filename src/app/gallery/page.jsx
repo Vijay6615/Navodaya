@@ -17,15 +17,16 @@ const displayFont = Cormorant_Garamond({
 });
 
 const gallery = [
-  { type: "image", src: "/gallery/eknath.jpg", title: "Eknath Shinde", desc: "पंडितजी ने विधि-विधान से पूजा कराई और उसके बाद नेता से भेंट कर शुभकामनाएँ एवं आशीर्वाद दिए। यह मुलाक़ात श्रद्धा, सम्मान और सकारात्मक आध्यात्मिक वातावरण को दर्शाती है।" },
-  { type: "image", src: "/gallery/dhanashree.jpg", title: "Dhanashree Verma", desc: "पंडितजी ने श्रद्धा के साथ गणेश पूजा कराई और उसके बाद शुभकामनाएँ एवं आशीर्वाद दिए। वातावरण भक्ति और सकारात्मक ऊर्जा से भर गया।" },
-  { type: "image", src: "/gallery/shreyash.jpg", title: "Shreyash Iyer", desc: "पंडितजी ने पूर्ण विधि-विधान से श्रेयस अय्यर के यहाँ पूजा कराई और उसके बाद शुभकामनाएँ व आशीर्वाद दिए। वातावरण खुशी और आध्यात्मिक सकारात्मक ऊर्जा से भर गया।" },
+  { type: "image", src: "/gallery/eknath.jpg", title: "Eknath Shinde"},
+  { type: "image", src: "/gallery/guruji.jpg", title: "Jagadguru Swami Raghavacharya Ji Maharaj"},
+  { type: "image", src: "/gallery/dhanashree.jpg", title: "Dhanashree Verma"},
+  { type: "image", src: "/gallery/shreyash.jpg", title: "Shreyash Iyer"},
   // { type: "video", src: "/videos/ujjain.mp4", title: "Ujjain", desc: "Holy fire ritual with chanting" },
-  { type: "image", src: "/gallery/baba.jpg", title: "Baba", desc: "Planetary peace ritual" },
-  { type: "image", src: "/gallery/dhanashree2.jpg", title: "Dhanashree Verma", desc: "पंडितजी ने पूर्ण विधि-विधान से पूजा कराई और उसके बाद शुभकामनाएँ व आशीर्वाद दिए। मुलाक़ात स्नेह, सम्मान और आध्यात्मिक वातावरण को दर्शाती है।" },
-  { type: "image", src: "/gallery/nehakakkar.jpg", title: "Neha Kakkar", desc: "पंडितजी ने पूर्ण विधि-विधान से नेहा कक्कड़ के यहाँ पूजा कराई और उसके बाद शुभकामनाएँ व आशीर्वाद दिए। वातावरण खुशी और आध्यात्मिक सकारात्मक ऊर्जा से भर गया।" },
-  { type: "image", src: "/gallery/random.jpg", title: "TV Star", desc: "Planetary peace ritual" },
-  { type: "image", src: "/gallery/dhanashree-father.jpg", title: "Dhanashree Verma Family", desc: "बहुत ही अच्छी और मंगलमय गणेश पूजा संपन्न हुई। पंडितजी ने विधि-विधान से पूजा कराई और सभी को शुभकामनाएँ व आशीर्वाद दिए।" },
+  { type: "image", src: "/gallery/baba.jpg", title: ""},
+  { type: "image", src: "/gallery/dhanashree2.jpg", title: "Dhanashree Verma"},
+  { type: "image", src: "/gallery/nehakakkar.jpg", title: "Neha Kakkar"},
+  { type: "image", src: "/gallery/random.jpg", title: "TV Star"},
+  { type: "image", src: "/gallery/dhanashree-father.jpg", title: "Dhanashree Verma Family"},
   //{ type: "video", src: "/videos/kirtan.mp4", title: "Bhajan & Kirtan", desc: "Devotional chanting ceremony" },
 ];
 
