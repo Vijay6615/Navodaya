@@ -183,7 +183,7 @@ export const PUJAS = [
 
   duration: "4–5 hours",
 
-  image: "/images/LaghrudraAbhishek.jpg",
+  image: "/images/shivratri.png",
 
   rating: 5.0,
 
@@ -256,6 +256,7 @@ export const PUJAS = [
       "Kalash",
       "Rudraksha",
       "Havan Samagri",
+      "more...",
     ],
   },
 
@@ -423,6 +424,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -594,6 +596,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -767,6 +770,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -936,6 +940,7 @@ export const PUJAS = [
       "Sheera Prasad Ingredients",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -1103,6 +1108,7 @@ export const PUJAS = [
       "Fruits",
       "Sweets",
       "Lakshmi Idol",
+      "more...",
     ],
   },
 
@@ -1443,6 +1449,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -1614,6 +1621,7 @@ export const PUJAS = [
       "Cotton Wicks",
       "Fruits",
       "Prasad",
+      "more...",
     ],
   },
 
@@ -1707,7 +1715,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/rudraabhishek.jpg",
+  image: "/images/LaghrudraAbhishek.jpg",
 
   rating: 4.9,
 
@@ -1784,6 +1792,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Prasad",
+      "more...",
     ],
   },
 
@@ -1952,6 +1961,7 @@ export const PUJAS = [
       "Cotton Wicks",
       "Fruits",
       "Prasad",
+      "more...",
     ],
   },
 
@@ -2213,7 +2223,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/Durga_Puja.jpg",
+  image: "/images/durgapuja.png",
 
   rating: 4.9,
 
@@ -2290,6 +2300,7 @@ export const PUJAS = [
       "Betel Leaves",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -2460,6 +2471,7 @@ export const PUJAS = [
       "Ghee",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -2630,6 +2642,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -2801,6 +2814,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -3142,6 +3156,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -3314,6 +3329,7 @@ export const PUJAS = [
       "Business Documents (Optional)",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -3482,6 +3498,7 @@ export const PUJAS = [
       "Ghee",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -3652,6 +3669,7 @@ export const PUJAS = [
       "Career Documents (Optional)",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -3823,6 +3841,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -3995,6 +4014,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -4170,6 +4190,7 @@ export const PUJAS = [
       "Dry Fruits",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -4344,6 +4365,7 @@ export const PUJAS = [
       "Navadhanya",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -4521,6 +4543,7 @@ export const PUJAS = [
       "Dry Fruits",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -4698,6 +4721,7 @@ export const PUJAS = [
       "Factory Layout (Optional)",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -4871,6 +4895,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -5047,6 +5072,7 @@ export const PUJAS = [
       "Dry Fruits",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -5216,6 +5242,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -5388,6 +5415,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -5562,6 +5590,7 @@ export const PUJAS = [
       "Dry Fruits",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -5903,6 +5932,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -6076,6 +6106,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Fruits",
       "Sweets",
+      "more...",
     ],
   },
 
@@ -6251,6 +6282,7 @@ export const PUJAS = [
       "Havan Samagri",
       "Seasonal Fruits",
       "Sweets",
+      "more...",
     ],
   },
 

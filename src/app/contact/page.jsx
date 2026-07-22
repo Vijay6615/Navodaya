@@ -316,7 +316,7 @@ export default function ContactPage() {
               }`}
             >
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#a8441b]">
-                Send a message
+                Consultation Form
               </p>
 
               <h2

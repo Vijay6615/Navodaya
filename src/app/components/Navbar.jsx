@@ -200,10 +200,10 @@ className="flex h-11 w-11 items-center justify-center bg-transparent border-none
             className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 lg:static lg:mr-12 lg:translate-x-0 lg:translate-y-0"
           >
             <img
-              src="/pujadham1.png"
-              alt="Puja Dham Logo"
-              className="block h-[72px] w-auto max-w-[220px] object-contain sm:h-[76px] sm:max-w-[240px] lg:h-[82px] lg:max-w-[270px] xl:h-[86px] xl:max-w-[300px]"
-            />
+  src="/Pujadhamlogo1.png"
+  alt="Puja Dham Logo"
+  className="block h-[100px] w-auto max-w-[320px] object-contain sm:h-[110px] sm:max-w-[350px] lg:h-[120px] lg:max-w-[400px] xl:h-[130px] xl:max-w-[450px]"
+/>
           </Link>
 
           {/* DESKTOP LINKS */}

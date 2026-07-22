@@ -2,7 +2,6 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import emailjs from "@emailjs/browser";
 import { Cormorant_Garamond } from "next/font/google";
 import {
   Calendar,
@@ -25,7 +24,7 @@ import { PUJAS } from "../pujasData";
 
 export const dynamic = "force-dynamic";
 
-const UPI_ID = "yourupi@upi";
+const UPI_ID = "9594943609@ptsbi";
 
 const displayFont = Cormorant_Garamond({
   subsets: ["latin"],
@@ -216,13 +215,6 @@ function BookingForm() {
         }
         console.warn("Database connection issue:", errorData?.error);
       }
-
-      await emailjs.send(
-        "service_lsuicww",
-        "template_3zsnbxq",
-        bookingPayload,
-        "gGm69Djy_97dOYF1O"
-      ).catch((err) => console.error("EmailJS token missing/expired:", err));
 
       if (typeof window !== "undefined") {
         const existingLocal = JSON.parse(localStorage.getItem("local_puja_bookings") || "[]");
@@ -452,7 +444,7 @@ function BookingForm() {
 
                   <div className="mt-8 grid gap-6 lg:grid-cols-[220px_1fr]">
                     <div className="rounded-[26px] bg-white p-4 shadow-sm mx-auto lg:mx-0 w-fit">
-                      <img src="/images/payment-qr.png" alt="UPI QR" className="h-40 w-40 sm:h-48 sm:w-48 object-contain" />
+                      <img src="/paytmQr.jpeg" alt="UPI QR" className="h-40 w-40 sm:h-48 sm:w-48 object-contain" />
                     </div>
                     <div>
                       <div className="rounded-2xl border border-orange-100 bg-white p-5">

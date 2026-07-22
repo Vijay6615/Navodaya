@@ -21,7 +21,7 @@ import {
 const EVENTS = {
   August: [
     {
-      img: "/images/LaghrudraAbhishek.jpg",
+      img: "/images/Shivratri.png",
       title: "Sawan Shivratri, Maha Rudra Abhishek & Havan",
       desc: "Experience the divine blessings of Lord Shiva through Maha Rudra Abhishek and Havan during the sacred month of Sawan. This powerful ritual removes negativity, fulfills wishes, improves health, and brings peace, prosperity, and spiritual growth.",
       offer: "10% OFF this month",
@@ -69,14 +69,14 @@ const EVENTS = {
 
   October: [
     {
-      img: "/images/Durga_Puja.jpg",
+      img: "/images/durgapuja.png",
       title: "Sharadiya Navratri & Durga Puja",
       desc: "Celebrate the nine divine nights of Goddess Durga with Chandi Path, Durga Puja, and special Vedic rituals for protection, prosperity, courage, and victory over negativity.",
       offer: "15% OFF this month",
       date: "2026-10-03",
     },
     {
-      img: "/images/Dussehra.jpg",
+      img: "/images/Vijayadashami.png",
       title: "Vijayadashami (Dussehra) Special Puja",
       desc: "Celebrate the victory of good over evil with Vijayadashami Puja. Seek blessings for success, new beginnings, career growth, courage, and prosperity through sacred Vedic rituals.",
       offer: "10% OFF this month",
@@ -620,7 +620,7 @@ export default function MonthlyEventsSection() {
             <div className="mx-auto mt-4 max-w-[350px] text-center md:mt-20">
 
               <img
-                src="/pujadham.png"
+                src="/Pujadhamlogo1.png"
                 alt="Puja Dham"
                 className="mx-auto h-[75px] w-auto object-contain"
               />
@@ -757,7 +757,7 @@ export default function MonthlyEventsSection() {
                 <div className="w-full max-w-[620px]">
                   <div className="text-center">
                     <img
-                      src="/pujadham.png"
+                      src="/Pujadhamlogo1.png"
                       alt="Puja Dham"
                       className="mx-auto h-[48px] w-auto object-contain sm:h-[56px] md:h-[64px]"
                     />

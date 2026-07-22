@@ -94,68 +94,16 @@ export default function Footer() {
               "
             >
               <img
-                src="/pujadham1.png"
+                src="/Pujadhamlogo1.png"
                 alt="Puja Dham Logo"
-                className="
-                  w-auto
-                  h-[70px]
-                  sm:h-[76px]
-                  lg:h-[82px]
-                  max-w-[220px]
-                  object-contain
-                "
+                className="block h-[100px] w-auto max-w-[320px] object-contain sm:h-[110px] sm:max-w-[350px] lg:h-[120px] lg:max-w-[400px] xl:h-[130px] xl:max-w-[450px]"
               />
             </Link>
 
-            <p
-              className="
-                mt-4
-                max-w-sm
-
-                text-[13px]
-                sm:text-sm
-
-                leading-6
-
-                text-orange-50/70
-              "
-            >
-              Bringing sacred rituals, authentic Vedic traditions,
-              and divine blessings closer to your home.
-            </p>
-
-            <div
-              className="
-                mt-5
-
-                inline-flex
-                items-center
-
-                gap-2
-
-                px-3
-                py-2
-
-                rounded-full
-
-                bg-white/[0.06]
-
-                border
-                border-white/[0.08]
-
-                text-[11px]
-                font-semibold
-
-                text-orange-100
-              "
-            >
-              <Sparkles
-                size={14}
-                className="text-orange-400"
-              />
-
-              Sacred Rituals • Divine Blessings
-            </div>
+          <p className="text-[12px] font-semibold uppercase tracking-[0.32em] text-[#a8441b] sm:text-[13px]">
+              Mantra · Vidhi · Aastha
+            </p>  
+          
           </div>
 
           {/* =========================================

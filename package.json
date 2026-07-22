@@ -11,6 +11,8 @@
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.2",
     "@emailjs/browser": "^4.4.1",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.0",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.23.12",
     "lottie-react": "^2.4.1",
@@ -21,7 +23,9 @@
     "next-auth": "^4.24.14",
     "nodemailer": "^7.0.13",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-email": "^6.9.0",
+    "resend": "^6.17.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

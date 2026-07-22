@@ -285,7 +285,7 @@ function LoginFormContent() {
 
           <Link href="/" className="relative z-10 inline-flex w-fit">
             <img
-              src="/pujadham.png"
+              src="/Pujadhamlogo1.png"
               alt="Puja Dham"
               className="h-[86px] w-auto max-w-[280px] object-contain"
             />

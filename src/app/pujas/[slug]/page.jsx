@@ -514,7 +514,6 @@ export default function PujaDetail() {
           {/* SPLASH LOWER CTA FOOTER SECTION */}
           <section className="mt-16 overflow-hidden rounded-[36px] bg-gradient-to-br from-[#a8441b] to-[#c95326] p-8 md:p-12 text-white text-center shadow-md">
             <div className="flex flex-col items-center max-w-xl mx-auto">
-              <Sparkles size={36} className="text-orange-200 animate-pulse" />
               <h2 className={`${displayFont.className} mt-4 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight`}>Ready to Book Your Puja?</h2>
               <p className="mt-3 text-xs sm:text-sm text-orange-100/80 leading-6 font-medium">
                 Experience authentic Vedic rituals performed with correct mantras configurations. Secure your preferred slot logs today.
