@@ -183,7 +183,7 @@ export const PUJAS = [
 
   duration: "4–5 hours",
 
-  image: "/images/shivratri.png",
+  image: "/images/Shivratri.png",
 
   rating: 5.0,
 
@@ -2054,7 +2054,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/Hanuman-ji.jpg",
+  image: "/images/Hanuman-Ji.jpg",
 
   rating: 4.9,
 
