@@ -38,7 +38,7 @@ export default function GauSevaPage() {
   const [copied, setCopied] = useState(false);
 
   const finalAmount = customAmount ? Number(customAmount) : selectedAmount;
-  const upiId = "yourupi@upi";
+  const upiId = "9594943609@ptsbi";
 
   const copyUpi = async () => {
     await navigator.clipboard.writeText(upiId);
@@ -223,7 +223,7 @@ export default function GauSevaPage() {
               <h3 className={`${cormorant.className} mt-2 text-4xl font-semibold`}>₹{finalAmount}</h3>
               <p className="mt-2 text-sm text-[#79665d]">Scan the QR or use the UPI ID below.</p>
               <div className="mt-6 border border-[#e6dad1] p-4">
-                <img src="/images/payment-qr.png" alt="Payment QR" className="w-48 h-48 object-contain mx-auto" />
+                <img src="/paytmQr.jpeg" alt="Payment QR" className="w-48 h-48 object-contain mx-auto" />
               </div>
               <button onClick={copyUpi} className="mt-4 w-full flex items-center justify-between border border-[#dfd1c7] px-4 py-3 text-sm">
                 <span>{upiId}</span>

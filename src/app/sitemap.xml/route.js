@@ -21,6 +21,16 @@ export async function GET() {
       priority: "0.9",
     },
     {
+      url: `${BASE_URL}/seva`,
+      changeFrequency: "weekly",
+      priority: "0.8",
+    },
+    {
+      url: `${BASE_URL}/gau-seva`,
+      changeFrequency: "weekly",
+      priority: "0.8",
+    },
+    {
       url: `${BASE_URL}/aboutpanditji`,
       changeFrequency: "monthly",
       priority: "0.8",
@@ -37,7 +47,7 @@ export async function GET() {
     },
   ];
 
-  // Sirf pujasData.js mein maujood active pujas
+  // Sirf pujasData file mein maujood valid puja pages
   const pujaPages = PUJAS.filter(
     (puja) =>
       puja &&
@@ -49,11 +59,14 @@ export async function GET() {
     priority: "0.8",
   }));
 
-  // Duplicate URL ko remove karega
+  // Static pages aur puja pages ko combine karega
   const allPages = [...staticPages, ...pujaPages];
 
+  // Duplicate URLs remove karega
   const uniquePages = Array.from(
-    new Map(allPages.map((page) => [page.url, page])).values()
+    new Map(
+      allPages.map((page) => [page.url, page])
+    ).values()
   );
 
   const urlsXml = uniquePages

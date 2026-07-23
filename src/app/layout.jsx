@@ -4,6 +4,7 @@ import AppShell from "./components/AppShell";
 
 const WEBSITE_URL = "https://www.pujadham.co.in";
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
+const LOGO_URL = `${WEBSITE_URL}/Pujadhamlogo1.png`;
 
 export const metadata = {
   metadataBase: new URL(WEBSITE_URL),
@@ -18,6 +19,8 @@ export const metadata = {
 
   keywords: [
     "Puja Dham",
+    "Pujadham",
+    "PujaDham",
     "online puja booking",
     "offline puja booking",
     "Pandit Ji in Mumbai",
@@ -51,12 +54,11 @@ export const metadata = {
       "Experience authentic Vedic pujas with Puja Dham. Book online and offline puja services, astrology consultations, vastu guidance, and spiritual services.",
 
     url: WEBSITE_URL,
-
     siteName: "Puja Dham",
 
     images: [
       {
-        url: "/og-pujadham.jpg",
+        url: "/Pujadhamlogo1.png",
         width: 1200,
         height: 630,
         alt: "Puja Dham - Online and Offline Vedic Puja Services",
@@ -79,7 +81,13 @@ export const metadata = {
   },
 
   icons: {
-    icon: "/Pujadhamlogo1.png",
+    icon: [
+      {
+        url: "/Pujadhamlogo1.png",
+        type: "image/png",
+      },
+    ],
+
     shortcut: "/Pujadhamlogo1.png",
     apple: "/Pujadhamlogo1.png",
   },
@@ -105,23 +113,67 @@ export const metadata = {
   category: "Religious Services",
 };
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+
+  name: "Puja Dham",
+
+  alternateName: [
+    "Pujadham",
+    "PujaDham",
+  ],
+
+  url: WEBSITE_URL,
+
+  description:
+    "Puja Dham is an online and offline Vedic puja booking platform offering authentic puja services, astrology consultation, vastu guidance, and spiritual services.",
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+
+  name: "Puja Dham",
+  alternateName: "Pujadham",
+
+  url: WEBSITE_URL,
+  logo: LOGO_URL,
+  image: LOGO_URL,
+
+  description:
+    "Puja Dham provides online and offline Vedic puja services, astrology consultations, vastu guidance, and spiritual services with experienced Pandit Ji.",
+
+  sameAs: [
+    INSTAGRAM_URL,
+  ],
+
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    availableLanguage: [
+      "Hindi",
+      "English",
+    ],
+  },
+};
+
 export default function RootLayout({ children }) {
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Puja Dham",
-    url: WEBSITE_URL,
-    logo: `${WEBSITE_URL}/Pujadhamlogo1.png`,
-
-    description:
-      "Puja Dham provides online and offline Vedic puja services, astrology consultations, vastu guidance, and spiritual services.",
-
-    sameAs: [INSTAGRAM_URL],
-  };
-
   return (
     <html lang="en">
       <body>
+        {/* Website schema for Google brand/site name */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema).replace(
+              /</g,
+              "\\u003c"
+            ),
+          }}
+        />
+
+        {/* Organization schema for logo and Instagram */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

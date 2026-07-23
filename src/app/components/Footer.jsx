@@ -585,9 +585,8 @@ export default function Footer() {
                     leading-5
                   "
                 >
-                  A/101,102, Shree Krishna Darshan, Behind Anthony School, Nagindas, NSP(E)
+                  Mumbai, Maharashtra, India                  
                   <br />
-                  Mumbai, India
                 </span>
               </li>
             </ul>

@@ -100,7 +100,6 @@ export default function MyBookingsPage() {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-[#a8441b]">
             <ShieldAlert size={24} />
           </div>
-          <h2 className="mt-4 text-xl font-bold text-[#252525]">Access Restricted</h2>
           <p className="mt-2 text-sm text-gray-500 leading-6">
             Please log in to your account to view your personalized puja booking history.
           </p>

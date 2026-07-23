@@ -59,7 +59,7 @@ export default function ConsultHero() {
               <p
                 className={`${displayFont.className} text-[28px] font-semibold text-[#342925]`}
               >
-                15K+
+                20K+
               </p>
               <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-[#998a82]">
                 Pujas
