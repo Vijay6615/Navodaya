@@ -21,29 +21,99 @@ const ALLOWED_STATUS = [
   "completed",
 ];
 
-// ==========================================
-// PATCH: Update booking status and send email
-// ==========================================
-export async function PATCH(req, { params }) {
+async function checkAdmin() {
+  const session =
+    await getServerSession(authOptions);
+
+  const sessionEmail = session?.user?.email
+    ?.toLowerCase()
+    .trim();
+
+  const adminEmail = process.env.ADMIN_EMAIL
+    ?.toLowerCase()
+    .trim();
+
+  return {
+    session,
+    isAdmin:
+      !!sessionEmail &&
+      !!adminEmail &&
+      sessionEmail === adminEmail,
+  };
+}
+
+function getDatabaseAndCollection(
+  client,
+  bookingType
+) {
+  if (bookingType === "seva") {
+    return {
+      database: client.db("navodaya"),
+      collectionName: "seva_bookings",
+      statusField: "bookingStatus",
+    };
+  }
+
+  return {
+    database: client.db("navodayapuja"),
+    collectionName: "bookings",
+    statusField: "status",
+  };
+}
+
+function getBookingQuery(id) {
+  return ObjectId.isValid(id)
+    ? {
+        _id: new ObjectId(id),
+      }
+    : {
+        bookingId: id,
+      };
+}
+
+function getEmailTemplate(status) {
+  switch (status) {
+    case "pending":
+      return {
+        template: BookingPending,
+        prefix: "⌛ Booking Pending",
+      };
+
+    case "confirmed":
+      return {
+        template: BookingConfirmed,
+        prefix: "✅ Booking Confirmed",
+      };
+
+    case "rejected":
+    case "cancelled":
+      return {
+        template: BookingRejected,
+        prefix: "❌ Booking Update",
+      };
+
+    case "completed":
+      return {
+        template: BookingCompleted,
+        prefix: "🙏 Booking Completed",
+      };
+
+    default:
+      return {
+        template: null,
+        prefix: "",
+      };
+  }
+}
+
+export async function PATCH(
+  request,
+  { params }
+) {
   try {
-    // ==========================================
-    // 1. Admin authentication
-    // ==========================================
-    const session = await getServerSession(authOptions);
+    const { isAdmin } = await checkAdmin();
 
-    const sessionEmail = session?.user?.email
-      ?.toLowerCase()
-      .trim();
-
-    const adminEmail = process.env.ADMIN_EMAIL
-      ?.toLowerCase()
-      .trim();
-
-    if (
-      !sessionEmail ||
-      !adminEmail ||
-      sessionEmail !== adminEmail
-    ) {
+    if (!isAdmin) {
       return NextResponse.json(
         {
           success: false,
@@ -53,28 +123,31 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    // ==========================================
-    // 2. Get booking ID
-    // ==========================================
     const resolvedParams = await params;
-    const { id } = resolvedParams;
+    const id = resolvedParams?.id;
 
     if (!id) {
       return NextResponse.json(
         {
           success: false,
-          error: "Missing Booking ID Parameter",
+          error: "Missing Booking ID",
         },
         { status: 400 }
       );
     }
 
-    // ==========================================
-    // 3. Read and validate request body
-    // ==========================================
-    const body = await req.json();
+    const body = await request.json();
+
+    const bookingType =
+      body?.bookingType === "seva"
+        ? "seva"
+        : "puja";
 
     const requestedStatus = body?.status
+      ?.toLowerCase()
+      .trim();
+
+    const paymentStatus = body?.paymentStatus
       ?.toLowerCase()
       .trim();
 
@@ -84,8 +157,10 @@ export async function PATCH(req, { params }) {
       "";
 
     if (
-      !requestedStatus ||
-      !ALLOWED_STATUS.includes(requestedStatus)
+      requestedStatus &&
+      !ALLOWED_STATUS.includes(
+        requestedStatus
+      )
     ) {
       return NextResponse.json(
         {
@@ -97,294 +172,300 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    // ==========================================
-    // 4. Connect MongoDB
-    // ==========================================
+    const allowedPaymentStatuses = [
+      "pending",
+      "submitted",
+      "paid",
+      "failed",
+    ];
+
+    if (
+      paymentStatus &&
+      !allowedPaymentStatuses.includes(
+        paymentStatus
+      )
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid payment status",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (
+      !requestedStatus &&
+      !paymentStatus
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Status or payment status is required",
+        },
+        { status: 400 }
+      );
+    }
+
     const client = await clientPromise;
-    const db = client.db("navodayapuja");
 
-    const bookingsCollection =
-      db.collection("bookings");
+    const {
+      database,
+      collectionName,
+      statusField,
+    } = getDatabaseAndCollection(
+      client,
+      bookingType
+    );
 
-    // Supports MongoDB _id and custom bookingId
-    const query = ObjectId.isValid(id)
-      ? { _id: new ObjectId(id) }
-      : { bookingId: id };
+    const collection =
+      database.collection(collectionName);
 
-    // ==========================================
-    // 5. Find existing booking
-    // ==========================================
+    const query = getBookingQuery(id);
+
     const existingBooking =
-      await bookingsCollection.findOne(query);
+      await collection.findOne(query);
 
     if (!existingBooking) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            "Booking not found in navodayapuja database",
+          error: `${
+            bookingType === "seva"
+              ? "Seva"
+              : "Puja"
+          } booking not found`,
         },
         { status: 404 }
       );
     }
 
-    const existingStatus = String(
-      existingBooking.status || ""
-    )
-      .toLowerCase()
-      .trim();
-
-    // Prevent duplicate email for same status
-    if (existingStatus === requestedStatus) {
-      return NextResponse.json(
-        {
-          success: true,
-          status: requestedStatus,
-          emailSent: false,
-          message: `Booking is already ${requestedStatus}`,
-        },
-        { status: 200 }
-      );
-    }
-
-    // ==========================================
-    // 6. Prepare update operation
-    // ==========================================
-    const updateOperation = {
-      $set: {
-        status: requestedStatus,
-        updatedAt: new Date(),
-      },
+    const updateData = {
+      updatedAt: new Date(),
     };
 
-    if (
-      requestedStatus === "rejected" ||
-      requestedStatus === "cancelled"
-    ) {
-      updateOperation.$set.rejectionReason =
-        rejectionReason ||
-        "The selected date or time slot is currently unavailable.";
-    } else {
-      updateOperation.$unset = {
-        rejectionReason: "",
-      };
+    if (requestedStatus) {
+      updateData[statusField] =
+        requestedStatus;
+
+      if (
+        requestedStatus === "rejected" ||
+        requestedStatus === "cancelled"
+      ) {
+        updateData.rejectionReason =
+          rejectionReason ||
+          "The booking has been cancelled by Pandit Ji.";
+      } else {
+        updateData.rejectionReason = "";
+      }
+
+      if (
+        bookingType === "seva" &&
+        requestedStatus === "confirmed" &&
+        existingBooking.paymentStatus ===
+          "submitted"
+      ) {
+        updateData.paymentStatus = "paid";
+        updateData.paymentVerifiedAt =
+          new Date();
+      }
+
+      if (
+        requestedStatus === "completed"
+      ) {
+        updateData.completedAt =
+          new Date();
+      }
     }
 
-    // ==========================================
-    // 7. Update booking status
-    // ==========================================
-    const updateResult =
-      await bookingsCollection.updateOne(
-        query,
-        updateOperation
-      );
+    if (paymentStatus) {
+      updateData.paymentStatus =
+        paymentStatus;
 
-    if (updateResult.matchedCount === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Booking update failed",
-        },
-        { status: 404 }
-      );
+      if (paymentStatus === "paid") {
+        updateData.paymentVerifiedAt =
+          new Date();
+      }
     }
 
-    // ==========================================
-    // 8. Fetch updated booking
-    // ==========================================
-    const updatedBooking =
-      await bookingsCollection.findOne(query);
-
-    if (!updatedBooking) {
-      return NextResponse.json(
-        {
-          success: false,
-          error:
-            "Booking updated but updated record could not be loaded",
-        },
-        { status: 500 }
-      );
-    }
-
-    console.log(
-      `✅ Booking status updated: ${requestedStatus}`
+    await collection.updateOne(
+      query,
+      {
+        $set: updateData,
+      }
     );
 
-    // ==========================================
-    // 9. Select email template and subject
-    // ==========================================
-    let EmailTemplate = null;
-    let emailSubject = "";
-
-    switch (requestedStatus) {
-      case "pending":
-        EmailTemplate = BookingPending;
-        emailSubject = `⌛ Booking Pending - ${
-          updatedBooking.pujaName || "Puja Dham"
-        }`;
-        break;
-
-      case "confirmed":
-        EmailTemplate = BookingConfirmed;
-        emailSubject = `✅ Booking Confirmed - ${
-          updatedBooking.pujaName || "Puja Dham"
-        }`;
-        break;
-
-      case "rejected":
-      case "cancelled":
-        EmailTemplate = BookingRejected;
-        emailSubject = `❌ Booking Update - ${
-          updatedBooking.pujaName || "Puja Dham"
-        }`;
-        break;
-
-      case "completed":
-        EmailTemplate = BookingCompleted;
-        emailSubject = `🙏 Puja Completed - ${
-          updatedBooking.pujaName || "Puja Dham"
-        }`;
-        break;
-
-      default:
-        EmailTemplate = null;
-    }
+    const updatedBooking =
+      await collection.findOne(query);
 
     let emailSent = false;
-    let emailId = null;
-    let emailErrorMessage = null;
+    let emailError = null;
 
-    // ==========================================
-    // 10. Send email to actual booking user
-    // ==========================================
-    if (EmailTemplate) {
+    if (requestedStatus) {
       try {
+        const recipientEmail = (
+          updatedBooking.email ||
+          updatedBooking.userEmail ||
+          ""
+        ).trim();
+
         const senderEmail =
           process.env.EMAIL_FROM?.trim();
 
-        if (!senderEmail) {
-          throw new Error(
-            "EMAIL_FROM is missing in .env.local"
-          );
-        }
-
-        const recipientEmail =
-          updatedBooking.email?.trim();
-
-        if (!recipientEmail) {
-          throw new Error(
-            "Booking recipient email is missing"
-          );
-        }
-
-        const appUrl = (
-          process.env.NEXT_PUBLIC_APP_URL || ""
-        ).replace(/\/$/, "");
-
-        const dashboardUrl = appUrl
-          ? `${appUrl}/my-bookings`
-          : "";
-
-        const whatsappUrl =
-          process.env.NEXT_PUBLIC_WHATSAPP_URL || "";
-
-        const bookingId =
-          updatedBooking.bookingId ||
-          updatedBooking._id.toString();
-
-        const emailHtml = await render(
-          React.createElement(EmailTemplate, {
-            booking: {
-              ...updatedBooking,
-              _id: updatedBooking._id.toString(),
-              bookingId,
-              status: requestedStatus,
-            },
-
-            reason:
-              updatedBooking.rejectionReason || "",
-
-            dashboardUrl,
-            whatsappUrl,
-          })
+        const {
+          template: EmailTemplate,
+          prefix,
+        } = getEmailTemplate(
+          requestedStatus
         );
 
-        console.log(
-          `📧 Sending ${requestedStatus} email to:`,
-          recipientEmail
-        );
+        if (
+          recipientEmail &&
+          senderEmail &&
+          EmailTemplate
+        ) {
+          const appUrl = (
+            process.env
+              .NEXT_PUBLIC_APP_URL || ""
+          ).replace(/\/$/, "");
 
-        const emailResponse =
-          await resend.emails.send({
-            from: senderEmail,
-            to: recipientEmail,
-            subject: emailSubject,
-            html: emailHtml,
-          });
+          const dashboardUrl = appUrl
+            ? `${appUrl}/my-bookings?tab=${bookingType}`
+            : "";
 
-        console.log(
-          `📧 ${requestedStatus.toUpperCase()} EMAIL RESPONSE:`,
-          JSON.stringify(emailResponse, null, 2)
-        );
+          const whatsappUrl =
+            process.env
+              .NEXT_PUBLIC_WHATSAPP_URL ||
+            "";
 
-        if (emailResponse?.error) {
-          emailErrorMessage =
-            emailResponse.error.message ||
-            "Resend rejected the email";
+          const bookingName =
+            bookingType === "seva"
+              ? updatedBooking.sevaType ||
+                "Gau Seva"
+              : updatedBooking.pujaName ||
+                updatedBooking.puja ||
+                "Puja";
 
-          console.error(
-            `❌ ${requestedStatus} email failed:`,
-            emailResponse.error
+          const emailBooking = {
+            ...updatedBooking,
+
+            _id:
+              updatedBooking._id.toString(),
+
+            bookingId:
+              updatedBooking.bookingId ||
+              updatedBooking._id.toString(),
+
+            status: requestedStatus,
+
+            pujaName: bookingName,
+
+            pujaType:
+              bookingType === "seva"
+                ? "Seva"
+                : updatedBooking.pujaType,
+
+            price:
+              bookingType === "seva"
+                ? `₹${updatedBooking.amount}`
+                : updatedBooking.price,
+
+            date:
+              bookingType === "seva"
+                ? new Date(
+                    updatedBooking.createdAt
+                  ).toLocaleDateString(
+                    "en-IN"
+                  )
+                : updatedBooking.date,
+
+            timeSlot:
+              bookingType === "seva"
+                ? "Flexible"
+                : updatedBooking.timeSlot,
+          };
+
+          const html = await render(
+            React.createElement(
+              EmailTemplate,
+              {
+                booking: emailBooking,
+
+                reason:
+                  updatedBooking
+                    .rejectionReason || "",
+
+                dashboardUrl,
+                whatsappUrl,
+              }
+            )
           );
-        } else {
-          emailSent = true;
-          emailId =
-            emailResponse?.data?.id || null;
 
-          console.log(
-            `✅ ${requestedStatus} email accepted by Resend`
-          );
+          const response =
+            await resend.emails.send({
+              from: senderEmail,
+              to: recipientEmail,
 
-          console.log(
-            "📧 Resend Email ID:",
-            emailId
-          );
+              subject: `${prefix} - ${bookingName}`,
+
+              html,
+            });
+
+          if (response?.error) {
+            emailError =
+              response.error.message;
+          } else {
+            emailSent = true;
+          }
         }
-      } catch (emailError) {
-        emailErrorMessage =
-          emailError?.message ||
-          "Unknown email error";
+      } catch (error) {
+        emailError = error.message;
 
         console.error(
-          `❌ ${requestedStatus} email sending failed:`,
-          emailError
+          "Status email error:",
+          error
         );
       }
     }
 
-    // ==========================================
-    // 11. Return success response
-    // ==========================================
     return NextResponse.json(
       {
         success: true,
-        message: `Booking status updated to ${requestedStatus}`,
-        status: requestedStatus,
+
+        message: `${
+          bookingType === "seva"
+            ? "Seva"
+            : "Puja"
+        } booking updated successfully`,
+
+        bookingType,
+        status:
+          requestedStatus ||
+          updatedBooking[statusField],
+
+        paymentStatus:
+          updatedBooking.paymentStatus,
+
         emailSent,
-        emailId,
-        emailError: emailErrorMessage,
+        emailError,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("❌ Admin PATCH error:", error);
+    console.error(
+      "ADMIN PATCH ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
         success: false,
         error: "Update failed",
+
         details:
-          process.env.NODE_ENV === "development"
+          process.env.NODE_ENV ===
+          "development"
             ? error.message
             : undefined,
       },
@@ -393,27 +474,14 @@ export async function PATCH(req, { params }) {
   }
 }
 
-// ==========================================
-// DELETE: Delete booking
-// ==========================================
-export async function DELETE(req, { params }) {
+export async function DELETE(
+  request,
+  { params }
+) {
   try {
-    // Admin authentication
-    const session = await getServerSession(authOptions);
+    const { isAdmin } = await checkAdmin();
 
-    const sessionEmail = session?.user?.email
-      ?.toLowerCase()
-      .trim();
-
-    const adminEmail = process.env.ADMIN_EMAIL
-      ?.toLowerCase()
-      .trim();
-
-    if (
-      !sessionEmail ||
-      !adminEmail ||
-      sessionEmail !== adminEmail
-    ) {
+    if (!isAdmin) {
       return NextResponse.json(
         {
           success: false,
@@ -424,28 +492,40 @@ export async function DELETE(req, { params }) {
     }
 
     const resolvedParams = await params;
-    const { id } = resolvedParams;
+    const id = resolvedParams?.id;
+
+    const body = await request
+      .json()
+      .catch(() => ({}));
+
+    const bookingType =
+      body?.bookingType === "seva"
+        ? "seva"
+        : "puja";
 
     if (!id) {
       return NextResponse.json(
         {
           success: false,
-          error: "Missing Target ID",
+          error: "Missing booking ID",
         },
         { status: 400 }
       );
     }
 
     const client = await clientPromise;
-    const db = client.db("navodayapuja");
 
-    const query = ObjectId.isValid(id)
-      ? { _id: new ObjectId(id) }
-      : { bookingId: id };
+    const {
+      database,
+      collectionName,
+    } = getDatabaseAndCollection(
+      client,
+      bookingType
+    );
 
-    const result = await db
-      .collection("bookings")
-      .deleteOne(query);
+    const result = await database
+      .collection(collectionName)
+      .deleteOne(getBookingQuery(id));
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
@@ -457,24 +537,24 @@ export async function DELETE(req, { params }) {
       );
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Booking deleted successfully",
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: `${
+        bookingType === "seva"
+          ? "Seva"
+          : "Puja"
+      } booking deleted successfully`,
+    });
   } catch (error) {
-    console.error("❌ Admin DELETE error:", error);
+    console.error(
+      "ADMIN DELETE ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
         success: false,
         error: "Delete failed",
-        details:
-          process.env.NODE_ENV === "development"
-            ? error.message
-            : undefined,
       },
       { status: 500 }
     );

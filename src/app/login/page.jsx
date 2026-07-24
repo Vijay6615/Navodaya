@@ -342,7 +342,7 @@ function LoginFormContent() {
 
               <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 <img
-                  src="/pujadham.png"
+                  src="/Pujadhamlogo1.png"
                   alt="Puja Dham"
                   className="h-[58px] w-auto max-w-[190px] object-contain"
                 />

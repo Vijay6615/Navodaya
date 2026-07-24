@@ -226,7 +226,7 @@ export default function PujaDetail() {
                     disabled={!puja.onlineAvailable}
                     className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#a8441b] px-4 py-2.5 text-xs font-bold text-white transition group-hover:bg-[#8d3816] disabled:bg-gray-200 disabled:text-gray-400"
                   >
-                    <span>Book Online Call</span>
+                    <span>Book Online Puja</span>
                     <ArrowRight size={14} />
                   </button>
                 </div>
