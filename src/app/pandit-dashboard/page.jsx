@@ -331,12 +331,6 @@ export default function PanditDashboard() {
             <h1 className="mt-3 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl lg:text-6xl">
               Pandit Ji Dashboard
             </h1>
-
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-[#756a63] sm:text-base">
-              Manage Puja and Seva requests, verify
-              payments, update booking status, and keep
-              every devotee informed.
-            </p>
           </div>
         </div>
       </section>

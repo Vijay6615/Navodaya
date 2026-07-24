@@ -647,7 +647,7 @@ export default function GauSevaPage() {
 
             <div className="text-center">
               <img
-                src="/pujadham.png"
+                src="/Pujadhamlogo1.png"
                 alt="Puja Dham"
                 className="mx-auto h-16 object-contain"
               />

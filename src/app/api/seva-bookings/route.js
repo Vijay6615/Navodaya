@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+
 import clientPromise from "@/lib/mongodb";
+import { authOptions } from "@/lib/auth";
+import { resend } from "@/lib/resend";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const DATABASE_NAME = "navodaya";
 const COLLECTION_NAME = "seva_bookings";
@@ -14,12 +19,27 @@ function formatBooking(booking) {
   };
 }
 
-// CREATE SEVA BOOKING
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+// ==========================================
+// POST: Create new Seva booking
+// ==========================================
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
+    const userEmail = session?.user?.email
+      ?.toLowerCase()
+      .trim();
+
+    if (!userEmail) {
       return NextResponse.json(
         {
           success: false,
@@ -42,10 +62,14 @@ export async function POST(request) {
     } = body;
 
     const numericAmount = Number(amount);
+    const cleanName = String(name || "").trim();
+    const cleanPhone = String(phone || "").trim();
+    const cleanSevaType =
+      String(sevaType || "").trim() || "Gau Seva";
 
     if (
-      !name?.trim() ||
-      !phone?.trim() ||
+      !cleanName ||
+      !cleanPhone ||
       !Number.isFinite(numericAmount) ||
       numericAmount < 1
     ) {
@@ -70,20 +94,25 @@ export async function POST(request) {
     const newBooking = {
       bookingType: "seva",
 
-      sevaType: sevaType.trim() || "Gau Seva",
+      sevaType: cleanSevaType,
       amount: numericAmount,
 
-      userId: session.user.id || null,
-      userEmail: session.user.email.toLowerCase(),
-      userName: session.user.name || name.trim(),
+      userId: session?.user?.id || null,
+      userEmail,
+      userName:
+        session?.user?.name || cleanName,
 
-      name: name.trim(),
-      email: session.user.email.toLowerCase(),
-      phone: phone.trim(),
+      name: cleanName,
+      email: userEmail,
+      phone: cleanPhone,
 
-      sankalpName: sankalpName.trim(),
-      gotra: gotra.trim(),
-      message: message.trim(),
+      sankalpName: String(
+        sankalpName || ""
+      ).trim(),
+
+      gotra: String(gotra || "").trim(),
+
+      message: String(message || "").trim(),
 
       paymentStatus: "pending",
       bookingStatus: "pending",
@@ -92,63 +121,357 @@ export async function POST(request) {
       updatedAt: now,
     };
 
-    const result = await collection.insertOne(newBooking);
+    const result = await collection.insertOne(
+      newBooking
+    );
+
+    const bookingId = result.insertedId.toString();
+
+    console.log(
+      "✅ Seva booking saved:",
+      bookingId
+    );
+
+    // ==========================================
+    // Send notification email to Pandit Ji
+    // Booking remains saved even if email fails
+    // ==========================================
+    let adminEmailSent = false;
+    let adminEmailId = null;
+    let adminEmailError = null;
+
+    try {
+      const adminEmail =
+        process.env.ADMIN_EMAIL
+          ?.toLowerCase()
+          .trim();
+
+      const senderEmail =
+        process.env.EMAIL_FROM?.trim();
+
+      if (!adminEmail) {
+        throw new Error(
+          "ADMIN_EMAIL is missing"
+        );
+      }
+
+      if (!senderEmail) {
+        throw new Error(
+          "EMAIL_FROM is missing"
+        );
+      }
+
+      const appUrl = (
+        process.env.NEXT_PUBLIC_APP_URL || ""
+      ).replace(/\/$/, "");
+
+      const dashboardUrl = appUrl
+        ? `${appUrl}/pandit-dashboard`
+        : "";
+
+      const safeName = escapeHtml(cleanName);
+      const safeEmail = escapeHtml(userEmail);
+      const safePhone = escapeHtml(cleanPhone);
+      const safeSevaType =
+        escapeHtml(cleanSevaType);
+
+      const safeSankalp = escapeHtml(
+        newBooking.sankalpName ||
+          "Not provided"
+      );
+
+      const safeGotra = escapeHtml(
+        newBooking.gotra ||
+          "Not provided"
+      );
+
+      const safeMessage = escapeHtml(
+        newBooking.message ||
+          "No special message"
+      );
+
+      const adminEmailResponse =
+        await resend.emails.send({
+          from: senderEmail,
+          to: adminEmail,
+
+          subject: `🐄 New Gau Seva - ${cleanSevaType}`,
+
+          html: `
+            <div
+              style="
+                margin:0;
+                padding:32px 16px;
+                background:#f7f1ec;
+                font-family:Arial,sans-serif;
+                color:#2f241f;
+              "
+            >
+              <div
+                style="
+                  max-width:620px;
+                  margin:0 auto;
+                  background:#ffffff;
+                  border:1px solid #eadfd7;
+                  border-radius:20px;
+                  overflow:hidden;
+                "
+              >
+                <div
+                  style="
+                    padding:28px 32px;
+                    background:#431407;
+                    color:#ffffff;
+                  "
+                >
+                  <p
+                    style="
+                      margin:0 0 8px;
+                      font-size:11px;
+                      letter-spacing:2px;
+                      text-transform:uppercase;
+                      color:#e5b99d;
+                    "
+                  >
+                    Puja Dham Notification
+                  </p>
+
+                  <h1
+                    style="
+                      margin:0;
+                      font-size:28px;
+                    "
+                  >
+                    New Gau Seva Received
+                  </h1>
+                </div>
+
+                <div style="padding:32px">
+                  <p
+                    style="
+                      margin-top:0;
+                      font-size:16px;
+                      line-height:26px;
+                    "
+                  >
+                    <strong>${safeName}</strong>
+                    has offered
+                    <strong>${safeSevaType}</strong>
+                    of
+                    <strong>₹${numericAmount}</strong>.
+                  </p>
+
+                  <div
+                    style="
+                      margin:24px 0;
+                      padding:20px;
+                      background:#fffaf6;
+                      border:1px solid #f0e4db;
+                      border-radius:14px;
+                    "
+                  >
+                    <p>
+                      <strong>Booking ID:</strong>
+                      ${bookingId}
+                    </p>
+
+                    <p>
+                      <strong>Seva:</strong>
+                      ${safeSevaType}
+                    </p>
+
+                    <p>
+                      <strong>Amount:</strong>
+                      ₹${numericAmount}
+                    </p>
+
+                    <p>
+                      <strong>Name:</strong>
+                      ${safeName}
+                    </p>
+
+                    <p>
+                      <strong>Email:</strong>
+                      ${safeEmail}
+                    </p>
+
+                    <p>
+                      <strong>Phone:</strong>
+                      ${safePhone}
+                    </p>
+
+                    <p>
+                      <strong>Sankalp Name:</strong>
+                      ${safeSankalp}
+                    </p>
+
+                    <p>
+                      <strong>Gotra:</strong>
+                      ${safeGotra}
+                    </p>
+
+                    <p style="margin-bottom:0">
+                      <strong>Message:</strong>
+                      ${safeMessage}
+                    </p>
+                  </div>
+
+                  <p>
+                    <strong>Payment Status:</strong>
+                    Pending
+                  </p>
+
+                  <p>
+                    <strong>Booking Status:</strong>
+                    Pending
+                  </p>
+
+                  ${
+                    dashboardUrl
+                      ? `
+                        <a
+                          href="${dashboardUrl}"
+                          style="
+                            display:inline-block;
+                            margin-top:18px;
+                            padding:13px 22px;
+                            background:#a8441b;
+                            color:#ffffff;
+                            text-decoration:none;
+                            border-radius:10px;
+                            font-weight:bold;
+                          "
+                        >
+                          Open Pandit Dashboard
+                        </a>
+                      `
+                      : ""
+                  }
+                </div>
+              </div>
+            </div>
+          `,
+        });
+
+      console.log(
+        "📧 ADMIN SEVA EMAIL RESPONSE:",
+        JSON.stringify(
+          adminEmailResponse,
+          null,
+          2
+        )
+      );
+
+      if (adminEmailResponse?.error) {
+        adminEmailError =
+          adminEmailResponse.error.message ||
+          "Resend rejected admin email";
+
+        console.error(
+          "❌ Admin Seva email failed:",
+          adminEmailResponse.error
+        );
+      } else {
+        adminEmailSent = true;
+
+        adminEmailId =
+          adminEmailResponse?.data?.id ||
+          null;
+
+        console.log(
+          "✅ Pandit Ji Seva email sent:",
+          adminEmailId
+        );
+      }
+    } catch (emailError) {
+      adminEmailError =
+        emailError?.message ||
+        "Unknown admin email error";
+
+      console.error(
+        "❌ ADMIN SEVA EMAIL ERROR:",
+        emailError
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Seva booking created successfully.",
+        message:
+          "Seva booking created successfully.",
+
         booking: {
           ...newBooking,
-          _id: result.insertedId.toString(),
+          _id: bookingId,
         },
+
+        adminEmailSent,
+        adminEmailId,
+        adminEmailError,
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Create Seva booking error:", error);
+    console.error(
+      "CREATE SEVA BOOKING ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to create Seva booking.",
-        error: error.message,
+        message:
+          "Unable to create Seva booking.",
+
+        error:
+          process.env.NODE_ENV ===
+          "development"
+            ? error.message
+            : undefined,
       },
       { status: 500 }
     );
   }
 }
 
-// GET USER OR ADMIN SEVA BOOKINGS
+// ==========================================
+// GET: User gets own Seva bookings
+// Admin gets all Seva bookings
+// ==========================================
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
+    const currentEmail =
+      session?.user?.email
+        ?.toLowerCase()
+        .trim();
+
+    if (!currentEmail) {
       return NextResponse.json(
         {
           success: false,
-          message: "Please login to view Seva bookings.",
+          message:
+            "Please login to view Seva bookings.",
         },
         { status: 401 }
       );
     }
+
+    const adminEmail =
+      process.env.ADMIN_EMAIL
+        ?.toLowerCase()
+        .trim();
+
+    const isAdmin =
+      Boolean(adminEmail) &&
+      currentEmail === adminEmail;
 
     const client = await clientPromise;
 
     const collection = client
       .db(DATABASE_NAME)
       .collection(COLLECTION_NAME);
-
-    const currentEmail =
-      session.user.email.toLowerCase();
-
-    const adminEmail =
-      process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase();
-
-    const isAdmin =
-      !!adminEmail &&
-      currentEmail === adminEmail;
 
     const filter = isAdmin
       ? {}
@@ -164,39 +487,61 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return NextResponse.json(
-      {
-        success: true,
-        isAdmin,
-        count: bookings.length,
-        bookings: bookings.map(formatBooking),
-      },
-      { status: 200 }
+    const response = NextResponse.json({
+      success: true,
+      isAdmin,
+      count: bookings.length,
+      bookings: bookings.map(formatBooking),
+    });
+
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, max-age=0, must-revalidate"
     );
+
+    return response;
   } catch (error) {
-    console.error("Fetch Seva bookings error:", error);
+    console.error(
+      "FETCH SEVA BOOKINGS ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to fetch Seva bookings.",
-        error: error.message,
+        message:
+          "Unable to fetch Seva bookings.",
+
+        error:
+          process.env.NODE_ENV ===
+          "development"
+            ? error.message
+            : undefined,
       },
       { status: 500 }
     );
   }
 }
 
-// UPDATE PAYMENT OR BOOKING STATUS
+// ==========================================
+// PATCH: User submits payment;
+// Admin updates status/payment
+// ==========================================
 export async function PATCH(request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
+    const currentEmail =
+      session?.user?.email
+        ?.toLowerCase()
+        .trim();
+
+    if (!currentEmail) {
       return NextResponse.json(
         {
           success: false,
-          message: "Please login to update this booking.",
+          message:
+            "Please login to update this booking.",
         },
         { status: 401 }
       );
@@ -223,21 +568,20 @@ export async function PATCH(request) {
       );
     }
 
+    const adminEmail =
+      process.env.ADMIN_EMAIL
+        ?.toLowerCase()
+        .trim();
+
+    const isAdmin =
+      Boolean(adminEmail) &&
+      currentEmail === adminEmail;
+
     const client = await clientPromise;
 
     const collection = client
       .db(DATABASE_NAME)
       .collection(COLLECTION_NAME);
-
-    const currentEmail =
-      session.user.email.toLowerCase();
-
-    const adminEmail =
-      process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase();
-
-    const isAdmin =
-      !!adminEmail &&
-      currentEmail === adminEmail;
 
     const objectId = new ObjectId(bookingId);
 
@@ -250,21 +594,24 @@ export async function PATCH(request) {
       return NextResponse.json(
         {
           success: false,
-          message: "Seva booking not found.",
+          message:
+            "Seva booking not found.",
         },
         { status: 404 }
       );
     }
 
-    const bookingEmail = (
+    const ownerEmail = String(
       existingBooking.userEmail ||
-      existingBooking.email ||
-      ""
-    ).toLowerCase();
+        existingBooking.email ||
+        ""
+    )
+      .toLowerCase()
+      .trim();
 
     if (
       !isAdmin &&
-      bookingEmail !== currentEmail
+      ownerEmail !== currentEmail
     ) {
       return NextResponse.json(
         {
@@ -280,25 +627,25 @@ export async function PATCH(request) {
       updatedAt: new Date(),
     };
 
-    // NORMAL USER PAYMENT SUBMIT
     if (!isAdmin && paymentStatus) {
       if (paymentStatus !== "submitted") {
         return NextResponse.json(
           {
             success: false,
             message:
-              "User can only submit payment for verification.",
+              "Users can only submit payment for verification.",
           },
           { status: 403 }
         );
       }
 
-      updateData.paymentStatus = "submitted";
+      updateData.paymentStatus =
+        "submitted";
+
       updateData.paymentSubmittedAt =
         new Date();
     }
 
-    // ADMIN PAYMENT STATUS UPDATE
     if (isAdmin && paymentStatus) {
       const allowedPaymentStatuses = [
         "pending",
@@ -331,7 +678,6 @@ export async function PATCH(request) {
       }
     }
 
-    // ADMIN BOOKING STATUS UPDATE
     if (isAdmin && bookingStatus) {
       const allowedBookingStatuses = [
         "pending",
@@ -357,6 +703,11 @@ export async function PATCH(request) {
 
       updateData.bookingStatus =
         bookingStatus;
+
+      if (bookingStatus === "completed") {
+        updateData.completedAt =
+          new Date();
+      }
     }
 
     await collection.updateOne(
@@ -373,25 +724,31 @@ export async function PATCH(request) {
         _id: objectId,
       });
 
-    return NextResponse.json(
-      {
-        success: true,
-        message:
-          "Seva booking updated successfully.",
-        booking: formatBooking(
-          updatedBooking
-        ),
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      message:
+        "Seva booking updated successfully.",
+      booking: formatBooking(
+        updatedBooking
+      ),
+    });
   } catch (error) {
-    console.error("Update Seva booking error:", error);
+    console.error(
+      "UPDATE SEVA BOOKING ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to update Seva booking.",
-        error: error.message,
+        message:
+          "Unable to update Seva booking.",
+
+        error:
+          process.env.NODE_ENV ===
+          "development"
+            ? error.message
+            : undefined,
       },
       { status: 500 }
     );
