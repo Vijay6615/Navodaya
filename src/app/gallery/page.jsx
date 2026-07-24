@@ -65,6 +65,22 @@ const gallery = [
     title: "Shreyash Iyer",
 
   },
+  {
+    type: "image",
+
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/hero_pyswfq.jpg",
+
+    title: "Indian actor and politician Suresh Oberoi",
+
+  },
+  {
+    type: "image",
+
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/group_yawicd.jpg",
+
+    title: "",
+
+  },
 
   {
     type: "image",

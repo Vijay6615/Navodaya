@@ -131,7 +131,7 @@ export default function AboutPanditjiPage() {
 
               <div className="mt-9 grid grid-cols-3 border-y border-[#e9e1dc]">
                 <Stat value="30+" label="Years" />
-                <Stat value="15K+" label="Pujas" border />
+                <Stat value="20K+" label="Pujas" border />
                 <Stat value="4.9" label="Rating" />
               </div>
 
