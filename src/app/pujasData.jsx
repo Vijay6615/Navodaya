@@ -21,7 +21,7 @@ export const PUJAS = [
 
   duration: "1–2 hours",
 
-  image: "/images/ganesh-puja.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864631/ganesh-puja_duhne1.jpg",
 
   rating: 4.9,
   reviews: 1284,
@@ -183,7 +183,7 @@ export const PUJAS = [
 
   duration: "4–5 hours",
 
-  image: "/images/Shivratri.png",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784865563/Shivratri_hzcugn.png",
 
   rating: 5.0,
 
@@ -348,7 +348,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/vastu-shanti-puja.png",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864680/vastu-shanti-puja_gouydk.png",
 
   rating: 4.9,
 
@@ -517,7 +517,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/bhumipuja.png",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864627/bhumipuja_fuq85p.webp",
 
   rating: 4.9,
 
@@ -689,7 +689,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/griha.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864636/griha_jg8xay.jpg",
 
   rating: 5.0,
 
@@ -863,7 +863,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/satyanarayan.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864658/satyanarayan_y7il5a.jpg",
 
   rating: 4.9,
 
@@ -1033,7 +1033,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/laxmi.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864641/laxmi_grtvvn.jpg",
 
   rating: 4.9,
 
@@ -1370,7 +1370,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/nauchandi.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864648/nauchandi_hfzl3b.webp",
 
   rating: 4.9,
 
@@ -1542,7 +1542,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/Maha_Mrityunjaya_Jaap.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864645/Maha_Mrityunjaya_Jaap_e2npxm.jpg",
 
   rating: 5.0,
 
@@ -1715,7 +1715,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/LaghrudraAbhishek.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864640/LaghrudraAbhishek_tmoxni.jpg",
 
   rating: 4.9,
 
@@ -1886,7 +1886,7 @@ export const PUJAS = [
 
   duration: "2 hours",
 
-  image: "/images/rudraabhishek.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864651/rudraabhishek_gto9ij.jpg",
 
   rating: 4.9,
 
@@ -2054,7 +2054,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/Hanuman-Ji.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864633/Hanuman-Ji_c5di0j.jpg",
 
   rating: 4.9,
 
@@ -2223,7 +2223,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/durgapuja.png",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864688/durgapuja_mvdmdl.png",
 
   rating: 4.9,
 
@@ -2393,7 +2393,7 @@ export const PUJAS = [
 
   duration: "2 hours",
 
-  image: "/images/saraswati-puja.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864650/saraswati-puja_nc1d7h.jpg",
 
   rating: 4.9,
 
@@ -2564,7 +2564,7 @@ export const PUJAS = [
 
   duration: "4–5 hours",
 
-  image: "/images/kaalsarp.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864635/kaalsarp_gvkzrd.webp",
 
   rating: 4.9,
 
@@ -2735,7 +2735,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/mangaldosh.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864643/mangaldosh_olhsz6.jpg",
 
   rating: 4.9,
 
@@ -3079,7 +3079,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/Nakshatra-shanti.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864646/Nakshatra-shanti_dvxr0y.webp",
 
   rating: 4.9,
 
@@ -3249,7 +3249,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/vishnupuja.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864656/vishnupuja_ezukbr.jpg",
 
   rating: 4.9,
 
@@ -3422,7 +3422,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/Marriage-Puja.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864645/Marriage-Puja_puxqpz.webp",
 
   rating: 4.9,
 
@@ -3591,7 +3591,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/gayatripuja.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864640/gayatripuja_fjo71l.jpg",
 
   rating: 4.9,
 
@@ -3762,7 +3762,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/SundarKandPath.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864655/SundarKandPath_gajab5.jpg",
 
   rating: 4.9,
 
@@ -3934,7 +3934,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/Santan_prapti.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864650/Santan_prapti_xngby1.webp",
 
   rating: 4.9,
 
@@ -4107,7 +4107,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/kanakdhara.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864637/kanakdhara_rulc5f.jpg",
 
   rating: 4.9,
 
@@ -4285,7 +4285,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/office.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864648/office_gdsamm.webp",
 
   rating: 4.9,
 
@@ -4459,7 +4459,7 @@ export const PUJAS = [
 
   duration: "5–7 hours",
 
-  image: "/images/nauchandi.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864648/nauchandi_hfzl3b.webp",
 
   rating: 5.0,
 
@@ -4638,7 +4638,7 @@ export const PUJAS = [
 
   duration: "4–5 hours",
 
-  image: "/images/office.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864648/office_gdsamm.webp",
 
   rating: 4.9,
 
@@ -4815,7 +4815,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/saraswati-puja.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864650/saraswati-puja_nc1d7h.jpg",
 
   rating: 4.9,
 
@@ -4988,7 +4988,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/dhanprapti.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864627/dhanprapti_ao4jus.jpg",
 
   rating: 5.0,
 
@@ -5166,7 +5166,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/satyanarayan.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864658/satyanarayan_y7il5a.jpg",
 
   rating: 4.9,
 
@@ -5336,7 +5336,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/Legal-victory.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864641/Legal-victory_fbstnc.png",
 
   rating: 4.9,
 
@@ -5509,7 +5509,7 @@ export const PUJAS = [
 
   duration: "3–4 hours",
 
-  image: "/images/akhand-ramayan-path.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864629/akhand-ramayan-path_hlotmh.jpg",
 
   rating: 4.9,
 
@@ -5684,7 +5684,7 @@ export const PUJAS = [
 
   duration: "1–2 hours",
 
-  image: "/images/PitraDoshNivaran.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864649/PitraDoshNivaran_qkhkhu.jpg",
 
   rating: 5.0,
 
@@ -5852,7 +5852,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/kumbhvivah.png",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864648/kumbhvivah_rntlfj.png",
 
   rating: 4.9,
 
@@ -6025,7 +6025,7 @@ export const PUJAS = [
 
   duration: "2–3 hours",
 
-  image: "/images/arkvivah.png",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864631/arkvivah_mxtpvh.png",
 
   rating: 4.9,
 
@@ -6199,7 +6199,7 @@ export const PUJAS = [
 
   duration: "5–7 hours",
 
-  image: "/images/LakshmiNarayanYagya.jpg",
+  image: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784864639/LakshmiNarayanYagya_v7co6c.jpg",
 
   rating: 5.0,
 

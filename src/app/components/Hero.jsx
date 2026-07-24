@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 import { ChevronLeft, ChevronRight, CalendarCheck, Compass } from "lucide-react";
 
@@ -10,8 +11,27 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-const TOTAL_SLIDES = 4;
-const AUTOPLAY_MS = 12000;
+const HERO_SLIDES = [
+  {
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826364/jivdanimata_vyk5tc.png",
+    alt: "Jivdani Mata Puja by Puja Dham",
+  },
+  {
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826288/heropuja_qcaug6.png",
+    alt: "Online and offline Vedic Puja services",
+  },
+  {
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826294/gouseva_xfepxu.png",
+    alt: "Gau Seva by Puja Dham",
+  },
+  {
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826327/naamjaap_wj9dix.png",
+    alt: "Sita Ram Naam Jaap",
+  },
+];
+
+const TOTAL_SLIDES = HERO_SLIDES.length;
+const AUTOPLAY_MS = 10000;
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
@@ -34,64 +54,24 @@ export default function Hero() {
       className="relative w-full min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#fff8f1]"
     >
       {/* =====================================================
-          BACKGROUND WALLPAPERS
-          Har image ka apna alag block hai — jis image/opacity
-          condition ko chhuye baaki sab wahi structure repeat hai,
-          taaki har slide independently edit ho sake.
+          OPTIMIZED CLOUDINARY HERO IMAGE
+          Only the active slide is rendered, so mobile devices do
+          not download all four large hero images at the same time.
       ====================================================== */}
-
-      {/* SLIDE 1 — Narayan Puja */}
       <div
-        className={`
-          absolute inset-0 bg-cover bg-center
-          transition-opacity duration-[1800ms] ease-in-out
-          ${index === 0 ? "opacity-100" : "opacity-0"}
-        `}
-        style={{
-          backgroundImage: "url(/images/jivdanimata.png)",
-          animation: index === 0 ? "heroZoom 7s ease-in-out forwards" : "none",
-        }}
-      />
-
-      {/* SLIDE 2 — Homam & Yagna */}
-      
-      <div
-        className={`
-          absolute inset-0 bg-cover bg-center
-          transition-opacity duration-[1800ms] ease-in-out
-          ${index === 1 ? "opacity-100" : "opacity-0"}
-        `}
-        style={{
-          backgroundImage: "url(/images/heropuja.png)",
-          animation: index === 1 ? "heroZoom 7s ease-in-out forwards" : "none",
-        }}
-      />
-
-      {/* SLIDE 3 — Akhand Ramayan Path */}
-      <div
-        className={`
-          absolute inset-0 bg-cover bg-center
-          transition-opacity duration-[1800ms] ease-in-out
-          ${index === 2 ? "opacity-100" : "opacity-0"}
-        `}
-        style={{
-          backgroundImage: "url(/images/gouseva.png)",
-          animation: index === 2 ? "heroZoom 7s ease-in-out forwards" : "none",
-        }}
-      />
-
-      {/* SLIDE 4 — Satyanarayan Puja */}
-      <div
-        className={`
-          absolute inset-0 bg-cover bg-center
-          transition-opacity duration-[1800ms] ease-in-out
-          ${index === 3 ? "opacity-100" : "opacity-0"}
-        `}
-        style={{
-          backgroundImage: "url(/images/naamjaap.png)",
-          animation: index === 3 ? "heroZoom 7s ease-in-out forwards" : "none",
-        }}
-      />
+        key={HERO_SLIDES[index].src}
+        className="absolute inset-0 [animation:heroImageFade_1.1s_ease-in-out]"
+      >
+        <Image
+          src={HERO_SLIDES[index].src}
+          alt={HERO_SLIDES[index].alt}
+          fill
+          priority={index === 0}
+          fetchPriority={index === 0 ? "high" : "auto"}
+          sizes="100vw"
+          className="object-cover object-center [animation:heroZoom_7s_ease-in-out_forwards]"
+        />
+      </div>
 
       {/* Very light readability layer — images stay clear and colourful */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
@@ -156,7 +136,7 @@ export default function Hero() {
           <div className="flex flex-col items-center">
             
 
-            <span className="mt-3 h-[2px] w-0 bg-gradient-to-r from-transparent via-[#e8973a] to-transparent [animation:heroDraw_0.9s_ease-out_0.15s_forwards]" />
+            
 
             <h1
               className={`
@@ -219,7 +199,6 @@ export default function Hero() {
           <div className="flex flex-col items-center">
             
 
-            <span className="mt-3 h-[2px] w-0 bg-gradient-to-r from-transparent via-[#e8973a] to-transparent [animation:heroDraw_0.9s_ease-out_0.15s_forwards]" />
 
             <h1
               className={`
@@ -266,7 +245,6 @@ export default function Hero() {
           <div className="flex flex-col items-center">
             
 
-            <span className="mt-3 h-[2px] w-0 bg-gradient-to-r from-transparent via-[#e8973a] to-transparent [animation:heroDraw_0.9s_ease-out_0.15s_forwards]" />
 
             <h1
               className={`
@@ -310,9 +288,6 @@ export default function Hero() {
         {index === 3 && (
           <div className="flex flex-col items-center">
             
-
-            <span className="mt-3 h-[2px] w-0 bg-gradient-to-r from-transparent via-[#e8973a] to-transparent [animation:heroDraw_0.9s_ease-out_0.15s_forwards]" />
-
             <h1
               className={`
                 ${playfair.className}
@@ -399,6 +374,10 @@ export default function Hero() {
         @keyframes heroZoom {
           from { transform: scale(1); }
           to { transform: scale(1.045); }
+        }
+        @keyframes heroImageFade {
+          from { opacity: 0.2; }
+          to { opacity: 1; }
         }
         @keyframes heroMarquee {
           from { transform: translateX(0); }
