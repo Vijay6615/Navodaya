@@ -32,7 +32,7 @@ const MODE_OPTIONS = [
   },
   {
     key: "offline",
-    label: "Ghar Pe Puja",
+    label: "Home Visit",
     mobileLabel: "Home",
     description: "Pandit Ji visits your location",
     icon: House,
@@ -54,7 +54,7 @@ const MODE_META = {
       "Explore all available online and home-visit Vedic Puja services.",
   },
   offline: {
-    title: "Ghar Pe Pujas",
+    title: "Home Visit",
     description:
       "Book an experienced Pandit Ji to perform the complete Puja at your home or selected venue.",
   },

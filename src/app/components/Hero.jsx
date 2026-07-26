@@ -31,7 +31,7 @@ const HERO_SLIDES = [
 ];
 
 const TOTAL_SLIDES = HERO_SLIDES.length;
-const AUTOPLAY_MS = 10000;
+const AUTOPLAY_MS = 5000;
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
