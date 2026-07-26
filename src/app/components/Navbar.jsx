@@ -27,7 +27,7 @@ const searchLinks = [
   { label: "Home", href: "/" },
   { label: "All Pujas", href: "/pujas?mode=all" },
   { label: "Online Pujas", href: "/pujas?mode=online" },
-  { label: "Ghar Pe Puja", href: "/pujas?mode=offline" },
+  { label: "Home Visit", href: "/pujas?mode=offline" },
   { label: "All Sevas", href: "/seva" },
   { label: "Gau Seva", href: "/gau-seva" },
   { label: "My Bookings", href: "/my-bookings" },

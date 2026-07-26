@@ -34,7 +34,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868530/eknath_xupkim.jpg",
 
-    title: "Deputy CM of Maharashtra Eknath Shinde Ji",
+    title: "Deputy CM of Maharashtra Eknath Shinde",
 
   },
 
@@ -53,7 +53,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868576/dhanashree_ldafxr.jpg",
 
-    title: " Actress Dhanashree Verma Ji",
+    title: " Actress Dhanashree Verma",
 
   },
 
@@ -62,7 +62,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868571/shreyash_qeztda.jpg",
 
-    title: "Cricketer Shreyash Iyer Ji",
+    title: "Cricketer Shreyash Iyer",
 
   },
   {
@@ -70,33 +70,15 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/hero_pyswfq.jpg",
 
-    title: "Indian actor and politician Suresh Oberoi Ji",
+    title: "Indian actor and politician Suresh Oberoi",
 
   },
-  {
-    type: "image",
-
-    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/group_yawicd.jpg",
-
-    title: "",
-
-  },
-
-  {
-    type: "image",
-
-    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868554/baba_q5gfcq.jpg",
-
-    title: "Divine Blessings",
-
-  },
-
   {
     type: "image",
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868572/dhanashree2_mukerp.jpg",
 
-    title: "Acrtess Dhanashree Verma Ji",
+    title: "Acrtess Dhanashree Verma",
 
   },
 
@@ -105,7 +87,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868570/nehakakkar_uuxou1.jpg",
 
-    title: "Singer Neha Kakkar Ji",
+    title: "Singer Neha Kakkar",
 
   },
 
@@ -124,6 +106,22 @@ const gallery = [
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784868578/dhanashree-father_totc5d.jpg",
 
     title: "Dhanashree Verma Family",
+
+  },
+  {
+    type: "image",
+
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/group_yawicd.jpg",
+
+    title: "",
+
+  },
+  {
+    type: "image",
+
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868554/baba_q5gfcq.jpg",
+
+    title: "Divine Blessings",
 
   },
 
