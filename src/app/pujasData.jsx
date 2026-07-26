@@ -168,10 +168,10 @@ export const PUJAS = [
   category: "Home / Auspicious",
 
   shortDescription:
-    "Powerful Lord Shiva Abhishek for health, prosperity, peace, and protection from negative energies.",
+    "11 panditji will perform Lord Shiva Abhishek for health, prosperity, peace, and protection from negative energies.",
 
   description:
-    "Laghrudra Abhishek is a highly revered Vedic ritual dedicated to Lord Shiva. It involves the chanting of Sri Rudram along with the sacred Abhishek using milk, curd, honey, ghee, sugar, holy water, and other auspicious offerings. This puja is believed to remove planetary afflictions, negative karma, and obstacles while promoting good health, prosperity, inner peace, and spiritual upliftment. It is commonly performed for family welfare, career growth, business success, and overall well-being. The powerful vibrations created through Rudra chanting purify the surroundings and invoke Lord Shiva's divine blessings.",
+    "Laghrudra Abhishek is a highly revered Vedic ritual dedicated to Lord Shiva. 11 pandits will perform this puja online as well as ghar pe puja. It involves the chanting of Sri Rudram along with the sacred Abhishek using milk, curd, honey, ghee, sugar, holy water, and other auspicious offerings. This puja is believed to remove planetary afflictions, negative karma, and obstacles while promoting good health, prosperity, inner peace, and spiritual upliftment. It is commonly performed for family welfare, career growth, business success, and overall well-being. The powerful vibrations created through Rudra chanting purify the surroundings and invoke Lord Shiva's divine blessings.",
 
   onlinePrice: "₹ 25,000",
 
@@ -507,11 +507,11 @@ export const PUJAS = [
   description:
     "Bhoomi Puja is a sacred Vedic ceremony performed before starting the construction of a house, office, factory, shop, or any new building. The ritual seeks forgiveness from Mother Earth for disturbing the land and invokes the blessings of Lord Ganesha, Vastu Purusha, and other deities for a smooth construction process. Performing Bhoomi Puja is believed to remove obstacles, prevent unforeseen problems, ensure structural stability, and attract prosperity, peace, and positive energy to the property.",
 
-  onlinePrice: "₹ 1,100",
+  onlinePrice: "",
 
   offlinePrice: "₹ 5,100",
 
-  onlineAvailable: true,
+  onlineAvailable: false,
 
   offlineAvailable: true,
 
@@ -679,11 +679,11 @@ export const PUJAS = [
   description:
     "Griha Pravesh Puja is one of the most important Hindu rituals performed before entering a newly constructed, purchased, or renovated home. The ceremony seeks the blessings of Lord Ganesha, Vastu Purusha, Navagraha, and other deities to purify the house and remove negative energies. It is believed that performing this puja before occupying the house brings happiness, wealth, harmony, health, and spiritual protection to the family. The rituals include Kalash Sthapana, Vastu Pujan, Havan, and Aarti performed according to authentic Vedic traditions.",
 
-  onlinePrice: "₹ 1,100",
+  onlinePrice: "",
 
   offlinePrice: "₹ 5,100",
 
-  onlineAvailable: true,
+  onlineAvailable: false,
 
   offlineAvailable: true,
 
@@ -4275,7 +4275,7 @@ export const PUJAS = [
   description:
     "Office Inauguration Puja is a traditional Vedic ceremony performed before starting operations in a new office, corporate workspace, showroom, startup, clinic, or commercial establishment. The ritual invokes the blessings of Lord Ganesha, Goddess Lakshmi, Lord Kuber, and Vastu Devta for business growth, financial prosperity, positive energy, employee well-being, and long-term success. It includes Ganesh Puja, Vastu Shanti rituals, Lakshmi-Kuber worship, Havan, and Aarti to create a spiritually positive working environment.",
 
-  onlinePrice: "₹ 0",
+  onlinePrice: "",
 
   offlinePrice: "₹ 5,100",
 
@@ -4628,7 +4628,7 @@ export const PUJAS = [
   description:
     "Factory Inauguration Puja is a traditional Vedic ceremony performed before commencing operations in a new factory, warehouse, manufacturing unit, industrial plant, or production facility. The ritual invokes the blessings of Lord Ganesha, Goddess Lakshmi, Lord Kuber, and Vastu Devta to remove obstacles, ensure workplace safety, attract prosperity, and support uninterrupted production and business growth. The ceremony includes Ganesh Puja, Vastu Shanti, Lakshmi-Kuber Puja, Havan, and Aarti to establish a spiritually positive environment for the organization.",
 
-  onlinePrice: "₹ 0",
+  onlinePrice: "",
 
   offlinePrice: "₹ 7,100",
 

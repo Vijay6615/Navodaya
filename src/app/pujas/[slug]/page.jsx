@@ -19,9 +19,8 @@ import {
   CalendarDays,
   Users,
   PackageCheck,
-  Truck,
-  Wallet,
-  ChevronDown,
+  Plus,
+  Minus,
   Video,
   Home,
 } from "lucide-react";
@@ -31,26 +30,45 @@ const displayFont = Cormorant_Garamond({
   weight: ["500", "600", "700"],
 });
 
-/* Collapsible section wrapper — same header look as before (icon + title),
-   just clickable now so the page doesn't feel so long. Closed by default. */
-function CollapsibleSection({ icon: Icon, iconColor, title, open, onToggle, children }) {
+/* SiddhiStar-style accordion item:
+   beige active header, circular plus/minus button and smooth opening content. */
+function CollapsibleSection({ title, open, onToggle, children }) {
   return (
-    <section>
+    <section className="border-b border-[#ece8e1] last:border-b-0">
       <button
         type="button"
         onClick={onToggle}
-        className="mb-6 flex w-full items-center justify-between gap-3 text-left"
+        aria-expanded={open}
+        className={`flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition-colors duration-300 sm:px-6 sm:py-6 ${
+          open ? "bg-[#fff2dc]" : "bg-white hover:bg-[#fffaf3]"
+        }`}
       >
-        <div className="flex items-center gap-2">
-          <Icon size={20} className={iconColor} />
-          <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>{title}</h2>
-        </div>
-        <ChevronDown
-          size={20}
-          className={`shrink-0 text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
+        <span className="pr-2 text-base font-semibold leading-7 text-[#26221f] sm:text-lg md:text-xl">
+          {title}
+        </span>
+
+        <span
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+            open
+              ? "bg-[#c8891b] text-white"
+              : "bg-[#f2f3f5] text-[#7f858c]"
+          }`}
+        >
+          {open ? <Minus size={20} strokeWidth={2} /> : <Plus size={20} strokeWidth={2} />}
+        </span>
       </button>
-      <div className={open ? "block" : "hidden"}>{children}</div>
+
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="border-t border-[#f1e8dc] bg-[#fffdf9] px-5 py-5 sm:px-6 sm:py-6">
+            {children}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
@@ -339,141 +357,132 @@ export default function PujaDetail() {
               </div>
             </section>
 
-            {/* WHAT'S INCLUDED CONTAINER */}
-            <CollapsibleSection
-              icon={PackageCheck}
-              iconColor="text-[#a8441b]"
-              title="What's Included in Package"
-              open={openIncludes}
-              onToggle={() => setOpenIncludes((v) => !v)}
-            >
-              <div className="grid gap-3 sm:grid-cols-2">
-                {puja.includes?.map((item, index) => (
-                  <div key={index} className="flex items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-3.5 shadow-sm">
-                    <CheckCircle2 size={15} className="text-green-600 shrink-0" />
-                    <span className="text-xs sm:text-sm text-gray-600 font-medium">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </CollapsibleSection>
-
-            {/* SAMAGRI INVENTORY SHEET */}
-            <CollapsibleSection
-              icon={Sparkles}
-              iconColor="text-[#a8441b]"
-              title="Samagri Inventory Logs"
-              open={openSamagri}
-              onToggle={() => setOpenSamagri((v) => !v)}
-            >
-              <div className="rounded-3xl border border-[#f0e6dd] bg-white p-5 shadow-sm">
-                <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 mb-6 bg-gray-50 p-4 rounded-2xl text-center">
-                  <div>
-                    <h4 className="text-[9px] uppercase font-bold text-gray-400">Samagri Mode</h4>
-                    <p className="text-xs sm:text-sm font-bold text-gray-700 mt-0.5">{puja.samagri?.mode || "Included"}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-[9px] uppercase font-bold text-gray-400">Extra Materials Charge</h4>
-                    <p className="text-xs sm:text-sm font-bold text-[#a8441b] mt-0.5">{formatPrice(puja.samagri?.extraCharge) || "Nil"}</p>
-                  </div>
-                  <div className="col-span-2 sm:col-span-1">
-                    <h4 className="text-[9px] uppercase font-bold text-gray-400">Checklist Provided</h4>
-                    <p className="text-xs sm:text-sm font-bold text-gray-700 mt-0.5">{puja.samagri?.checklistProvided ? "Yes ✓" : "No"}</p>
-                  </div>
-                </div>
-                {puja.samagri?.note && <p className="text-xs text-gray-400 italic mb-4 px-1">Note: {puja.samagri.note}</p>}
-                <div className="grid gap-2 grid-cols-2 sm:grid-cols-3">
-                  {puja.samagri?.items?.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2 rounded-xl bg-orange-50/50 px-3 py-2 border border-orange-100/40">
-                      <CheckCircle2 size={13} className="text-[#a8441b] shrink-0" />
-                      <span className="text-xs text-gray-600 font-medium truncate">{item}</span>
+            {/* ALL DETAIL DROPDOWNS — SAME UI AS THE REFERENCE FAQ */}
+            <div className="overflow-hidden rounded-2xl border border-[#ece8e1] bg-white shadow-sm">
+              <CollapsibleSection
+                title="What's Included in Package"
+                open={openIncludes}
+                onToggle={() => setOpenIncludes((v) => !v)}
+              >
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {puja.includes?.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2.5 rounded-xl border border-gray-100 bg-white p-3.5 shadow-sm">
+                      <CheckCircle2 size={15} className="shrink-0 text-green-600" />
+                      <span className="text-xs font-medium text-gray-600 sm:text-sm">{item}</span>
                     </div>
                   ))}
                 </div>
-              </div>
-            </CollapsibleSection>
+              </CollapsibleSection>
 
-            {/* TRAVEL CHARGES INDEX */}
-            <CollapsibleSection
-              icon={Truck}
-              iconColor="text-[#a8441b]"
-              title="Travel Logistics Index"
-              open={openTravel}
-              onToggle={() => setOpenTravel((v) => !v)}
-            >
-              <div className="grid gap-3 grid-cols-3 text-center">
-                {[
-                  { title: "Transit Mode", val: puja.travel?.mode || "Cab/Auto" },
-                  { title: "Within City", val: formatPrice(puja.travel?.city) || "Included" },
-                  { title: "Outstation/Border", val: formatPrice(puja.travel?.outsideCity) || "Variable" }
-                ].map((card, idx) => (
-                  <div key={idx} className="rounded-2xl border border-[#f0e6dd] bg-white p-3 shadow-sm">
-                    <h4 className="text-[9px] uppercase font-bold text-gray-400">{card.title}</h4>
-                    <p className="mt-1 text-xs sm:text-sm font-bold text-gray-700">{card.val}</p>
-                  </div>
-                ))}
-              </div>
-            </CollapsibleSection>
-
-            {/* PRICE BREAKDOWN TABLEAU */}
-            <CollapsibleSection
-              icon={Wallet}
-              iconColor="text-[#a8441b]"
-              title="Price Breakdown logs"
-              open={openPrice}
-              onToggle={() => setOpenPrice((v) => !v)}
-            >
-              <div className="rounded-3xl border border-[#f0e6dd] bg-white px-5 py-2 shadow-sm font-medium text-xs sm:text-sm text-gray-600">
-                {Object.entries(puja.priceBreakdown || {}).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between border-b border-gray-100 py-3 last:border-none">
-                    <span className="capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
-                    <span className="font-bold text-[#a8441b]">{formatPrice(value)}</span>
-                  </div>
-                ))}
-              </div>
-            </CollapsibleSection>
-
-            {/* PROCEDURAL SEQUENTIAL TIMELINE */}
-            <CollapsibleSection
-              icon={CalendarDays}
-              iconColor="text-[#a8441b]"
-              title="Booking Process Steps"
-              open={openProcess}
-              onToggle={() => setOpenProcess((v) => !v)}
-            >
-              <div className="space-y-3">
-                {puja.bookingProcess?.map((step, index) => (
-                  <div key={index} className="flex gap-4 rounded-2xl border border-orange-100 bg-white p-4 shadow-sm items-center">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#a8441b] text-xs font-bold text-white shadow-sm">
-                      {index + 1}
+              <CollapsibleSection
+                title="Samagri Inventory Logs"
+                open={openSamagri}
+                onToggle={() => setOpenSamagri((v) => !v)}
+              >
+                <div className="rounded-2xl border border-[#f0e6dd] bg-white p-5 shadow-sm">
+                  <div className="mb-6 grid grid-cols-2 gap-4 rounded-2xl bg-gray-50 p-4 text-center sm:grid-cols-3">
+                    <div>
+                      <h4 className="text-[9px] font-bold uppercase text-gray-400">Samagri Mode</h4>
+                      <p className="mt-0.5 text-xs font-bold text-gray-700 sm:text-sm">{puja.samagri?.mode || "Included"}</p>
                     </div>
-                    <p className="text-xs sm:text-sm font-semibold text-gray-600 leading-relaxed">{step}</p>
+                    <div>
+                      <h4 className="text-[9px] font-bold uppercase text-gray-400">Extra Materials Charge</h4>
+                      <p className="mt-0.5 text-xs font-bold text-[#a8441b] sm:text-sm">{formatPrice(puja.samagri?.extraCharge) || "Nil"}</p>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <h4 className="text-[9px] font-bold uppercase text-gray-400">Checklist Provided</h4>
+                      <p className="mt-0.5 text-xs font-bold text-gray-700 sm:text-sm">{puja.samagri?.checklistProvided ? "Yes ✓" : "No"}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </CollapsibleSection>
 
-            {/* FAQ LOG WRAPPERS */}
-            <section>
-              <div className="mb-6 flex items-center gap-2">
-                <ChevronDown size={20} className="text-[#a8441b]" />
-                <h2 className={`${displayFont.className} text-2xl md:text-3xl font-bold text-[#252525]`}>Frequently Asked Questions</h2>
-              </div>
-              <div className="space-y-2.5">
-                {puja.faq?.map((item, index) => (
-                  <div key={index} className="overflow-hidden rounded-2xl border border-[#f0e6dd] bg-white shadow-sm">
-                    <button
-                      onClick={() => toggleFaq(index)}
-                      className="flex w-full items-center justify-between p-4 text-left gap-4"
-                    >
-                      <span className="text-xs sm:text-sm font-bold text-[#252525]">{item.question}</span>
-                      <ChevronDown size={16} className={`text-gray-400 transition-transform shrink-0 ${openFaq === index ? "rotate-180" : ""}`} />
-                    </button>
-                    {openFaq === index && (
-                      <div className="border-t border-orange-100/50 bg-[#fffdfb] px-4 py-3 text-xs sm:text-sm leading-6 text-gray-500">
-                        {item.answer}
+                  {puja.samagri?.note && (
+                    <p className="mb-4 px-1 text-xs italic text-gray-400">Note: {puja.samagri.note}</p>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {puja.samagri?.items?.map((item, index) => (
+                      <div key={index} className="flex items-center gap-2 rounded-xl border border-orange-100/40 bg-orange-50/50 px-3 py-2">
+                        <CheckCircle2 size={13} className="shrink-0 text-[#a8441b]" />
+                        <span className="truncate text-xs font-medium text-gray-600">{item}</span>
                       </div>
-                    )}
+                    ))}
                   </div>
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection
+                title="Travel Logistics Index"
+                open={openTravel}
+                onToggle={() => setOpenTravel((v) => !v)}
+              >
+                <div className="grid grid-cols-1 gap-3 text-center sm:grid-cols-3">
+                  {[
+                    { title: "Transit Mode", val: puja.travel?.mode || "Cab/Auto" },
+                    { title: "Within City", val: formatPrice(puja.travel?.city) || "Included" },
+                    { title: "Outstation/Border", val: formatPrice(puja.travel?.outsideCity) || "Variable" },
+                  ].map((card, idx) => (
+                    <div key={idx} className="rounded-2xl border border-[#f0e6dd] bg-white p-4 shadow-sm">
+                      <h4 className="text-[9px] font-bold uppercase text-gray-400">{card.title}</h4>
+                      <p className="mt-1 text-xs font-bold text-gray-700 sm:text-sm">{card.val}</p>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection
+                title="Price Breakdown Logs"
+                open={openPrice}
+                onToggle={() => setOpenPrice((v) => !v)}
+              >
+                <div className="rounded-2xl border border-[#f0e6dd] bg-white px-5 py-2 text-xs font-medium text-gray-600 shadow-sm sm:text-sm">
+                  {Object.entries(puja.priceBreakdown || {}).map(([key, value]) => (
+                    <div key={key} className="flex items-center justify-between border-b border-gray-100 py-3 last:border-none">
+                      <span className="capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
+                      <span className="font-bold text-[#a8441b]">{formatPrice(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection
+                title="Booking Process Steps"
+                open={openProcess}
+                onToggle={() => setOpenProcess((v) => !v)}
+              >
+                <div className="space-y-3">
+                  {puja.bookingProcess?.map((step, index) => (
+                    <div key={index} className="flex items-center gap-4 rounded-2xl border border-orange-100 bg-white p-4 shadow-sm">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#a8441b] text-xs font-bold text-white shadow-sm">
+                        {index + 1}
+                      </div>
+                      <p className="text-xs font-semibold leading-relaxed text-gray-600 sm:text-sm">{step}</p>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleSection>
+            </div>
+
+            {/* FAQ — SAME PLUS/MINUS ACCORDION UI */}
+            <section>
+              <div className="mb-6 flex items-center gap-4">
+                <span className="h-12 w-1.5 shrink-0 bg-[#c8891b]" />
+                <h2 className={`${displayFont.className} text-3xl font-bold leading-tight text-[#252525] md:text-4xl`}>
+                  Frequently Asked Questions
+                </h2>
+              </div>
+
+              <div className="overflow-hidden rounded-2xl border border-[#ece8e1] bg-white shadow-sm">
+                {puja.faq?.map((item, index) => (
+                  <CollapsibleSection
+                    key={index}
+                    title={item.question}
+                    open={openFaq === index}
+                    onToggle={() => toggleFaq(index)}
+                  >
+                    <p className="text-sm leading-7 text-gray-500 sm:text-base sm:leading-8">
+                      {item.answer}
+                    </p>
+                  </CollapsibleSection>
                 ))}
               </div>
             </section>

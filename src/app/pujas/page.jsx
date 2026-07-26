@@ -1,1039 +1,423 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { PUJAS } from "../pujasData";
-import { useRouter } from "next/navigation";
+import { Suspense, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Cormorant_Garamond } from "next/font/google";
 import {
-  Search,
-  Check,
-  Clock,
-  X,
   ArrowRight,
+  Clock3,
+  Grid2X2,
+  House,
+  Search,
   Sparkles,
+  Star,
+  Video,
+  X,
 } from "lucide-react";
+
+import { PUJAS } from "../pujasData";
 
 const displayFont = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
 
+const MODE_OPTIONS = [
+  {
+    key: "all",
+    label: "All Pujas",
+    mobileLabel: "All",
+    description: "Online and home-visit services",
+    icon: Grid2X2,
+  },
+  {
+    key: "offline",
+    label: "Ghar Pe Puja",
+    mobileLabel: "Home",
+    description: "Pandit Ji visits your location",
+    icon: House,
+  },
+  {
+    key: "online",
+    label: "Online Puja",
+    mobileLabel: "Online",
+    description: "Attend through live video",
+    icon: Video,
+  },
+];
 
+const MODE_META = {
+  all: {
+    eyebrow: "Sacred Puja Services",
+    title: "All Pujas",
+    description:
+      "Explore all available online and home-visit Vedic Puja services.",
+  },
+  offline: {
+    title: "Ghar Pe Pujas",
+    description:
+      "Book an experienced Pandit Ji to perform the complete Puja at your home or selected venue.",
+  },
+  online: {
+    title: "Online Pujas",
+    description:
+      "Attend authentic Vedic Puja through a live video session from anywhere.",
+  },
+};
 
-export default function PujasPage() {
+function getMode(value) {
+  return value === "online" || value === "offline" ? value : "all";
+}
+
+function getModePrice(puja, mode) {
+  if (mode === "online") {
+    return {
+      label: "Online Puja",
+      primary: puja.onlinePrice,
+      secondary: null,
+    };
+  }
+
+  if (mode === "offline") {
+    return {
+      label: "Home Visit",
+      primary: puja.offlinePrice,
+      secondary: null,
+    };
+  }
+
+  return {
+    label: "Starting from",
+    primary: puja.onlinePrice || puja.offlinePrice,
+    secondary:
+      puja.onlinePrice && puja.offlinePrice
+        ? `Home ${puja.offlinePrice}`
+        : null,
+  };
+}
+
+function PujasPageContent() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const [selectedCategories, setSelectedCategories] =
-    useState([]);
-
+  const searchParams = useSearchParams();
+  const activeMode = getMode(searchParams.get("mode"));
   const [search, setSearch] = useState("");
-  const [pageReady, setPageReady] = useState(false);
 
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setPageReady(true));
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  const modeMeta = MODE_META[activeMode];
 
-  /* =========================================================
-     CATEGORY TOGGLE
-  ========================================================= */
-  const toggleCategory = (cat) => {
-    if (cat === "All") {
-      setSelectedCategories([]);
-      return;
-    }
+  const filteredPujas = useMemo(() => {
+    const query = search.toLowerCase().trim();
 
-    setSelectedCategories((prev) =>
-      prev.includes(cat)
-        ? prev.filter((c) => c !== cat)
-        : [...prev, cat]
-    );
+    return PUJAS.filter((puja) => {
+      const matchesMode =
+        activeMode === "online"
+          ? puja.onlineAvailable === true
+          : activeMode === "offline"
+          ? puja.offlineAvailable === true
+          : true;
+
+      const searchableText = [
+        puja.name,
+        puja.category,
+        puja.shortDescription,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return matchesMode && searchableText.includes(query);
+    });
+  }, [activeMode, search]);
+
+  const selectMode = (mode) => {
+    router.replace(`/pujas?mode=${mode}`, { scroll: false });
   };
 
-  /* =========================================================
-     FILTER PUJAS
-  ========================================================= */
-  const filteredPujas = PUJAS.filter((puja) => {
-    const name =
-      puja?.name?.toLowerCase() || "";
+  const getDetailsUrl = (puja) => {
+    if (activeMode === "online" || activeMode === "offline") {
+      return `/pujas/${puja.slug}?type=${activeMode}`;
+    }
 
-    const cat =
-      puja?.category?.toLowerCase() || "";
-
-    const q = search.toLowerCase().trim();
-
-    return (
-      (name.includes(q) || cat.includes(q)) &&
-      (
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(
-          puja.category
-        )
-      )
-    );
-  });
+    return `/pujas/${puja.slug}`;
+  };
 
   const openPuja = (puja) => {
-  router.push(`/pujas/${puja.slug}`);
-};
-
-const bookPuja = (puja) => {
-  router.push(`/pujas/${puja.slug}`);
-};
-
-  const sectionLabel =
-    selectedCategories.length === 0
-      ? "All services"
-      : selectedCategories.join(" · ");
+    router.push(getDetailsUrl(puja));
+  };
 
   return (
-    <section
-      className="
-        min-h-screen
+    <main className="min-h-screen bg-[#fffdfb] pb-24">
+      <section className="border-b border-[#eee5de] bg-gradient-to-br from-[#fff7f0] via-white to-[#eef8f2]">
+        <div className="mx-auto max-w-[1220px] px-4 py-8 sm:px-6 md:py-12 lg:px-8">
+          <div className="max-w-3xl">
 
-        bg-white
-
-        pb-28
-        md:pb-16
-
-        overflow-hidden
-      "
-    >
-      {/* =====================================================
-          PAGE CONTAINER
-      ====================================================== */}
-      <div
-        className={`
-        w-full
-        max-w-[1180px]
-        mx-auto
-
-        px-4
-        sm:px-5
-        md:px-6
-        lg:px-8
-
-        transition-all
-        duration-700
-        ease-out
-
-        ${
-          pageReady
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-4"
-        }
-      `}
-      >
-        {/* =================================================
-            DESKTOP SEARCH + FILTER AREA
-        ================================================== */}
-        <div
-          className="
-            mt-8
-            md:mt-12
-
-            md:p-4
-
-            md:rounded-[22px]
-
-            md:bg-white
-
-            md:border
-            md:border-black/[0.05]
-
-            md:shadow-[0_10px_35px_rgba(83,45,20,0.06)]
-
-            
-          "
-        >
-          {/* SEARCH BAR */}
-          <div
-            className="
-              w-full
-
-              md:max-w-[560px]
-              lg:max-w-[620px]
-
-              md:mx-auto
-            "
-          >
-            <div
-              className="
-                flex
-                items-center
-
-                gap-2.5
-
-                bg-white
-
-                rounded-full
-
-                border
-                border-black/[0.08]
-
-                px-4
-
-                h-12
-                md:h-[50px]
-
-                shadow-sm
-
-                transition-all
-duration-500
-ease-out
-
-focus-within:scale-[1.015]
-focus-within:shadow-[0_14px_40px_rgba(168,68,27,0.12)]
-
-focus-within:ring-2
-focus-within:ring-orange-300
-focus-within:border-orange-200
-              "
+            <h1
+              className={`${displayFont.className} mt-4 text-4xl font-bold leading-tight text-[#28221f] sm:text-5xl`}
             >
-              <Search
-                size={18}
-                strokeWidth={2}
-                className="
-                  text-[#8a7060]
-                  flex-shrink-0
-                "
-              />
+              {modeMeta.title}
+            </h1>
 
-              <input
-                type="text"
-                placeholder="Search pujas..."
-                value={search}
-                onChange={(e) =>
-                  setSearch(e.target.value)
-                }
-                className="
-                  flex-1
-
-                  min-w-0
-
-                  bg-transparent
-
-                  border-none
-
-                  outline-none
-
-                  text-sm
-
-                  text-gray-700
-
-                  placeholder:text-gray-400
-                "
-              />
-
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("")}
-                  aria-label="Clear search"
-                  className="
-                    w-7
-                    h-7
-
-                    rounded-full
-
-                    flex
-                    items-center
-                    justify-center
-
-                    text-gray-400
-
-                    hover:text-gray-700
-                    hover:bg-gray-100
-
-                    active:scale-90
-
-                    transition-all
-                    duration-200
-                  "
-                >
-                  <X size={15} />
-                </button>
-              )}
-            </div>
+            <p className="mt-2 max-w-2xl text-xs leading-6 text-[#756a63] sm:text-sm sm:leading-7">
+              {modeMeta.description}
+            </p>
           </div>
 
-          {/* FILTER CHIPS */}
-          <div
-            className="
-              flex
+          <div className="mt-6 rounded-[22px] border border-[#eadfd7] bg-[#f7f3ef] p-1.5 shadow-sm sm:max-w-[720px]">
+            <div className="grid grid-cols-3 gap-1.5">
+              {MODE_OPTIONS.map((option) => {
+                const Icon = option.icon;
+                const active = activeMode === option.key;
 
-              md:justify-center
-
-              gap-2
-
-              overflow-x-auto
-
-              mt-3
-              md:mt-4
-
-              pb-0.5
-
-              scrollbar-hide
-            "
-          >
-            
-          </div>
-        </div>
-
-        {/* =================================================
-            SECTION LABEL
-        ================================================== */}
-        <div
-          className="
-            mt-4
-            md:mt-8
-
-            mb-2
-            md:mb-4
-
-            flex
-            items-center
-            justify-between
-          "
-        >
-          <p
-            className="
-              text-[10px]
-              md:text-[11px]
-
-              font-semibold
-              md:font-bold
-
-              tracking-widest
-
-              uppercase
-
-              text-orange-700/70
-            "
-          >
-            {sectionLabel}
-          </p>
-
-          <p
-            className="
-              hidden
-              md:block
-
-              text-[11px]
-
-              font-medium
-
-              text-[#9a8375]
-            "
-          >
-            {filteredPujas.length} pujas
-          </p>
-        </div>
-
-        {/* =================================================
-            CARDS GRID
-
-            MOBILE:
-            2 columns — same compact design
-
-            TABLET:
-            3 columns
-
-            LAPTOP:
-            3 controlled columns
-
-            LARGE:
-            4 columns
-        ================================================== */}
-        <div
-          key={search + "-" + selectedCategories.join("-")}
-          className="
-            grid
-
-            grid-cols-2
-
-            md:grid-cols-3
-
-            xl:grid-cols-4
-
-            gap-3
-            sm:gap-4
-            md:gap-5
-            lg:gap-6
-          "
-        >
-          {filteredPujas.map((puja, index) => (
-            <article
-              key={puja.slug || index}
-              onClick={() => openPuja(puja)}
-              style={{ animationDelay: `${Math.min(index * 55, 550)}ms` }}
-              className="
-                group
-
-                puja-premium-card
-
-                relative
-
-                min-w-0
-
-                bg-white
-
-                rounded-2xl
-                md:rounded-[20px]
-
-                overflow-hidden
-
-                border
-                border-black/[0.06]
-
-                shadow-[0_1px_4px_rgba(0,0,0,0.07)]
-
-                md:shadow-[0_8px_25px_rgba(76,40,18,0.07)]
-
-                cursor-pointer
-
-                transition-all
-                duration-500
-
-                ease-out
-
-                active:scale-[0.97]
-
-                md:hover:-translate-y-1.5 md:hover:scale-[1.015]
-
-                md:hover:shadow-[0_24px_60px_rgba(76,40,18,0.13)]
-
-                md:hover:border-orange-200/80
-              "
-            >
-              {/* =========================================
-                  IMAGE ZONE
-              ========================================= */}
-              <div
-                className="
-                  relative
-
-                  h-28
-                  sm:h-32
-                  md:h-[150px]
-                  lg:h-[160px]
-                  xl:h-[145px]
-
-                  overflow-hidden
-
-                  bg-orange-50
-                "
-              >
-                <img
-                  src={puja.image}
-                  alt={puja.name}
-                  loading="lazy"
-                  className="
-                    w-full
-                    h-full
-
-                    object-cover
-
-                    transition-transform
-                    duration-700
-
-                    ease-out
-
-                    md:group-hover:scale-110
-                  "
-                />
-
-                {/* GRADIENT SCRIM */}
-                <div
-                  className="
-                    absolute
-                    inset-0
-
-                    bg-gradient-to-t
-                    from-black/65
-                    via-black/10
-                    to-transparent
-
-                    transition-opacity
-                    duration-500
-
-                    md:group-hover:from-black/70
-                  "
-                />
-
-                {/* POPULAR BADGE */}
-                {puja.popular && (
-                  <span
-                    className="
-                      absolute
-
-                      top-2
-                      left-2
-
-                      bg-orange-600
-
-                      text-white
-
-                      text-[9px]
-
-                      font-bold
-
-                      px-2
-                      py-0.5
-
-                      rounded-full
-
-                      tracking-wide
-
-                      shadow-sm
-                    "
+                return (
+                  <button
+                    type="button"
+                    key={option.key}
+                    onClick={() => selectMode(option.key)}
+                    aria-pressed={active}
+                    className={`flex min-h-[62px] min-w-0 items-center justify-center gap-2 rounded-[17px] px-2 py-2.5 text-left transition-all sm:min-h-[70px] sm:px-4 ${
+                      active
+                        ? "bg-white text-[#a8441b] shadow-[0_7px_20px_rgba(67,39,22,0.08)]"
+                        : "text-[#6f625a] hover:bg-white/70"
+                    }`}
                   >
-                    Popular
-                  </span>
-                )}
-
-                {/* CATEGORY */}
-                <span
-                  className="
-                    absolute
-
-                    bottom-2
-                    left-2
-
-                    max-w-[58%]
-
-                    truncate
-
-                    bg-white/20
-
-                    text-white
-
-                    text-[9px]
-
-                    font-semibold
-
-                    px-2
-                    py-0.5
-
-                    rounded-full
-
-                    border
-                    border-white/30
-
-                    backdrop-blur-sm
-
-                    leading-none
-                  "
-                >
-                  {puja.category}
-                </span>
-
-                {/* DURATION */}
-                <span
-                  className="
-                    absolute
-
-                    bottom-2
-                    right-2
-
-                    flex
-                    items-center
-
-                    gap-1
-
-                    text-white/90
-
-                    text-[9px]
-
-                    font-medium
-
-                    leading-none
-                  "
-                >
-                  <Clock
-                    size={9}
-                    strokeWidth={2}
-                  />
-
-                  {puja.duration}
-                </span>
-              </div>
-
-              {/* =========================================
-                  CARD BODY
-              ========================================= */}
-              <div
-                className="
-                  p-[10px]
-
-                  md:p-4
-                "
-              >
-                <h3
-                  className="
-                    text-[13px]
-                    md:text-[15px]
-
-                    font-semibold
-                    md:font-bold
-
-                    text-gray-900
-
-                    leading-snug
-
-                    truncate
-
-                    mb-[3px]
-                    md:mb-1
-
-                    transition-colors
-                    duration-300
-
-                    md:group-hover:text-orange-700
-                  "
-                >
-                  {puja.name}
-                </h3>
-
-                <p
-                  className="
-                    text-[11px]
-                    md:text-[12px]
-
-                    text-[#8a7060]
-
-                    leading-snug
-                    md:leading-5
-
-                    truncate
-
-                    mb-2
-                    md:mb-3
-                  "
-                >
-                  {puja.shortDescription}
-                </p>
-
-                {/* ONLINE PRICE — DISCOUNT STYLE */}
-                <div className="mb-[10px] md:mb-3">
-                  <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="text-[16px] md:text-[19px] font-extrabold tracking-tight text-[#a8441b]">
-                      {puja.onlinePrice}
+                    <span
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                        active
+                          ? option.key === "online"
+                            ? "bg-[#e9f7ef] text-[#26734d]"
+                            : option.key === "offline"
+                            ? "bg-[#edf3ff] text-[#315ea8]"
+                            : "bg-[#fff0e4] text-[#a8441b]"
+                          : "bg-white text-[#8c7d74]"
+                      }`}
+                    >
+                      <Icon size={16} />
                     </span>
 
-                    <span className="text-[11px] md:text-[12px] font-medium text-gray-400 line-through decoration-red-400 decoration-[1.5px]">
-                      {puja.offlinePrice}
+                    <span className="min-w-0">
+                      <span className="block truncate text-[10px] font-bold sm:hidden">
+                        {option.mobileLabel}
+                      </span>
+                      <span className="hidden text-xs font-bold sm:block">
+                        {option.label}
+                      </span>
+                      <span className="mt-0.5 hidden text-[9px] leading-4 text-gray-400 md:block">
+                        {option.description}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1220px] px-4 py-6 sm:px-6 md:py-9 lg:px-8">
+        <div className="flex flex-col gap-4 rounded-[22px] border border-[#eee5de] bg-white p-3 shadow-[0_10px_35px_rgba(67,39,22,0.04)] sm:flex-row sm:items-center sm:justify-between sm:p-4">
+          <div className="relative w-full sm:max-w-[500px]">
+            <Search
+              size={17}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9d8f86]"
+            />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={`Search ${modeMeta.title.toLowerCase()}...`}
+              className="h-12 w-full rounded-full border border-[#e8ddd5] bg-[#fffdfb] pl-11 pr-11 text-sm text-[#342e2a] outline-none transition focus:border-[#a8441b] focus:bg-white focus:ring-4 focus:ring-orange-100"
+            />
+
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition hover:bg-gray-200"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between gap-3 sm:justify-end">
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-gray-400">
+                Showing
+              </p>
+              <p className="mt-0.5 text-sm font-bold text-[#342e2a]">
+                {filteredPujas.length} Puja
+                {filteredPujas.length === 1 ? "" : "s"}
+              </p>
+            </div>
+
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fff0e4] text-[#a8441b]">
+              {activeMode === "online" ? (
+                <Video size={17} />
+              ) : activeMode === "offline" ? (
+                <House size={17} />
+              ) : (
+                <Grid2X2 size={17} />
+              )}
+            </span>
+          </div>
+        </div>
+
+        {filteredPujas.length > 0 ? (
+          <div
+            key={`${activeMode}-${search}`}
+            className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:gap-5 xl:grid-cols-4"
+          >
+            {filteredPujas.map((puja, index) => {
+              const price = getModePrice(puja, activeMode);
+
+              return (
+                <article
+                  key={puja.slug || index}
+                  onClick={() => openPuja(puja)}
+                  className="group min-w-0 cursor-pointer overflow-hidden rounded-[20px] border border-[#eee5de] bg-white shadow-[0_4px_16px_rgba(62,38,22,0.06)] transition duration-300 active:scale-[0.98] md:hover:-translate-y-1.5 md:hover:border-orange-200 md:hover:shadow-[0_20px_45px_rgba(62,38,22,0.11)]"
+                >
+                  <div className="relative h-28 overflow-hidden bg-orange-50 sm:h-36 md:h-40">
+                    <img
+                      src={puja.image}
+                      alt={puja.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
+
+                    {puja.popular && (
+                      <span className="absolute left-2 top-2 rounded-full bg-[#a8441b] px-2 py-1 text-[8px] font-bold text-white shadow-sm">
+                        Popular
+                      </span>
+                    )}
+
+                    {activeMode !== "all" && (
+                      <span
+                        className={`absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border border-white/30 px-2 py-1 text-[8px] font-bold text-white shadow-sm backdrop-blur-md ${
+                          activeMode === "online"
+                            ? "bg-emerald-600/90"
+                            : "bg-blue-600/90"
+                        }`}
+                      >
+                        {activeMode === "online" ? (
+                          <Video size={9} />
+                        ) : (
+                          <House size={9} />
+                        )}
+                        {activeMode === "online" ? "Online" : "Home"}
+                      </span>
+                    )}
+
+                    <span className="absolute bottom-2 left-2 max-w-[58%] truncate rounded-full border border-white/25 bg-white/15 px-2 py-1 text-[8px] font-semibold text-white backdrop-blur-sm">
+                      {puja.category}
+                    </span>
+
+                    <span className="absolute bottom-2 right-2 flex items-center gap-1 text-[8px] font-semibold text-white/90">
+                      <Clock3 size={9} />
+                      {puja.duration}
                     </span>
                   </div>
-                </div>
 
-                {/* BOOK NOW */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  <div className="p-3 sm:p-4">
+                    <div className="flex items-center gap-1 text-[9px] font-bold text-amber-600">
+                      <Star size={10} fill="currentColor" />
+                      {puja.rating || "4.9"}
+                      <span className="font-medium text-gray-400">
+                        ({puja.reviews || 0})
+                      </span>
+                    </div>
 
-                    bookPuja(puja);
-                  }}
-                  className="
-                    w-full
+                    <h2 className="mt-1.5 line-clamp-2 min-h-[40px] text-sm font-extrabold leading-5 text-[#2f2925] sm:text-base sm:leading-6">
+                      {puja.name}
+                    </h2>
 
-                    h-[34px]
-                    md:h-10
+                    <p className="mt-1.5 hidden line-clamp-2 text-[10px] leading-4 text-gray-500 sm:block">
+                      {puja.shortDescription}
+                    </p>
 
-                    rounded-full
+                    <div className="mt-3 border-t border-[#f0e9e3] pt-3">
+                      <p className="text-[8px] font-bold uppercase tracking-wider text-gray-400">
+                        {price.label}
+                      </p>
 
-                    bg-[#fff8f2]
+                      <div className="mt-0.5 flex flex-wrap items-baseline gap-1.5">
+                        <span className="text-base font-extrabold text-[#a8441b] sm:text-lg">
+                          {price.primary}
+                        </span>
 
-                    text-[#a8441b]
+                        {price.secondary && (
+                          <span className="text-[8px] font-semibold text-gray-400 sm:text-[9px]">
+                            {price.secondary}
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                    border
-                    border-orange-200
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        openPuja(puja);
+                      }}
+                      className="mt-3 flex min-h-9 w-full items-center justify-center gap-1.5 rounded-full border border-orange-200 bg-[#fff8f2] px-2 text-[10px] font-bold text-[#a8441b] transition hover:border-[#a8441b] hover:bg-[#a8441b] hover:text-white sm:min-h-10 sm:text-xs"
+                    >
+                      {activeMode === "online"
+                        ? "View Online"
+                        : activeMode === "offline"
+                        ? "View Home Puja"
+                        : "View Puja"}
+                      <ArrowRight size={12} />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="mt-6 flex min-h-[360px] items-center justify-center rounded-[26px] border border-dashed border-[#e6d9cf] bg-white px-6 text-center">
+            <div className="max-w-sm">
+              <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#fff0e4] text-[#a8441b]">
+                <Search size={25} />
+              </span>
 
-                    text-[12px]
-                    md:text-[12px]
+              <h2 className="mt-5 text-xl font-bold text-[#2e2925]">
+                No {modeMeta.title} Found
+              </h2>
 
-                    font-semibold
+              <p className="mt-2 text-xs leading-6 text-gray-500">
+                Try another search or return to all Puja services.
+              </p>
 
-                    tracking-wide
-
-                    transition-all
-                    duration-300
-
-                    flex
-                    items-center
-                    justify-center
-
-                    hover:bg-[#a8441b]
-                    hover:border-[#a8441b]
-                    hover:text-white
-                    hover:shadow-[0_10px_24px_rgba(168,68,27,0.20)]
-                    md:group-hover:translate-y-[-1px]
-
-                    active:scale-95
-                  "
-                >
-                  Book now
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        {/* =================================================
-            EMPTY STATE
-        ================================================== */}
-        {filteredPujas.length === 0 && (
-          <div
-            className="
-              flex
-              flex-col
-
-              items-center
-              justify-center
-
-              py-20
-              md:py-28
-
-              px-8
-
-              text-center
-
-            "
-          >
-            <span
-              className="
-                text-4xl
-                md:text-5xl
-
-                mb-3
-              "
-            >
-              🙏
-            </span>
-
-            <p
-              className="
-                text-sm
-                md:text-base
-
-                font-semibold
-
-                text-gray-700
-              "
-            >
-              No pujas found
-            </p>
-
-            <p
-              className="
-                text-xs
-                md:text-sm
-
-                text-gray-400
-
-                mt-1
-              "
-            >
-              Try a different search or clear
-              your filters.
-            </p>
-
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
-                setSelectedCategories([]);
-              }}
-              className="
-                mt-4
-
-                px-5
-
-                h-9
-                md:h-10
-
-                rounded-full
-
-                border
-                border-orange-300
-
-                text-orange-600
-
-                text-sm
-
-                font-medium
-
-                hover:bg-orange-50
-
-                active:scale-95
-
-                transition-all
-                duration-300
-              "
-            >
-              Clear filters
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  selectMode("all");
+                }}
+                className="mt-5 inline-flex min-h-10 items-center justify-center rounded-full bg-[#a8441b] px-6 text-xs font-bold text-white"
+              >
+                Show All Pujas
+              </button>
+            </div>
           </div>
         )}
-      </div>
+      </section>
+    </main>
+  );
+}
 
-      {showLoginModal && (
-        <div
-          className="login-drawer-backdrop fixed inset-0 z-[9999] bg-[#24140d]/35 backdrop-blur-[5px]"
-          onClick={() => setShowLoginModal(false)}
-        >
-          <aside
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="login-required-title"
-            onClick={(e) => e.stopPropagation()}
-            className="
-              login-auth-drawer
-              relative
-              flex
-              min-h-full
-              w-full
-              max-w-[590px]
-              flex-col
-              overflow-hidden
-              border-r
-              border-[#eee8e2]
-              bg-[#fffdfb]
-              shadow-[35px_0_100px_rgba(43,20,9,0.22)]
-              sm:w-[88%]
-              lg:w-1/2
-              lg:max-w-[720px]
-            "
-          >
-            <div className="pointer-events-none absolute inset-0 overflow-hidden">
-              <div className="absolute -left-36 -top-36 h-[430px] w-[430px] rounded-full bg-[#fff2e9] blur-[110px]" />
-              <div className="absolute -bottom-40 -right-28 h-[470px] w-[470px] rounded-full bg-[#f8eee8] blur-[120px]" />
-            </div>
-
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setShowLoginModal(false)}
-              className="
-                absolute
-                right-5
-                top-5
-                z-30
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-[#e9ddd6]
-                bg-white/90
-                text-[#8a7060]
-                shadow-sm
-                backdrop-blur-md
-                transition-all
-                duration-300
-                hover:rotate-90
-                hover:border-[#a8441b]/30
-                hover:text-[#a8441b]
-                active:scale-90
-                sm:right-7
-                sm:top-7
-              "
-            >
-              <X size={18} />
-            </button>
-
-            <div className="relative flex flex-1 flex-col px-6 pb-8 pt-7 sm:px-10 sm:pb-10 sm:pt-9 lg:px-14">
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => router.push("/")}
-                  className="group"
-                  aria-label="Go to home"
-                >
-                  <img
-                    src="/pujadham1.png"
-                    alt="Puja Dham"
-                    className="h-[88px] w-auto object-contain transition-transform duration-500 group-hover:scale-[1.035] sm:h-[104px]"
-                  />
-                </button>
-              </div>
-
-              <div className="login-drawer-content my-auto py-10 text-center sm:py-12">
-                <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#eadbd2] bg-white/80 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-[#a8441b] shadow-[0_8px_24px_rgba(83,45,20,0.04)]">
-                  <Sparkles size={13} strokeWidth={1.7} />
-                  Sacred booking
-                </div>
-
-                <h2
-                  id="login-required-title"
-                  className={`${displayFont.className} mx-auto mt-7 max-w-[500px] text-[45px] font-semibold leading-[0.92] tracking-[-0.035em] text-[#28221f] sm:text-[58px] lg:text-[66px]`}
-                >
-                  Continue your
-                  <span className="block text-[#a8441b]">
-                    sacred journey.
-                  </span>
-                </h2>
-
-                <p className="mx-auto mt-6 max-w-[430px] text-[14px] leading-7 text-[#756a63] sm:text-[15px]">
-                  Login to explore puja details and continue your booking.
-                  Your sacred bookings and updates stay connected to your
-                  account.
-                </p>
-
-                <div className="mx-auto mt-10 w-full max-w-[430px] space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => router.push("/login")}
-                    className="
-                      group
-                      flex
-                      h-[54px]
-                      w-full
-                      items-center
-                      justify-center
-                      gap-3
-                      rounded-full
-                      bg-[#431407]
-                      px-7
-                      text-[13px]
-                      font-bold
-                      text-white
-                      shadow-[0_16px_35px_rgba(67,20,7,0.20)]
-                      transition-all
-                      duration-300
-                      hover:-translate-y-1
-                      hover:bg-[#5b1d0b]
-                      hover:shadow-[0_22px_45px_rgba(67,20,7,0.25)]
-                      active:scale-[0.98]
-                    "
-                  >
-                    Login to continue
-                    <ArrowRight
-                      size={16}
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => router.push("/register")}
-                    className="
-                      h-[54px]
-                      w-full
-                      rounded-full
-                      border
-                      border-[#dfcec4]
-                      bg-white
-                      px-7
-                      text-[13px]
-                      font-bold
-                      text-[#a8441b]
-                      shadow-[0_8px_24px_rgba(83,45,20,0.04)]
-                      transition-all
-                      duration-300
-                      hover:-translate-y-1
-                      hover:border-[#a8441b]/45
-                      hover:bg-[#fff8f3]
-                      hover:shadow-[0_14px_30px_rgba(83,45,20,0.08)]
-                      active:scale-[0.98]
-                    "
-                  >
-                    Create an account
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShowLoginModal(false)}
-                    className="w-full py-3 text-[12px] font-semibold text-[#9a8a81] transition-colors duration-300 hover:text-[#431407]"
-                  >
-                    Maybe later
-                  </button>
-                </div>
-              </div>
-
-              <div className="border-t border-[#eee8e2] pt-5 text-center">
-                <p className="text-[9px] font-semibold uppercase tracking-[0.19em] text-[#9a8a81] sm:text-[10px]">
-                  Secure account · Personal bookings · Puja updates
-                </p>
-              </div>
-            </div>
-          </aside>
+export default function PujasPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#fffdfb]">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#a8441b] border-t-transparent" />
         </div>
-      )}
-
-      <style>{`
-        .puja-premium-card {
-          opacity: 0;
-          transform: translateY(26px) scale(0.985);
-          animation: pujaPremiumReveal 760ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-          will-change: transform, opacity;
-        }
-
-        @keyframes pujaPremiumReveal {
-          0% {
-            opacity: 0;
-            transform: translateY(26px) scale(0.985);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        .login-drawer-backdrop {
-          animation: loginDrawerBackdropIn 320ms ease-out both;
-        }
-
-        .login-auth-drawer {
-          animation: loginDrawerIn 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-          will-change: transform;
-        }
-
-        .login-drawer-content {
-          animation: loginDrawerContentIn 800ms 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        @keyframes loginDrawerBackdropIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes loginDrawerIn {
-          from {
-            transform: translateX(-100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes loginDrawerContentIn {
-          from {
-            opacity: 0;
-            transform: translateX(-28px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .puja-premium-card,
-          .login-auth-drawer,
-          .login-drawer-content {
-            opacity: 1;
-            transform: none;
-            animation: none;
-          }
-        }
-      `}</style>
-</section>
+      }
+    >
+      <PujasPageContent />
+    </Suspense>
   );
 }

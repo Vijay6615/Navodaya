@@ -25,7 +25,9 @@ const SHARE_IMAGE_URL = "/Pujadhamlogo1.png";
 
 const searchLinks = [
   { label: "Home", href: "/" },
-  { label: "All Pujas", href: "/pujas" },
+  { label: "All Pujas", href: "/pujas?mode=all" },
+  { label: "Online Pujas", href: "/pujas?mode=online" },
+  { label: "Ghar Pe Puja", href: "/pujas?mode=offline" },
   { label: "All Sevas", href: "/seva" },
   { label: "Gau Seva", href: "/gau-seva" },
   { label: "My Bookings", href: "/my-bookings" },
@@ -49,6 +51,10 @@ export default function Navbar() {
   // Pujas is rendered separately because it has a dropdown.
   const links = [
     { label: "Home", href: "/" },
+
+    // Seva is a separate main navigation item.
+    { label: "Seva", href: "/seva" },
+
     { label: "My Bookings", href: "/my-bookings" },
 
     ...(isAdmin
@@ -62,14 +68,16 @@ export default function Navbar() {
 
   const pujaMenuLinks = [
     {
-      label: "Puja",
-      description: "Explore all Vedic pujas",
-      href: "/pujas",
+      label: "All Pujas",
+      href: "/pujas?mode=all",
     },
     {
-      label: "Seva",
-      description: "Explore Gau Seva and future sevas",
-      href: "/seva",
+      label: "Ghar Par Puja",
+      href: "/pujas?mode=offline",
+    },
+    {
+      label: "Online Puja",
+      href: "/pujas?mode=online",
     },
   ];
 
@@ -110,10 +118,7 @@ export default function Navbar() {
     return path === href || path.startsWith(`${href}/`);
   };
 
-  const isPujaSectionActive =
-    isActive("/pujas") ||
-    isActive("/seva") ||
-    isActive("/gau-seva");
+  const isPujaSectionActive = isActive("/pujas");
 
   useEffect(() => {
     setMenuOpen(false);
@@ -307,7 +312,7 @@ const handleShareApp = async () => {
             </button>
 
             {menuOpen && (
-              <div className="absolute left-0 top-[59px] w-[290px] max-w-[calc(100vw-24px)] border border-[#eee8e2] bg-white p-3 shadow-[0_22px_60px_rgba(39,27,20,0.14)]">
+              <div className="absolute left-0 top-[59px] max-h-[calc(100dvh-92px)] w-[290px] max-w-[calc(100vw-24px)] overflow-y-auto overscroll-contain border border-[#eee8e2] bg-white p-3 shadow-[0_22px_60px_rgba(39,27,20,0.14)] [scrollbar-width:thin]">
                 <Link
                   href="/"
                   className={`flex items-center justify-between border-b border-[#f3efeb] px-3 py-4 text-[14px] font-medium transition ${
@@ -323,20 +328,18 @@ const handleShareApp = async () => {
                   />
                 </Link>
 
-                {/* MOBILE PUJA/SEVA DROPDOWN */}
-                <div className="border-b border-[#f3efeb]">
+                {/* MOBILE PUJAS DROPDOWN */}
+                <div className="border-b border-[#f3efeb] bg-white">
                   <button
                     type="button"
                     aria-expanded={mobilePujaOpen}
                     onClick={() =>
-                      setMobilePujaOpen(
-                        (value) => !value
-                      )
+                      setMobilePujaOpen((value) => !value)
                     }
-                    className={`flex w-full items-center justify-between px-3 py-4 text-left text-[14px] font-medium transition ${
+                    className={`flex w-full items-center justify-between bg-white px-3 py-4 text-left text-[14px] font-medium transition ${
                       isPujaSectionActive
                         ? "text-[#b34d1d]"
-                        : "hover:text-[#b34d1d]"
+                        : "text-[#332c28] hover:text-[#b34d1d]"
                     }`}
                   >
                     <span>Pujas</span>
@@ -345,32 +348,30 @@ const handleShareApp = async () => {
                       size={17}
                       strokeWidth={1.7}
                       className={`transition-transform duration-200 ${
-                        mobilePujaOpen
-                          ? "rotate-180"
-                          : ""
+                        mobilePujaOpen ? "rotate-180" : ""
                       }`}
                     />
                   </button>
 
                   {mobilePujaOpen && (
-                    <div className="mb-3 border-l-2 border-[#d97846] bg-[#fcf8f5]">
+                    <div className="border-t border-[#f4efeb] bg-white pb-2 pl-5 pr-1 pt-1">
                       {pujaMenuLinks.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`block px-5 py-3 transition ${
-                            isActive(item.href)
-                              ? "bg-[#f7eee8] text-[#a8441b]"
-                              : "hover:bg-[#f7eee8] hover:text-[#a8441b]"
-                          }`}
+                          onClick={() => {
+                            setMenuOpen(false);
+                            setMobilePujaOpen(false);
+                          }}
+                          className="flex min-h-12 items-center justify-between border-b border-[#f5f1ee] bg-white px-3 py-3 text-[13px] font-medium text-[#443b35] transition last:border-b-0 hover:text-[#b34d1d]"
                         >
-                          <span className="block text-[13px] font-semibold">
-                            {item.label}
-                          </span>
+                          <span>{item.label}</span>
 
-                          <span className="mt-1 block text-[10px] leading-4 text-[#8d7e76]">
-                            {item.description}
-                          </span>
+                          <ChevronRight
+                            size={15}
+                            strokeWidth={1.6}
+                            className="text-[#9e9189]"
+                          />
                         </Link>
                       ))}
                     </div>
@@ -439,7 +440,7 @@ const handleShareApp = async () => {
               )}
             </Link>
 
-            {/* DESKTOP PUJA / SEVA DROPDOWN */}
+            {/* DESKTOP PUJAS DROPDOWN */}
             <div
               ref={desktopPujaRef}
               className="relative"
@@ -483,31 +484,20 @@ const handleShareApp = async () => {
               </button>
 
               {desktopPujaOpen && (
-                <div className="absolute left-1/2 top-[76px] w-[290px] -translate-x-1/2 border border-[#eee8e2] bg-white p-2 shadow-[0_22px_60px_rgba(39,27,20,0.14)]">
+                <div className="absolute left-1/2 top-[74px] w-[260px] -translate-x-1/2 overflow-hidden rounded-[18px] border border-[#eadfd7] bg-white p-2 shadow-[0_22px_60px_rgba(39,27,20,0.14)]">
                   {pujaMenuLinks.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`group flex items-center justify-between border-b border-[#f3efeb] px-4 py-4 transition last:border-0 ${
-                        isActive(item.href)
-                          ? "bg-[#fbf4ef] text-[#a8441b]"
-                          : "text-[#332c28] hover:bg-[#fbf7f4] hover:text-[#a8441b]"
-                      }`}
+                      onClick={() => setDesktopPujaOpen(false)}
+                      className="group flex min-h-12 items-center justify-between rounded-[13px] bg-white px-4 py-3 text-[13px] font-medium text-[#3d342f] transition hover:bg-[#fff7f1] hover:text-[#a8441b]"
                     >
-                      <div>
-                        <span className="block text-[14px] font-semibold">
-                          {item.label}
-                        </span>
-
-                        <span className="mt-1 block text-[10px] leading-4 text-[#8d7e76]">
-                          {item.description}
-                        </span>
-                      </div>
+                      <span>{item.label}</span>
 
                       <ChevronRight
-                        size={17}
+                        size={15}
                         strokeWidth={1.6}
-                        className="transition-transform group-hover:translate-x-1"
+                        className="text-[#a79a92] transition group-hover:translate-x-0.5 group-hover:text-[#a8441b]"
                       />
                     </Link>
                   ))}

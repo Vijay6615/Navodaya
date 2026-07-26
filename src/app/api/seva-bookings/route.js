@@ -28,6 +28,100 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+function detailRow(label, value) {
+  return `
+    <tr>
+      <td style="padding:9px 0;color:#81756e;font-size:13px;vertical-align:top;width:38%">
+        ${escapeHtml(label)}
+      </td>
+      <td style="padding:9px 0;color:#2f2925;font-size:13px;font-weight:700;vertical-align:top;word-break:break-word">
+        ${value}
+      </td>
+    </tr>
+  `;
+}
+
+function buildSevaEmailHtml({
+  heading,
+  intro,
+  bookingId,
+  sevaType,
+  amount,
+  name,
+  email,
+  phone,
+  sankalpName,
+  gotra,
+  message,
+  paymentStatus,
+  bookingStatus,
+  buttonLabel,
+  buttonUrl,
+}) {
+  return `
+    <div style="margin:0;padding:28px 14px;background:#f7f3ef;font-family:Arial,sans-serif;color:#2f2925">
+      <div style="max-width:680px;margin:0 auto;overflow:hidden;border:1px solid #eadfd7;border-radius:22px;background:#ffffff">
+        <div style="padding:26px 28px;background:linear-gradient(135deg,#431407,#7f2f12);color:#ffffff">
+          <p style="margin:0 0 8px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#e9bca2">
+            Puja Dham Notification
+          </p>
+          <h1 style="margin:0;font-size:26px;line-height:34px">
+            ${escapeHtml(heading)}
+          </h1>
+          <p style="margin:10px 0 0;font-size:14px;line-height:22px;color:#fbe6da">
+            ${intro}
+          </p>
+        </div>
+
+        <div style="padding:26px 28px">
+          <div style="margin-bottom:20px;padding:16px;border:1px solid #f0e3da;border-radius:14px;background:#fffaf6">
+            <p style="margin:0 0 5px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a8441b">
+              Booking ID
+            </p>
+            <p style="margin:0;font-family:monospace;font-size:13px;font-weight:700;word-break:break-all;color:#3b332e">
+              ${escapeHtml(bookingId)}
+            </p>
+          </div>
+
+          <table style="width:100%;border-collapse:collapse">
+            ${detailRow("Seva", escapeHtml(sevaType))}
+            ${detailRow("Amount", `₹${Number(amount).toLocaleString("en-IN")}`)}
+            ${detailRow("Devotee name", escapeHtml(name))}
+            ${detailRow("Email", escapeHtml(email))}
+            ${detailRow("Phone", escapeHtml(phone))}
+            ${detailRow("Sankalp name", escapeHtml(sankalpName || "Not provided"))}
+            ${detailRow("Gotra", escapeHtml(gotra || "Not provided"))}
+            ${detailRow("Payment status", escapeHtml(paymentStatus))}
+            ${detailRow("Booking status", escapeHtml(bookingStatus))}
+          </table>
+
+          <div style="margin-top:18px;padding:16px;border-radius:14px;background:#fffaf2">
+            <p style="margin:0 0 6px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#a8441b">
+              Prayer / Message
+            </p>
+            <p style="margin:0;font-size:13px;line-height:21px;color:#5f554f;white-space:pre-wrap;word-break:break-word">
+              ${escapeHtml(message || "No special message")}
+            </p>
+          </div>
+
+          ${
+            buttonUrl
+              ? `
+                <a
+                  href="${escapeHtml(buttonUrl)}"
+                  style="display:inline-block;margin-top:22px;padding:13px 20px;border-radius:10px;background:#a8441b;color:#ffffff;text-decoration:none;font-size:13px;font-weight:700"
+                >
+                  ${escapeHtml(buttonLabel)}
+                </a>
+              `
+              : ""
+          }
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // ==========================================
 // POST: Create new Seva booking
 // ==========================================
@@ -133,255 +227,83 @@ export async function POST(request) {
     );
 
     // ==========================================
-    // Send notification email to Pandit Ji
-    // Booking remains saved even if email fails
+    // Email notifications:
+    // 1) Pandit Ji ko new Seva alert
+    // 2) User ko booking received confirmation
+    // Email fail ho tab bhi database booking safe rahegi.
     // ==========================================
+    const appUrl = (
+      process.env.NEXT_PUBLIC_APP_URL || ""
+    ).replace(/\/$/, "");
+
+    const panditDashboardUrl = appUrl
+      ? `${appUrl}/pandit-dashboard`
+      : "";
+
+    const userDashboardUrl = appUrl
+      ? `${appUrl}/my-bookings?tab=seva`
+      : "";
+
     let adminEmailSent = false;
     let adminEmailId = null;
     let adminEmailError = null;
 
+    let userEmailSent = false;
+    let userEmailId = null;
+    let userEmailError = null;
+
+    const senderEmail =
+      process.env.EMAIL_FROM?.trim();
+
+    // Pandit Ji notification
     try {
       const adminEmail =
         process.env.ADMIN_EMAIL
           ?.toLowerCase()
           .trim();
 
-      const senderEmail =
-        process.env.EMAIL_FROM?.trim();
-
       if (!adminEmail) {
-        throw new Error(
-          "ADMIN_EMAIL is missing"
-        );
+        throw new Error("ADMIN_EMAIL is missing");
       }
 
       if (!senderEmail) {
-        throw new Error(
-          "EMAIL_FROM is missing"
-        );
+        throw new Error("EMAIL_FROM is missing");
       }
 
-      const appUrl = (
-        process.env.NEXT_PUBLIC_APP_URL || ""
-      ).replace(/\/$/, "");
-
-      const dashboardUrl = appUrl
-        ? `${appUrl}/pandit-dashboard`
-        : "";
-
-      const safeName = escapeHtml(cleanName);
-      const safeEmail = escapeHtml(userEmail);
-      const safePhone = escapeHtml(cleanPhone);
-      const safeSevaType =
-        escapeHtml(cleanSevaType);
-
-      const safeSankalp = escapeHtml(
-        newBooking.sankalpName ||
-          "Not provided"
-      );
-
-      const safeGotra = escapeHtml(
-        newBooking.gotra ||
-          "Not provided"
-      );
-
-      const safeMessage = escapeHtml(
-        newBooking.message ||
-          "No special message"
-      );
+      const adminEmailHtml = buildSevaEmailHtml({
+        heading: "New Gau Seva Received",
+        intro: `<strong>${escapeHtml(cleanName)}</strong> has offered <strong>${escapeHtml(cleanSevaType)}</strong> of <strong>₹${numericAmount.toLocaleString("en-IN")}</strong>.`,
+        bookingId,
+        sevaType: cleanSevaType,
+        amount: numericAmount,
+        name: cleanName,
+        email: userEmail,
+        phone: cleanPhone,
+        sankalpName: newBooking.sankalpName,
+        gotra: newBooking.gotra,
+        message: newBooking.message,
+        paymentStatus: "Pending",
+        bookingStatus: "Pending",
+        buttonLabel: "Open Pandit Dashboard",
+        buttonUrl: panditDashboardUrl,
+      });
 
       const adminEmailResponse =
         await resend.emails.send({
           from: senderEmail,
           to: adminEmail,
-
           subject: `🐄 New Gau Seva - ${cleanSevaType}`,
-
-          html: `
-            <div
-              style="
-                margin:0;
-                padding:32px 16px;
-                background:#f7f1ec;
-                font-family:Arial,sans-serif;
-                color:#2f241f;
-              "
-            >
-              <div
-                style="
-                  max-width:620px;
-                  margin:0 auto;
-                  background:#ffffff;
-                  border:1px solid #eadfd7;
-                  border-radius:20px;
-                  overflow:hidden;
-                "
-              >
-                <div
-                  style="
-                    padding:28px 32px;
-                    background:#431407;
-                    color:#ffffff;
-                  "
-                >
-                  <p
-                    style="
-                      margin:0 0 8px;
-                      font-size:11px;
-                      letter-spacing:2px;
-                      text-transform:uppercase;
-                      color:#e5b99d;
-                    "
-                  >
-                    Puja Dham Notification
-                  </p>
-
-                  <h1
-                    style="
-                      margin:0;
-                      font-size:28px;
-                    "
-                  >
-                    New Gau Seva Received
-                  </h1>
-                </div>
-
-                <div style="padding:32px">
-                  <p
-                    style="
-                      margin-top:0;
-                      font-size:16px;
-                      line-height:26px;
-                    "
-                  >
-                    <strong>${safeName}</strong>
-                    has offered
-                    <strong>${safeSevaType}</strong>
-                    of
-                    <strong>₹${numericAmount}</strong>.
-                  </p>
-
-                  <div
-                    style="
-                      margin:24px 0;
-                      padding:20px;
-                      background:#fffaf6;
-                      border:1px solid #f0e4db;
-                      border-radius:14px;
-                    "
-                  >
-                    <p>
-                      <strong>Booking ID:</strong>
-                      ${bookingId}
-                    </p>
-
-                    <p>
-                      <strong>Seva:</strong>
-                      ${safeSevaType}
-                    </p>
-
-                    <p>
-                      <strong>Amount:</strong>
-                      ₹${numericAmount}
-                    </p>
-
-                    <p>
-                      <strong>Name:</strong>
-                      ${safeName}
-                    </p>
-
-                    <p>
-                      <strong>Email:</strong>
-                      ${safeEmail}
-                    </p>
-
-                    <p>
-                      <strong>Phone:</strong>
-                      ${safePhone}
-                    </p>
-
-                    <p>
-                      <strong>Sankalp Name:</strong>
-                      ${safeSankalp}
-                    </p>
-
-                    <p>
-                      <strong>Gotra:</strong>
-                      ${safeGotra}
-                    </p>
-
-                    <p style="margin-bottom:0">
-                      <strong>Message:</strong>
-                      ${safeMessage}
-                    </p>
-                  </div>
-
-                  <p>
-                    <strong>Payment Status:</strong>
-                    Pending
-                  </p>
-
-                  <p>
-                    <strong>Booking Status:</strong>
-                    Pending
-                  </p>
-
-                  ${
-                    dashboardUrl
-                      ? `
-                        <a
-                          href="${dashboardUrl}"
-                          style="
-                            display:inline-block;
-                            margin-top:18px;
-                            padding:13px 22px;
-                            background:#a8441b;
-                            color:#ffffff;
-                            text-decoration:none;
-                            border-radius:10px;
-                            font-weight:bold;
-                          "
-                        >
-                          Open Pandit Dashboard
-                        </a>
-                      `
-                      : ""
-                  }
-                </div>
-              </div>
-            </div>
-          `,
+          html: adminEmailHtml,
         });
-
-      console.log(
-        "📧 ADMIN SEVA EMAIL RESPONSE:",
-        JSON.stringify(
-          adminEmailResponse,
-          null,
-          2
-        )
-      );
 
       if (adminEmailResponse?.error) {
         adminEmailError =
           adminEmailResponse.error.message ||
           "Resend rejected admin email";
-
-        console.error(
-          "❌ Admin Seva email failed:",
-          adminEmailResponse.error
-        );
       } else {
         adminEmailSent = true;
-
         adminEmailId =
-          adminEmailResponse?.data?.id ||
-          null;
-
-        console.log(
-          "✅ Pandit Ji Seva email sent:",
-          adminEmailId
-        );
+          adminEmailResponse?.data?.id || null;
       }
     } catch (emailError) {
       adminEmailError =
@@ -389,7 +311,59 @@ export async function POST(request) {
         "Unknown admin email error";
 
       console.error(
-        "❌ ADMIN SEVA EMAIL ERROR:",
+        "ADMIN SEVA EMAIL ERROR:",
+        emailError
+      );
+    }
+
+    // User confirmation
+    try {
+      if (!senderEmail) {
+        throw new Error("EMAIL_FROM is missing");
+      }
+
+      const userEmailHtml = buildSevaEmailHtml({
+        heading: "Your Seva Has Been Received",
+        intro: `Namaste <strong>${escapeHtml(cleanName)}</strong>. Your <strong>${escapeHtml(cleanSevaType)}</strong> request has been saved and is pending verification.`,
+        bookingId,
+        sevaType: cleanSevaType,
+        amount: numericAmount,
+        name: cleanName,
+        email: userEmail,
+        phone: cleanPhone,
+        sankalpName: newBooking.sankalpName,
+        gotra: newBooking.gotra,
+        message: newBooking.message,
+        paymentStatus: "Pending",
+        bookingStatus: "Pending",
+        buttonLabel: "View My Seva Booking",
+        buttonUrl: userDashboardUrl,
+      });
+
+      const userEmailResponse =
+        await resend.emails.send({
+          from: senderEmail,
+          to: userEmail,
+          subject: `🙏 Seva Received - ${cleanSevaType}`,
+          html: userEmailHtml,
+        });
+
+      if (userEmailResponse?.error) {
+        userEmailError =
+          userEmailResponse.error.message ||
+          "Resend rejected user email";
+      } else {
+        userEmailSent = true;
+        userEmailId =
+          userEmailResponse?.data?.id || null;
+      }
+    } catch (emailError) {
+      userEmailError =
+        emailError?.message ||
+        "Unknown user email error";
+
+      console.error(
+        "USER SEVA EMAIL ERROR:",
         emailError
       );
     }
@@ -408,6 +382,9 @@ export async function POST(request) {
         adminEmailSent,
         adminEmailId,
         adminEmailError,
+        userEmailSent,
+        userEmailId,
+        userEmailError,
       },
       { status: 201 }
     );

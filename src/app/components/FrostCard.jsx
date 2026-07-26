@@ -14,6 +14,9 @@ import {
   MapPin,
   MessageSquareText,
   ShieldCheck,
+  Clock3,
+  Tag,
+  CheckCircle2,
 } from "lucide-react";
 
 // ================= EVENTS =================
@@ -45,19 +48,20 @@ const EVENTS = {
       date: "2026-09-04",
     },
     {
-      img: "/images/GaneshVisarjan.jpg",
-      title: "Ganesh Visarjan",
-      desc: "Offer a heartfelt farewell to Lord Ganesha with traditional Visarjan rituals, prayers, and Aarti. Seek blessings for wisdom, prosperity, success, and the removal of obstacles before bidding farewell to Bappa.",
-      offer: "10% OFF this month",
-      date: "2026-09-25",
-    },
-    {
       img: "/images/ganesh-puja.jpg",
       title: "Ganesh Chaturthi Special Puja",
       desc: "Celebrate Ganesh Chaturthi with sacred Vedic rituals, Ganapati Atharvashirsha recitation, and special puja to invite Lord Ganesha's blessings for success, happiness, wealth, and obstacle-free beginnings.",
       offer: "10% OFF this month + Free Muhurat Consultation",
       date: "2026-09-14",
     },
+    {
+      img: "/images/GaneshVisarjan.jpg",
+      title: "Ganesh Visarjan",
+      desc: "Offer a heartfelt farewell to Lord Ganesha with traditional Visarjan rituals, prayers, and Aarti. Seek blessings for wisdom, prosperity, success, and the removal of obstacles before bidding farewell to Bappa.",
+      offer: "10% OFF this month",
+      date: "2026-09-25",
+    },
+  
     {
       img: "/images/PitraDoshNivaran.jpg",
       title: "Pitru Paksha Special Puja",
@@ -205,7 +209,9 @@ export default function MonthlyEventsSection() {
     name: "",
     phone: "",
     email: "",
+    city: "",
     address: "",
+    timeSlot: "Flexible",
     message: "",
   });
 
@@ -276,11 +282,7 @@ export default function MonthlyEventsSection() {
   const submitBooking = async (e) => {
     e.preventDefault();
 
-    if (!selectedEvent) {
-      return;
-    }
-
-    if (status === "loading") {
+    if (!selectedEvent || status === "loading") {
       return;
     }
 
@@ -292,7 +294,6 @@ export default function MonthlyEventsSection() {
 
     try {
       setLoading(true);
-
       setError("");
 
       const slug = selectedEvent.title
@@ -301,44 +302,58 @@ export default function MonthlyEventsSection() {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
 
-      const response = await fetch(
-        "/api/bookings",
-        {
-          method: "POST",
+      const completeAddress = [form.address, form.city]
+        .map((value) => String(value || "").trim())
+        .filter(Boolean)
+        .join(", ");
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const bookingPayload = {
+        bookingSource: "special_event",
+        bookingCategory: "Monthly Vedic Event",
 
-          body: JSON.stringify({
-            pujaName: selectedEvent.title,
+        eventTitle: selectedEvent.title,
+        eventDate: selectedEvent.date,
+        eventMonth: month,
+        eventOffer: selectedEvent.offer || "",
+        eventImage: selectedEvent.img,
 
-            pujaSlug: slug,
+        pujaName: selectedEvent.title,
+        pujaSlug: slug,
+        pujaType: "Offline Puja",
 
-            pujaType: "offline",
+        basePrice: "Price to be confirmed",
+        price: "Price to be confirmed",
+        totalPrice: "Price to be confirmed",
 
-            price: "Price may vary",
+        date: selectedEvent.date,
+        timeSlot: form.timeSlot || "Flexible",
 
-            date: selectedEvent.date,
+        name: form.name.trim(),
+        customerName: form.name.trim(),
+        customerEmail: form.email.trim(),
+        phone: form.phone.trim(),
+        city: form.city.trim(),
+        address: completeAddress,
 
-            timeSlot: "Flexible",
+        samagriOption:
+          "Samagri arrangement will be confirmed by Pandit Ji",
+        samagriProvidedBy: "To be confirmed",
+        samagriCharge: "To be confirmed",
+        samagriItems: [],
 
-            address: form.address,
+        message: form.message.trim(),
 
-            phone: form.phone,
+        transactionId: "Pay on service",
+        paymentStatus: "pay_on_service",
+      };
 
-            customerName: form.name,
-
-            customerEmail: form.email,
-
-            message: form.message,
-
-            transactionId: "",
-
-            paymentStatus: "pay_on_service",
-          }),
-        }
-      );
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingPayload),
+      });
 
       let data = {};
 
@@ -351,9 +366,7 @@ export default function MonthlyEventsSection() {
       if (!response.ok) {
         if (response.status === 401) {
           setSelectedEvent(null);
-
           setShowLogin(true);
-
           return;
         }
 
@@ -364,16 +377,53 @@ export default function MonthlyEventsSection() {
         );
       }
 
+      if (typeof window !== "undefined") {
+        try {
+          const existingBookings = JSON.parse(
+            localStorage.getItem("local_puja_bookings") || "[]"
+          );
+
+          const savedBooking = {
+            ...bookingPayload,
+            _id: data.bookingId,
+            bookingId: data.bookingId,
+            email: session.user.email,
+            userEmail: session.user.email,
+            userName:
+              session.user.name || bookingPayload.name,
+            status: "pending",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+
+          const withoutDuplicate = existingBookings.filter(
+            (booking) =>
+              booking.bookingId !== savedBooking.bookingId &&
+              booking._id !== savedBooking._id
+          );
+
+          withoutDuplicate.unshift(savedBooking);
+
+          localStorage.setItem(
+            "local_puja_bookings",
+            JSON.stringify(withoutDuplicate)
+          );
+          localStorage.setItem("just_booked_trigger", "true");
+        } catch (storageError) {
+          console.warn(
+            "Local booking backup failed:",
+            storageError
+          );
+        }
+      }
+
       setSuccess(true);
 
       setTimeout(() => {
-        router.push("/my-bookings");
-      }, 1500);
+        router.push("/my-bookings?tab=puja");
+      }, 1200);
     } catch (error) {
-      console.error(
-        "EVENT BOOKING ERROR:",
-        error
-      );
+      console.error("EVENT BOOKING ERROR:", error);
 
       setError(
         error?.message ||
@@ -680,299 +730,478 @@ export default function MonthlyEventsSection() {
       {mounted &&
         selectedEvent &&
         createPortal(
-        <div
-          className="fixed inset-0 z-[9999] bg-white"
-          onClick={() => {
-            if (!loading) setSelectedEvent(null);
-          }}
-        >
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="event-booking-panel relative h-[100dvh] w-full overflow-hidden bg-white"
+            className="fixed inset-0 z-[9999] bg-[#f5f1ed]"
+            onClick={() => {
+              if (!loading) setSelectedEvent(null);
+            }}
           >
-            <button
-              type="button"
-              onClick={() => {
-                if (!loading) setSelectedEvent(null);
-              }}
-              className="absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-[#eadfd8] bg-white/95 text-[#8f321c] shadow-sm transition hover:bg-[#fff8f4] md:right-7 md:top-7 md:h-11 md:w-11"
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="event-booking-panel relative h-[100dvh] w-full overflow-hidden bg-white"
             >
-              <X size={19} />
-            </button>
+              <button
+                type="button"
+                aria-label="Close booking form"
+                onClick={() => {
+                  if (!loading) setSelectedEvent(null);
+                }}
+                className="fixed right-3 top-3 z-[100] flex h-10 w-10 items-center justify-center rounded-full border border-[#eadfd8] bg-white text-[#8f321c] shadow-md transition active:scale-95 md:absolute md:right-7 md:top-7 md:h-11 md:w-11"
+              >
+                <X size={19} />
+              </button>
 
-            <div className="grid h-full w-full md:grid-cols-[42%_58%]">
-              {/* LEFT VISUAL - DESKTOP */}
-              <div className="relative hidden h-full overflow-hidden md:block">
-                <img
-                  src={selectedEvent.img}
-                  alt={selectedEvent.title}
-                  className="h-full w-full object-cover"
-                />
+              <div className="grid h-full w-full md:grid-cols-[42%_58%]">
+                {/* LEFT VISUAL - DESKTOP */}
+                <div className="relative hidden h-full overflow-hidden md:block">
+                  <img
+                    src={selectedEvent.img}
+                    alt={selectedEvent.title}
+                    className="h-full w-full object-cover"
+                  />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-10 lg:p-14">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-orange-100">
-                    Offline Puja Booking
-                  </p>
+                  <div className="absolute bottom-0 left-0 right-0 p-9 lg:p-14">
+                    <span className="inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-orange-100 backdrop-blur-md">
+                      Special Offline Puja
+                    </span>
 
-                  <h3 className="mt-4 max-w-xl font-serif text-[40px] leading-[1.05] text-white lg:text-[52px]">
-                    {selectedEvent.title}
-                  </h3>
+                    <h3 className="mt-5 max-w-xl font-serif text-[38px] leading-[1.05] text-white lg:text-[50px]">
+                      {selectedEvent.title}
+                    </h3>
 
-                  <div className="mt-8 grid grid-cols-2 border-t border-white/25 pt-6">
-                    <div>
-                      <p className="text-[8px] uppercase tracking-[0.2em] text-white/60">
-                        Sacred Date
-                      </p>
-
-                      <p className="mt-2 text-[13px] font-medium text-white">
-                        {new Date(selectedEvent.date).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-[8px] uppercase tracking-[0.2em] text-white/60">
-                        Puja Price
-                      </p>
-
-                      <p className="mt-2 font-serif text-[20px] text-white">
-                        Price may vary
-                      </p>
-
-                      <p className="mt-1 text-[9px] text-white/60">
-                        Informed by Panditji
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT FORM */}
-              <div className="flex h-full min-h-0 items-center justify-center bg-white px-5 py-4 sm:px-8 md:px-10 md:py-6 lg:px-16">
-                <div className="w-full max-w-[620px]">
-                  <div className="text-center">
-                    <img
-                      src="/Pujadhamlogo1.png"
-                      alt="Puja Dham"
-                      className="mx-auto h-[48px] w-auto object-contain sm:h-[56px] md:h-[64px]"
-                    />
-
-                    <h2 className="mt-3 font-serif text-[30px] leading-[0.98] text-[#2c2421] sm:text-[36px] md:mt-4 md:text-[46px] lg:text-[52px]">
-                      Book your{" "}
-                      <span className="text-[#9a3f2b]">Special Puja.</span>
-                    </h2>
-
-                    <p className="mx-auto mt-2 max-w-[480px] text-[11px] leading-5 text-[#81756f] md:mt-3 md:text-[12px]">
-                      Share your details. Panditji will connect with you for
-                      final arrangements and price.
+                    <p className="mt-4 max-w-xl text-xs leading-6 text-white/70">
+                      Complete the form and Pandit Ji will contact you to
+                      confirm the final arrangements, Samagri and price.
                     </p>
 
-                    {/* MOBILE EVENT INFO */}
-                    <div className="mt-3 border border-[#eee5df] bg-[#fffaf7] px-4 py-3 text-left md:hidden">
-                      <p className="truncate font-serif text-[16px] text-[#342925]">
-                        {selectedEvent.title}
-                      </p>
-
-                      <div className="mt-1 flex items-center justify-between gap-3 text-[9px] text-[#8f817a]">
-                        <span>
-                          {new Date(selectedEvent.date).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </span>
-                        <span className="font-medium text-[#8f321c]">
-                          Price may vary
-                        </span>
+                    <div className="mt-7 grid grid-cols-2 gap-3 border-t border-white/25 pt-6">
+                      <div>
+                        <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/50">
+                          Sacred Date
+                        </p>
+                        <p className="mt-2 text-[13px] font-semibold text-white">
+                          {new Date(selectedEvent.date).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )}
+                        </p>
                       </div>
+
+                      <div>
+                        <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/50">
+                          Booking Price
+                        </p>
+                        <p className="mt-2 text-[13px] font-semibold text-white">
+                          To be confirmed
+                        </p>
+                      </div>
+                    </div>
+
+                    {selectedEvent.offer && (
+                      <div className="mt-4 flex items-start gap-2 rounded-2xl border border-white/20 bg-white/10 p-3 text-[10px] leading-5 text-white/80 backdrop-blur-md">
+                        <Tag size={14} className="mt-0.5 shrink-0" />
+                        {selectedEvent.offer}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* RIGHT FORM - SCROLLABLE ON MOBILE */}
+                <div className="h-full min-h-0 overflow-y-auto overscroll-contain bg-[#fbf8f5] px-4 pb-10 pt-16 sm:px-6 md:bg-white md:px-10 md:py-8 lg:px-14">
+                  <div className="mx-auto w-full max-w-[640px]">
+                    <div className="rounded-[26px] border border-[#eadfd7] bg-white p-4 shadow-[0_14px_40px_rgba(67,41,25,0.07)] sm:p-6 md:border-0 md:p-0 md:shadow-none">
+                      <div className="text-center">
+                        <img
+                          src="/Pujadhamlogo1.png"
+                          alt="Puja Dham"
+                          className="mx-auto h-[48px] w-auto object-contain sm:h-[56px] md:h-[64px]"
+                        />
+
+                        <p className="mt-3 text-[9px] font-bold uppercase tracking-[0.22em] text-[#a85c43]">
+                          Special Event Booking
+                        </p>
+
+                        <h2 className="mt-2 font-serif text-[29px] leading-[1.05] text-[#2c2421] sm:text-[36px] md:text-[44px]">
+                          Book your{" "}
+                          <span className="text-[#9a3f2b]">
+                            Special Puja
+                          </span>
+                        </h2>
+
+                        <p className="mx-auto mt-2 max-w-[500px] text-[11px] leading-5 text-[#81756f] md:text-xs">
+                          Submit complete details so your booking appears
+                          correctly in My Bookings.
+                        </p>
+                      </div>
+
+                      {/* MOBILE EVENT SUMMARY */}
+                      <div className="mt-4 overflow-hidden rounded-[20px] border border-[#eadfd7] bg-[#fffaf7] md:hidden">
+                        <div className="flex gap-3 p-3">
+                          <img
+                            src={selectedEvent.img}
+                            alt={selectedEvent.title}
+                            className="h-[76px] w-[76px] shrink-0 rounded-[15px] object-cover"
+                          />
+
+                          <div className="min-w-0 flex-1">
+                            <p className="line-clamp-2 font-serif text-[17px] font-semibold leading-5 text-[#342925]">
+                              {selectedEvent.title}
+                            </p>
+
+                            <div className="mt-2 flex items-center gap-1.5 text-[10px] text-[#7c6f68]">
+                              <CalendarDays
+                                size={12}
+                                className="shrink-0 text-[#9a3f2b]"
+                              />
+                              {new Date(
+                                selectedEvent.date
+                              ).toLocaleDateString("en-IN", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </div>
+
+                            <p className="mt-1 text-[10px] font-bold text-[#8f321c]">
+                              Price to be confirmed
+                            </p>
+                          </div>
+                        </div>
+
+                        {selectedEvent.offer && (
+                          <div className="flex items-start gap-2 border-t border-[#eee1d9] bg-white px-3 py-2.5 text-[9px] leading-4 text-[#8f5b43]">
+                            <Tag
+                              size={12}
+                              className="mt-0.5 shrink-0"
+                            />
+                            {selectedEvent.offer}
+                          </div>
+                        )}
+                      </div>
+
+                      <form
+                        onSubmit={submitBooking}
+                        className="mt-5 space-y-4"
+                      >
+                        <FormField
+                          label="Full Name"
+                          required
+                          icon={<UserRound size={16} />}
+                        >
+                          <input
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                            placeholder="Enter devotee name"
+                            required
+                            autoComplete="name"
+                            className="event-input"
+                          />
+                        </FormField>
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <FormField
+                            label="Phone Number"
+                            required
+                            icon={<Phone size={16} />}
+                          >
+                            <input
+                              name="phone"
+                              type="tel"
+                              value={form.phone}
+                              onChange={handleChange}
+                              placeholder="Enter phone number"
+                              required
+                              inputMode="tel"
+                              autoComplete="tel"
+                              className="event-input"
+                            />
+                          </FormField>
+
+                          <FormField
+                            label="Email Address"
+                            required
+                            icon={<Mail size={16} />}
+                          >
+                            <input
+                              name="email"
+                              type="email"
+                              value={form.email}
+                              onChange={handleChange}
+                              placeholder="Enter email address"
+                              required
+                              autoComplete="email"
+                              className="event-input"
+                            />
+                          </FormField>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <FormField
+                            label="City"
+                            required
+                            icon={<MapPin size={16} />}
+                          >
+                            <input
+                              name="city"
+                              value={form.city}
+                              onChange={handleChange}
+                              placeholder="Mumbai"
+                              required
+                              autoComplete="address-level2"
+                              className="event-input"
+                            />
+                          </FormField>
+
+                          <FormField
+                            label="Preferred Time"
+                            required
+                            icon={<Clock3 size={16} />}
+                          >
+                            <select
+                              name="timeSlot"
+                              value={form.timeSlot}
+                              onChange={handleChange}
+                              required
+                              className="event-input appearance-none"
+                            >
+                              <option value="Flexible">
+                                Flexible
+                              </option>
+                              <option value="Morning">
+                                Morning
+                              </option>
+                              <option value="Afternoon">
+                                Afternoon
+                              </option>
+                              <option value="Evening">
+                                Evening
+                              </option>
+                            </select>
+                          </FormField>
+                        </div>
+
+                        <FormField
+                          label="Complete Puja Address"
+                          required
+                          icon={<MapPin size={16} />}
+                        >
+                          <textarea
+                            name="address"
+                            value={form.address}
+                            onChange={handleChange}
+                            placeholder="House/flat number, building, road and area"
+                            required
+                            rows={3}
+                            className="event-textarea"
+                          />
+                        </FormField>
+
+                        <FormField
+                          label="Special Requirement"
+                          icon={<MessageSquareText size={16} />}
+                        >
+                          <textarea
+                            name="message"
+                            value={form.message}
+                            onChange={handleChange}
+                            placeholder="Gotra, Sankalp name or any special instruction (optional)"
+                            rows={3}
+                            className="event-textarea"
+                          />
+                        </FormField>
+
+                        <div className="grid grid-cols-2 gap-2 rounded-[18px] border border-[#e7ece8] bg-[#f2f8f4] p-3">
+                          <div>
+                            <p className="text-[8px] font-bold uppercase tracking-wide text-[#718077]">
+                              Event Date
+                            </p>
+                            <p className="mt-1 text-[10px] font-bold text-[#30463a] sm:text-xs">
+                              {new Date(
+                                selectedEvent.date
+                              ).toLocaleDateString("en-IN", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-[8px] font-bold uppercase tracking-wide text-[#718077]">
+                              Final Price
+                            </p>
+                            <p className="mt-1 text-[10px] font-bold text-[#30463a] sm:text-xs">
+                              Pandit Ji will confirm
+                            </p>
+                          </div>
+                        </div>
+
+                        {error && (
+                          <div className="rounded-[15px] border border-red-200 bg-red-50 px-3 py-3 text-center text-[11px] leading-5 text-red-700">
+                            {error}
+                          </div>
+                        )}
+
+                        {success && (
+                          <div className="flex items-start gap-2 rounded-[15px] border border-green-200 bg-green-50 px-3 py-3 text-[11px] leading-5 text-green-700">
+                            <CheckCircle2
+                              size={16}
+                              className="mt-0.5 shrink-0"
+                            />
+                            Booking saved. Opening My Bookings...
+                          </div>
+                        )}
+
+                        <button
+                          type="submit"
+                          disabled={loading || success}
+                          className="flex min-h-[52px] w-full items-center justify-center gap-3 rounded-[16px] bg-[#8f321c] px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white shadow-[0_12px_28px_rgba(143,50,28,0.22)] transition hover:bg-[#762814] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-[54px] md:text-[11px]"
+                        >
+                          {loading
+                            ? "Booking Puja..."
+                            : success
+                            ? "Booking Confirmed"
+                            : "Confirm Puja Booking"}
+
+                          {!loading && !success && (
+                            <ArrowRight size={16} />
+                          )}
+                        </button>
+
+                        <div className="flex items-start justify-center gap-2 px-2 pb-1 text-center text-[9px] leading-4 text-[#8c7f77]">
+                          <ShieldCheck
+                            size={13}
+                            className="mt-0.5 shrink-0"
+                          />
+                          Offline Puja · Details and final price will be
+                          confirmed by Pandit Ji
+                        </div>
+                      </form>
                     </div>
                   </div>
-
-                  <form
-                    onSubmit={submitBooking}
-                    className="mt-3 space-y-2.5 md:mt-5 md:space-y-3"
-                  >
-                    <InputBox icon={<UserRound size={16} />}>
-                      <input
-                        name="name"
-                        value={form.name}
-                        onChange={handleChange}
-                        placeholder="Full Name"
-                        required
-                        className="event-input"
-                      />
-                    </InputBox>
-
-                    <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-                      <InputBox icon={<Phone size={16} />}>
-                        <input
-                          name="phone"
-                          type="tel"
-                          value={form.phone}
-                          onChange={handleChange}
-                          placeholder="Phone Number"
-                          required
-                          className="event-input"
-                        />
-                      </InputBox>
-
-                      <InputBox icon={<Mail size={16} />}>
-                        <input
-                          name="email"
-                          type="email"
-                          value={form.email}
-                          onChange={handleChange}
-                          placeholder="Email Address"
-                          required
-                          className="event-input"
-                        />
-                      </InputBox>
-                    </div>
-
-                    <InputBox icon={<MapPin size={16} />}>
-                      <input
-                        name="address"
-                        value={form.address}
-                        onChange={handleChange}
-                        placeholder="Complete Puja Address"
-                        required
-                        className="event-input"
-                      />
-                    </InputBox>
-
-                    <div className="relative">
-                      <MessageSquareText
-                        size={16}
-                        className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[#aa978c]"
-                      />
-
-                      <input
-                        name="message"
-                        value={form.message}
-                        onChange={handleChange}
-                        placeholder="Special requirement (Optional)"
-                        className="event-input"
-                      />
-                    </div>
-
-                    {error && (
-                      <div className="border border-red-100 bg-red-50 px-3 py-2 text-center text-[11px] text-red-600">
-                        {error}
-                      </div>
-                    )}
-
-                    {success && (
-                      <div className="border border-green-100 bg-green-50 px-3 py-2 text-center text-[11px] text-green-700">
-                        Booking confirmed 🙏 Opening My Bookings...
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={loading || success}
-                      className="flex h-[50px] w-full items-center justify-center gap-3 bg-[#8f321c] text-[10px] font-semibold uppercase tracking-[0.15em] text-white transition hover:bg-[#762814] disabled:cursor-not-allowed disabled:opacity-60 md:h-[54px] md:text-[11px]"
-                    >
-                      {loading
-                        ? "Booking Puja..."
-                        : success
-                        ? "Booking Confirmed"
-                        : "Confirm Puja Booking"}
-
-                      {!loading && !success && <ArrowRight size={16} />}
-                    </button>
-
-                    <div className="flex items-center justify-center gap-2 pt-0.5 text-[8px] text-[#9a8d86] md:text-[9px]">
-                      <ShieldCheck size={12} />
-                      Offline Puja · Final price informed by Panditji
-                    </div>
-                  </form>
                 </div>
               </div>
             </div>
-          </div>
-        </div>,
-        document.body
-      )}
+          </div>,
+          document.body
+        )}
 
       {/* ================= INPUT STYLE ================= */}
 
       <style jsx global>{`
         @keyframes eventBookingSlideIn {
           from {
-            transform: translateX(-100%);
+            transform: translateY(24px);
             opacity: 0;
           }
 
           to {
-            transform: translateX(0);
+            transform: translateY(0);
             opacity: 1;
           }
         }
 
+        @media (min-width: 768px) {
+          @keyframes eventBookingSlideIn {
+            from {
+              transform: translateX(-28px);
+              opacity: 0;
+            }
+
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        }
+
         .event-booking-panel {
-          animation: eventBookingSlideIn 0.45s
+          animation: eventBookingSlideIn 0.38s
             cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        .event-input {
+        .event-input,
+        .event-textarea {
           width: 100%;
-          height: 48px;
-          border: 1px solid #e9e1dc;
+          border: 1px solid #e7ded7;
+          border-radius: 14px;
           background: #fffdfb;
-          padding: 0 14px 0 42px;
-          font-size: 12px;
+          padding-left: 44px;
+          padding-right: 14px;
+          font-size: 13px;
           color: #342925;
           outline: none;
-          transition: 0.25s ease;
+          transition: 0.22s ease;
         }
 
-        @media (min-width: 768px) {
-          .event-input {
-            height: 52px;
-            padding: 0 16px 0 44px;
-            font-size: 13px;
-          }
+        .event-input {
+          height: 50px;
         }
 
-        @media (max-height: 700px) {
-          .event-input {
-            height: 43px;
-          }
+        .event-textarea {
+          min-height: 88px;
+          resize: vertical;
+          padding-top: 14px;
+          padding-bottom: 12px;
+          line-height: 20px;
         }
 
-        .event-input::placeholder {
+        .event-input::placeholder,
+        .event-textarea::placeholder {
           color: #aa9b92;
         }
 
-        .event-input:focus {
+        .event-input:focus,
+        .event-textarea:focus {
           border-color: #b97b66;
           background: #ffffff;
           box-shadow: 0 0 0 4px
             rgba(185, 123, 102, 0.1);
         }
-      `}</style>
 
+        @media (min-width: 768px) {
+          .event-input {
+            height: 52px;
+          }
+
+          .event-input,
+          .event-textarea {
+            font-size: 13px;
+          }
+        }
+      `}</style>
     </>
   );
 }
 
-// ================= INPUT BOX =================
-
-function InputBox({ icon, children }) {
+function FormField({
+  icon,
+  label,
+  required = false,
+  children,
+}) {
   return (
-    <div className="relative">
-
-      <span className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[#aa978c]">
-        {icon}
+    <label className="block">
+      <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-[0.14em] text-[#74675f]">
+        {label}
+        {required && (
+          <span className="ml-1 text-[#a8441b]">*</span>
+        )}
       </span>
 
-      {children}
-
-    </div>
+      <span className="relative block">
+        <span className="pointer-events-none absolute left-4 top-[17px] z-10 text-[#aa978c]">
+          {icon}
+        </span>
+        {children}
+      </span>
+    </label>
   );
 }
