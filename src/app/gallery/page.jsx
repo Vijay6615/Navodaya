@@ -34,7 +34,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868530/eknath_xupkim.jpg",
 
-    title: "Deputy CM of Maharashtra Eknath Shinde",
+    title: "Deputy CM of Maharashtra Eknath Shinde Ji",
 
   },
 
@@ -53,7 +53,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868576/dhanashree_ldafxr.jpg",
 
-    title: "Dhanashree Verma",
+    title: " Actress Dhanashree Verma Ji",
 
   },
 
@@ -62,7 +62,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868571/shreyash_qeztda.jpg",
 
-    title: "Shreyash Iyer",
+    title: "Cricketer Shreyash Iyer Ji",
 
   },
   {
@@ -70,7 +70,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/hero_pyswfq.jpg",
 
-    title: "Indian actor and politician Suresh Oberoi",
+    title: "Indian actor and politician Suresh Oberoi Ji",
 
   },
   {
@@ -96,7 +96,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868572/dhanashree2_mukerp.jpg",
 
-    title: "Dhanashree Verma",
+    title: "Acrtess Dhanashree Verma Ji",
 
   },
 
@@ -105,7 +105,7 @@ const gallery = [
 
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868570/nehakakkar_uuxou1.jpg",
 
-    title: "Neha Kakkar",
+    title: "Singer Neha Kakkar Ji",
 
   },
 
