@@ -72,7 +72,7 @@ export default function Navbar() {
       href: "/pujas?mode=all",
     },
     {
-      label: "Ghar Par Puja",
+      label: "Home Visit",
       href: "/pujas?mode=offline",
     },
     {
