@@ -1,15 +1,18 @@
+// src/app/robots.js
+
 export default function robots() {
   return {
     rules: [
       {
         userAgent: "*",
+
         allow: [
           "/",
           "/pujas",
           "/pujas/",
           "/aboutpanditji",
           "/gau-seva",
-          "/seva",
+          "/naam-jaap",
           "/gallery",
           "/contact",
         ],
@@ -17,6 +20,8 @@ export default function robots() {
         disallow: [
           "/api/",
           "/login",
+          "/register",
+          "/account",
           "/booking",
           "/my-bookings",
           "/pandit-dashboard",
@@ -24,8 +29,7 @@ export default function robots() {
       },
     ],
 
-    sitemap:
-      "https://www.pujadham.co.in/sitemap.xml",
+    sitemap: "https://www.pujadham.co.in/sitemap.xml",
 
     host: "https://www.pujadham.co.in",
   };

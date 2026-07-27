@@ -13,20 +13,29 @@ import {
 
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
 
+const GOOGLE_REVIEW_URL =
+  process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
+  "https://www.google.com/maps/search/?api=1&query=Puja+Dham+Mumbai";
+
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "All Pujas", href: "/pujas?mode=all" },
-  { label: "Ghar Par Puja", href: "/pujas?mode=offline" },
+  { label: "Home Visit", href: "/pujas?mode=offline" },
   { label: "Online Puja", href: "/pujas?mode=online" },
   { label: "Seva", href: "/seva" },
   { label: "My Bookings", href: "/my-bookings" },
+  {
+    label: "Reviews",
+    href: GOOGLE_REVIEW_URL,
+    external: true,
+  },
 ];
 
 const companyLinks = [
   { label: "About Us", href: "/aboutpanditji" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact Us", href: "/contact" },
-  { label: "Monthly Events", href: "/#monthly-events" },
+  { label: "Monthly Events", href: "/#FrostCard" },
 ];
 
 export default function Footer() {
@@ -88,7 +97,11 @@ export default function Footer() {
           {/* Quick Links */}
           <FooterColumn title="Quick Links">
             {quickLinks.map((item) => (
-              <FooterLink key={item.href} href={item.href}>
+              <FooterLink
+                key={`${item.label}-${item.href}`}
+                href={item.href}
+                external={item.external}
+              >
                 {item.label}
               </FooterLink>
             ))}
@@ -119,7 +132,7 @@ export default function Footer() {
                 href="mailto:navodayapuja@gmail.com"
                 icon={<Mail size={16} />}
                 label="Email Us"
-                value="navodayapuja@gmail.com"
+                value="pujadham@gmail.com"
               />
 
               <div className="flex items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.035] p-3.5">
@@ -195,13 +208,38 @@ function FooterColumn({ title, children }) {
   );
 }
 
-function FooterLink({ href, children }) {
+function FooterLink({ href, children, external = false }) {
+  const classes =
+    "group inline-flex items-center gap-2 text-[13px] text-orange-50/70 transition-colors duration-200 hover:text-orange-400";
+
+  if (external) {
+    return (
+      <li>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes}
+        >
+          <ChevronRight
+            size={14}
+            className="shrink-0 text-orange-500 transition-transform group-hover:translate-x-1"
+          />
+
+          {children}
+
+          <ArrowUpRight
+            size={12}
+            className="text-orange-300/60 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+          />
+        </a>
+      </li>
+    );
+  }
+
   return (
     <li>
-      <Link
-        href={href}
-        className="group inline-flex items-center gap-2 text-[13px] text-orange-50/70 transition-colors duration-200 hover:text-orange-400"
-      >
+      <Link href={href} className={classes}>
         <ChevronRight
           size={14}
           className="shrink-0 text-orange-500 transition-transform group-hover:translate-x-1"

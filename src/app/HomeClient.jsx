@@ -51,12 +51,9 @@ export default function HomeClient() {
       <section className="fade-up">
         <ConsultHero />
       </section>
-
-      {/* 
-      <section className="fade-up">
+      {/* <section className="fade-up">
         <Testimonials />
-      </section>
-      */}
+      </section> */}
     </main>
   );
 }

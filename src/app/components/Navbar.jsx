@@ -16,21 +16,29 @@ import {
   ChevronRight,
   ChevronDown,
   CircleUserRound,
-  CalendarCheck,
 } from "lucide-react";
 
 const WEBSITE_URL = "https://www.pujadham.co.in";
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
 const SHARE_IMAGE_URL = "/Pujadhamlogo1.png";
 
+const GOOGLE_REVIEW_URL =
+  process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
+  "https://www.google.com/maps/search/?api=1&query=Puja+Dham+Mumbai";
+
 const searchLinks = [
   { label: "Home", href: "/" },
   { label: "All Pujas", href: "/pujas?mode=all" },
   { label: "Online Pujas", href: "/pujas?mode=online" },
   { label: "Home Visit", href: "/pujas?mode=offline" },
-  { label: "All Sevas", href: "/seva" },
   { label: "Gau Seva", href: "/gau-seva" },
+  { label: "Naam Jaap", href: "/sita-ram-counter" },
   { label: "My Bookings", href: "/my-bookings" },
+  {
+    label: "Reviews",
+    href: GOOGLE_REVIEW_URL,
+    external: true,
+  },
   { label: "About us", href: "/aboutpanditji" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
@@ -48,14 +56,19 @@ export default function Navbar() {
     !!adminEmail &&
     session.user.email.toLowerCase() === adminEmail.toLowerCase();
 
-  // Pujas is rendered separately because it has a dropdown.
+  // Pujas and Sevas use dropdowns. Naam Jaap is a separate main link.
   const links = [
     { label: "Home", href: "/" },
 
-    // Seva is a separate main navigation item.
-    { label: "Seva", href: "/seva" },
+    { label: "Naam Jaap", href: "/sita-ram-counter" },
 
     { label: "My Bookings", href: "/my-bookings" },
+
+    {
+      label: "Reviews",
+      href: GOOGLE_REVIEW_URL,
+      external: true,
+    },
 
     ...(isAdmin
       ? [{ label: "Dashboard", href: "/pandit-dashboard" }]
@@ -81,15 +94,25 @@ export default function Navbar() {
     },
   ];
 
+  const sevaMenuLinks = [
+    {
+      label: "Gau Seva",
+      href: "/gau-seva",
+    },
+  ];
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobilePujaOpen, setMobilePujaOpen] = useState(false);
+  const [mobileSevaOpen, setMobileSevaOpen] = useState(false);
   const [desktopPujaOpen, setDesktopPujaOpen] = useState(false);
+  const [desktopSevaOpen, setDesktopSevaOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
 
   const menuRef = useRef(null);
   const desktopPujaRef = useRef(null);
+  const desktopSevaRef = useRef(null);
   const searchRef = useRef(null);
   const settingsRef = useRef(null);
 
@@ -119,15 +142,29 @@ export default function Navbar() {
   };
 
   const isPujaSectionActive = isActive("/pujas");
+  const isSevaSectionActive = isActive("/gau-seva");
 
   useEffect(() => {
     setMenuOpen(false);
     setMobilePujaOpen(false);
+    setMobileSevaOpen(false);
     setDesktopPujaOpen(false);
+    setDesktopSevaOpen(false);
     setSearchOpen(false);
     setSettingsOpen(false);
     setSearchText("");
   }, [path]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const closeOutside = (event) => {
@@ -137,6 +174,7 @@ export default function Navbar() {
       ) {
         setMenuOpen(false);
         setMobilePujaOpen(false);
+        setMobileSevaOpen(false);
       }
 
       if (
@@ -144,6 +182,13 @@ export default function Navbar() {
         !desktopPujaRef.current.contains(event.target)
       ) {
         setDesktopPujaOpen(false);
+      }
+
+      if (
+        desktopSevaRef.current &&
+        !desktopSevaRef.current.contains(event.target)
+      ) {
+        setDesktopSevaOpen(false);
       }
 
       if (
@@ -299,6 +344,8 @@ const handleShareApp = async () => {
               aria-expanded={menuOpen}
               onClick={() => {
                 setMenuOpen((value) => !value);
+                setMobilePujaOpen(false);
+                setMobileSevaOpen(false);
                 setSearchOpen(false);
                 setSettingsOpen(false);
               }}
@@ -311,10 +358,62 @@ const handleShareApp = async () => {
               )}
             </button>
 
-            {menuOpen && (
-              <div className="absolute left-0 top-[59px] max-h-[calc(100dvh-92px)] w-[290px] max-w-[calc(100vw-24px)] overflow-y-auto overscroll-contain border border-[#eee8e2] bg-white p-3 shadow-[0_22px_60px_rgba(39,27,20,0.14)] [scrollbar-width:thin]">
+            {/* MOBILE DRAWER OVERLAY */}
+            <div
+              aria-hidden={!menuOpen}
+              onClick={() => {
+                setMenuOpen(false);
+                setMobilePujaOpen(false);
+                setMobileSevaOpen(false);
+              }}
+              className={`fixed inset-0 z-[115] bg-black/45 backdrop-blur-[1px] transition-opacity duration-300 lg:hidden ${
+                menuOpen
+                  ? "pointer-events-auto opacity-100"
+                  : "pointer-events-none opacity-0"
+              }`}
+            />
+
+            {/* MOBILE SLIDE DRAWER */}
+            <aside
+              aria-label="Mobile navigation"
+              className={`fixed bottom-0 left-0 top-0 z-[120] flex w-[58vw] min-w-[230px] max-w-[310px] flex-col border-r border-[#eee8e2] bg-white shadow-[18px_0_55px_rgba(39,27,20,0.18)] transition-transform duration-300 ease-out lg:hidden ${
+                menuOpen
+                  ? "translate-x-0"
+                  : "-translate-x-full"
+              }`}
+            >
+              <div className="flex h-[78px] shrink-0 items-center justify-between border-b border-[#eee8e2] px-4">
                 <Link
                   href="/"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="Puja Dham Home"
+                  className="flex items-center"
+                >
+                  <img
+                    src="/Pujadhamlogo1.png"
+                    alt="Puja Dham Logo"
+                    className="h-[74px] w-auto max-w-[170px] object-contain"
+                  />
+                </Link>
+
+                <button
+                  type="button"
+                  aria-label="Close navigation menu"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setMobilePujaOpen(false);
+                    setMobileSevaOpen(false);
+                  }}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8f3ef] text-[#28221f] transition hover:bg-[#f2e8e1] hover:text-[#a8441b] active:scale-90"
+                >
+                  <X size={21} strokeWidth={1.8} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto overscroll-contain p-3 [scrollbar-width:thin]">
+                <Link
+                  href="/"
+                  onClick={() => setMenuOpen(false)}
                   className={`flex items-center justify-between border-b border-[#f3efeb] px-3 py-4 text-[14px] font-medium transition ${
                     isActive("/")
                       ? "text-[#b34d1d]"
@@ -322,6 +421,7 @@ const handleShareApp = async () => {
                   }`}
                 >
                   Home
+
                   <ChevronRight
                     size={16}
                     strokeWidth={1.6}
@@ -333,9 +433,10 @@ const handleShareApp = async () => {
                   <button
                     type="button"
                     aria-expanded={mobilePujaOpen}
-                    onClick={() =>
-                      setMobilePujaOpen((value) => !value)
-                    }
+                    onClick={() => {
+                      setMobilePujaOpen((value) => !value);
+                      setMobileSevaOpen(false);
+                    }}
                     className={`flex w-full items-center justify-between bg-white px-3 py-4 text-left text-[14px] font-medium transition ${
                       isPujaSectionActive
                         ? "text-[#b34d1d]"
@@ -353,61 +454,148 @@ const handleShareApp = async () => {
                     />
                   </button>
 
-                  {mobilePujaOpen && (
-                    <div className="border-t border-[#f4efeb] bg-white pb-2 pl-5 pr-1 pt-1">
-                      {pujaMenuLinks.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => {
-                            setMenuOpen(false);
-                            setMobilePujaOpen(false);
-                          }}
-                          className="flex min-h-12 items-center justify-between border-b border-[#f5f1ee] bg-white px-3 py-3 text-[13px] font-medium text-[#443b35] transition last:border-b-0 hover:text-[#b34d1d]"
-                        >
-                          <span>{item.label}</span>
+                  <div
+                    className={`grid overflow-hidden transition-all duration-300 ${
+                      mobilePujaOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="min-h-0">
+                      <div className="border-t border-[#f4efeb] bg-[#fffaf6] pb-2 pl-4 pr-1 pt-1">
+                        {pujaMenuLinks.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => {
+                              setMenuOpen(false);
+                              setMobilePujaOpen(false);
+                              setMobileSevaOpen(false);
+                            }}
+                            className="flex min-h-12 items-center justify-between border-b border-[#f5f1ee] px-3 py-3 text-[13px] font-medium text-[#443b35] transition last:border-b-0 hover:text-[#b34d1d]"
+                          >
+                            <span>{item.label}</span>
 
-                          <ChevronRight
-                            size={15}
-                            strokeWidth={1.6}
-                            className="text-[#9e9189]"
-                          />
-                        </Link>
-                      ))}
+                            <ChevronRight
+                              size={15}
+                              strokeWidth={1.6}
+                              className="text-[#9e9189]"
+                            />
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  )}
+                  </div>
+                </div>
+
+                {/* MOBILE SEVAS DROPDOWN */}
+                <div className="border-b border-[#f3efeb] bg-white">
+                  <button
+                    type="button"
+                    aria-expanded={mobileSevaOpen}
+                    onClick={() => {
+                      setMobileSevaOpen((value) => !value);
+                      setMobilePujaOpen(false);
+                    }}
+                    className={`flex w-full items-center justify-between bg-white px-3 py-4 text-left text-[14px] font-medium transition ${
+                      isSevaSectionActive
+                        ? "text-[#b34d1d]"
+                        : "text-[#332c28] hover:text-[#b34d1d]"
+                    }`}
+                  >
+                    <span>Sevas</span>
+
+                    <ChevronDown
+                      size={17}
+                      strokeWidth={1.7}
+                      className={`transition-transform duration-200 ${
+                        mobileSevaOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  <div
+                    className={`grid overflow-hidden transition-all duration-300 ${
+                      mobileSevaOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="min-h-0">
+                      <div className="border-t border-[#f4efeb] bg-[#fffaf6] pb-2 pl-4 pr-1 pt-1">
+                        {sevaMenuLinks.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => {
+                              setMenuOpen(false);
+                              setMobilePujaOpen(false);
+                              setMobileSevaOpen(false);
+                            }}
+                            className="flex min-h-12 items-center justify-between border-b border-[#f5f1ee] px-3 py-3 text-[13px] font-medium text-[#443b35] transition last:border-b-0 hover:text-[#b34d1d]"
+                          >
+                            <span>{item.label}</span>
+
+                            <ChevronRight
+                              size={15}
+                              strokeWidth={1.6}
+                              className="text-[#9e9189]"
+                            />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {links
                   .filter((item) => item.href !== "/")
-                  .map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center justify-between border-b border-[#f3efeb] px-3 py-4 text-[14px] font-medium transition last:border-0 ${
-                        isActive(item.href)
-                          ? "text-[#b34d1d]"
-                          : "text-[#332c28] hover:text-[#b34d1d]"
-                      }`}
-                    >
-                      {item.label}
+                  .map((item) =>
+                    item.external ? (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-between border-b border-[#f3efeb] px-3 py-4 text-[14px] font-medium text-[#332c28] transition last:border-0 hover:text-[#b34d1d]"
+                      >
+                        {item.label}
 
-                      <ChevronRight
-                        size={16}
-                        strokeWidth={1.6}
-                      />
-                    </Link>
-                  ))}
+                        <ChevronRight
+                          size={16}
+                          strokeWidth={1.6}
+                        />
+                      </a>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={`flex items-center justify-between border-b border-[#f3efeb] px-3 py-4 text-[14px] font-medium transition last:border-0 ${
+                          isActive(item.href)
+                            ? "text-[#b34d1d]"
+                            : "text-[#332c28] hover:text-[#b34d1d]"
+                        }`}
+                      >
+                        {item.label}
 
-                <Link
-                  href="/contact"
-                  className="mt-3 flex h-12 items-center justify-center gap-2 bg-[#a8441b] px-5 text-sm font-semibold text-white transition hover:bg-[#873514]"
-                >
-                  <CalendarCheck size={17} />
-                  Book Puja
-                </Link>
+                        <ChevronRight
+                          size={16}
+                          strokeWidth={1.6}
+                        />
+                      </Link>
+                    )
+                  )}
+
               </div>
-            )}
+
+              <div className="shrink-0 border-t border-[#eee8e2] bg-[#fffaf6] px-4 py-3 text-center">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#a8441b]">
+                  Mantra · Vidhi · Aastha
+                </p>
+              </div>
+            </aside>
           </div>
 
           {/* LARGE LOGO */}
@@ -444,9 +632,10 @@ const handleShareApp = async () => {
             <div
               ref={desktopPujaRef}
               className="relative"
-              onMouseEnter={() =>
-                setDesktopPujaOpen(true)
-              }
+              onMouseEnter={() => {
+                setDesktopPujaOpen(true);
+                setDesktopSevaOpen(false);
+              }}
               onMouseLeave={() =>
                 setDesktopPujaOpen(false)
               }
@@ -455,11 +644,12 @@ const handleShareApp = async () => {
                 type="button"
                 aria-haspopup="menu"
                 aria-expanded={desktopPujaOpen}
-                onClick={() =>
+                onClick={() => {
                   setDesktopPujaOpen(
                     (value) => !value
-                  )
-                }
+                  );
+                  setDesktopSevaOpen(false);
+                }}
                 className={`relative flex items-center gap-1.5 whitespace-nowrap bg-transparent py-8 text-[14px] font-medium tracking-[0.01em] transition-colors duration-200 ${
                   isPujaSectionActive
                     ? "text-[#a8441b]"
@@ -505,25 +695,104 @@ const handleShareApp = async () => {
               )}
             </div>
 
+            {/* DESKTOP SEVAS DROPDOWN */}
+            <div
+              ref={desktopSevaRef}
+              className="relative"
+              onMouseEnter={() => {
+                setDesktopSevaOpen(true);
+                setDesktopPujaOpen(false);
+              }}
+              onMouseLeave={() =>
+                setDesktopSevaOpen(false)
+              }
+            >
+              <button
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={desktopSevaOpen}
+                onClick={() => {
+                  setDesktopSevaOpen(
+                    (value) => !value
+                  );
+                  setDesktopPujaOpen(false);
+                }}
+                className={`relative flex items-center gap-1.5 whitespace-nowrap bg-transparent py-8 text-[14px] font-medium tracking-[0.01em] transition-colors duration-200 ${
+                  isSevaSectionActive
+                    ? "text-[#a8441b]"
+                    : "text-[#28221f] hover:text-[#a8441b]"
+                }`}
+              >
+                Sevas
+
+                <ChevronDown
+                  size={15}
+                  strokeWidth={1.7}
+                  className={`transition-transform duration-200 ${
+                    desktopSevaOpen
+                      ? "rotate-180"
+                      : ""
+                  }`}
+                />
+
+                {isSevaSectionActive && (
+                  <span className="absolute bottom-[22px] left-0 h-px w-full bg-[#a8441b]" />
+                )}
+              </button>
+
+              {desktopSevaOpen && (
+                <div className="absolute left-1/2 top-[74px] w-[260px] -translate-x-1/2 overflow-hidden rounded-[18px] border border-[#eadfd7] bg-white p-2 shadow-[0_22px_60px_rgba(39,27,20,0.14)]">
+                  {sevaMenuLinks.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setDesktopSevaOpen(false)}
+                      className="group flex min-h-12 items-center justify-between rounded-[13px] bg-white px-4 py-3 text-[13px] font-medium text-[#3d342f] transition hover:bg-[#fff7f1] hover:text-[#a8441b]"
+                    >
+                      <span>{item.label}</span>
+
+                      <ChevronRight
+                        size={15}
+                        strokeWidth={1.6}
+                        className="text-[#a79a92] transition group-hover:translate-x-0.5 group-hover:text-[#a8441b]"
+                      />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {links
               .filter((item) => item.href !== "/")
-              .map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative whitespace-nowrap py-8 text-[14px] font-medium tracking-[0.01em] transition-colors duration-200 ${
-                    isActive(item.href)
-                      ? "text-[#a8441b]"
-                      : "text-[#28221f] hover:text-[#a8441b]"
-                  }`}
-                >
-                  {item.label}
+              .map((item) =>
+                item.external ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative whitespace-nowrap py-8 text-[14px] font-medium tracking-[0.01em] text-[#28221f] transition-colors duration-200 hover:text-[#a8441b]"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`relative whitespace-nowrap py-8 text-[14px] font-medium tracking-[0.01em] transition-colors duration-200 ${
+                      isActive(item.href)
+                        ? "text-[#a8441b]"
+                        : "text-[#28221f] hover:text-[#a8441b]"
+                    }`}
+                  >
+                    {item.label}
 
-                  {isActive(item.href) && (
-                    <span className="absolute bottom-[22px] left-0 h-px w-full bg-[#a8441b]" />
-                  )}
-                </Link>
-              ))}
+                    {isActive(item.href) && (
+                      <span className="absolute bottom-[22px] left-0 h-px w-full bg-[#a8441b]" />
+                    )}
+                  </Link>
+                )
+              )}
           </div>
 
           {/* RIGHT ACTIONS */}
@@ -543,6 +812,7 @@ const handleShareApp = async () => {
 
                   setMenuOpen(false);
                   setDesktopPujaOpen(false);
+                  setDesktopSevaOpen(false);
                   setSettingsOpen(false);
                 }}
                 className="flex h-11 w-11 items-center justify-center border-none bg-transparent text-[#28221f] shadow-none outline-none transition hover:text-[#a8441b] active:scale-90"
@@ -581,18 +851,32 @@ const handleShareApp = async () => {
                   <div className="mt-2">
                     {filteredSearchLinks.length > 0 ? (
                       filteredSearchLinks.map(
-                        (item) => (
-                          <Link
-                            key={`${item.href}-${item.label}`}
-                            href={item.href}
-                            className="flex items-center justify-between px-3 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
-                          >
-                            {item.label}
-                            <ChevronRight
-                              size={15}
-                            />
-                          </Link>
-                        )
+                        (item) =>
+                          item.external ? (
+                            <a
+                              key={`${item.href}-${item.label}`}
+                              href={item.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => {
+                                setSearchOpen(false);
+                                setSearchText("");
+                              }}
+                              className="flex items-center justify-between px-3 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                            >
+                              {item.label}
+                              <ChevronRight size={15} />
+                            </a>
+                          ) : (
+                            <Link
+                              key={`${item.href}-${item.label}`}
+                              href={item.href}
+                              className="flex items-center justify-between px-3 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                            >
+                              {item.label}
+                              <ChevronRight size={15} />
+                            </Link>
+                          )
                       )
                     ) : (
                       <p className="px-3 py-5 text-center text-xs text-[#958981]">
@@ -603,13 +887,6 @@ const handleShareApp = async () => {
                 </div>
               )}
             </div>
-
-            <Link
-              href="/contact"
-              className="hidden h-11 items-center justify-center bg-[#a8441b] px-5 text-[13px] font-semibold text-white transition hover:bg-[#873514] xl:flex"
-            >
-              Book Puja
-            </Link>
 
             <div
               ref={settingsRef}
@@ -626,6 +903,7 @@ const handleShareApp = async () => {
 
                   setMenuOpen(false);
                   setDesktopPujaOpen(false);
+                  setDesktopSevaOpen(false);
                   setSearchOpen(false);
                 }}
                 className="flex h-11 w-11 items-center justify-center overflow-hidden border-none bg-transparent text-[#28221f] shadow-none outline-none transition hover:text-[#a8441b] active:scale-90"

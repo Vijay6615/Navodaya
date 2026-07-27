@@ -21,12 +21,12 @@ export async function GET() {
       priority: "0.9",
     },
     {
-      url: `${BASE_URL}/seva`,
+      url: `${BASE_URL}/gau-seva`,
       changeFrequency: "weekly",
       priority: "0.8",
     },
     {
-      url: `${BASE_URL}/gau-seva`,
+      url: `${BASE_URL}/naam-jaap`,
       changeFrequency: "weekly",
       priority: "0.8",
     },

@@ -6,7 +6,7 @@ const LOGO_URL =
 
 export const metadata = {
   title:
-    "Puja Dham | Online Puja Booking & Pandit Ji in Mumbai",
+    "Puja Dham | Online & Offline Puja Booking & Pandit Ji in Mumbai",
 
   description:
     "Book experienced Pandit Ji for authentic online and offline Vedic Puja services in Mumbai, Nalasopara, Vasai and Virar. Satyanarayan Puja, Griha Pravesh, Rudrabhishek, astrology and Vastu guidance available.",
