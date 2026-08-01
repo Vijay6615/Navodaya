@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import Providers from "./providers";
 import AppShell from "./components/AppShell";
 import WebsiteSchema from "./components/WebsiteSchema";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const WEBSITE_URL = "https://www.pujadham.co.in";
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
@@ -198,6 +199,15 @@ export default function RootLayout({ children }) {
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>
+
+        {/* Google Analytics 4 */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics
+            gaId={
+              process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+            }
+          />
+        )}
       </body>
     </html>
   );
