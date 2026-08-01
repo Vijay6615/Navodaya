@@ -325,6 +325,14 @@ const handleShareApp = async () => {
   }
 };
 
+const handleInstallApp = () => {
+  setSettingsOpen(false);
+
+  window.dispatchEvent(
+    new CustomEvent("puja-dham-install")
+  );
+};
+
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-[100] border-b border-[#eee8e2] bg-white">
@@ -987,10 +995,10 @@ const handleShareApp = async () => {
                       <ChevronRight size={15} />
                     </Link>
 
-                    <a
-                      href="/downloads/puja-dham.apk"
-                      download="puja-dham.apk"
-                      className="flex items-center gap-3 px-4 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                    <button
+                      type="button"
+                      onClick={handleInstallApp}
+                      className="flex w-full items-center gap-3 px-4 py-3 text-left text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
                     >
                       <Download size={18} />
 
@@ -999,7 +1007,7 @@ const handleShareApp = async () => {
                       </span>
 
                       <ChevronRight size={15} />
-                    </a>
+                    </button>
 
                     <button
                       type="button"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Download,
   MoreVertical,
@@ -72,9 +72,10 @@ export default function InstallPujaDham() {
     };
   }, []);
 
-  const handleInstall = async () => {
+  const handleInstall = useCallback(async () => {
     // iPhone/iPad me browser ka native JS install prompt nahi hota.
     if (isIOS) {
+      setShowBanner(true);
       setShowHelp(true);
       return;
     }
@@ -96,8 +97,32 @@ export default function InstallPujaDham() {
     }
 
     // Browser prompt ready/supported na ho to manual steps dikhao.
+    setShowBanner(true);
     setShowHelp(true);
-  };
+  }, [deferredPrompt, isIOS]);
+
+  useEffect(() => {
+    const handleNavbarInstall = () => {
+      if (isInstalled) {
+        return;
+      }
+
+      setShowBanner(true);
+      handleInstall();
+    };
+
+    window.addEventListener(
+      "puja-dham-install",
+      handleNavbarInstall
+    );
+
+    return () => {
+      window.removeEventListener(
+        "puja-dham-install",
+        handleNavbarInstall
+      );
+    };
+  }, [handleInstall, isInstalled]);
 
   const closeBanner = () => {
     // Sirf current open visit ke liye close hoga.
