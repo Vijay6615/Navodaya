@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ClientAnimation from "./ClientAnimation";
+import InstallPujaDham from "./InstallPujaDham";
 
 export default function AppShell({ children }) {
   const pathname = usePathname();
@@ -17,7 +18,7 @@ export default function AppShell({ children }) {
     pathname === "/forgot-password";
 
   return (
-    <>
+    <div className="flex min-h-svh w-full flex-col">
       {/* Global animations */}
       <ClientAnimation />
 
@@ -25,12 +26,15 @@ export default function AppShell({ children }) {
       {!isAuthPage && <Navbar />}
 
       {/* Page content */}
-      <main>
+      <main className="w-full flex-1">
         {children}
       </main>
 
       {/* Auth pages par Footer hide */}
       {!isAuthPage && <Footer />}
-    </>
+
+      {/* Install prompt sirf public website pages par */}
+      {!isAuthPage && <InstallPujaDham />}
+    </div>
   );
 }

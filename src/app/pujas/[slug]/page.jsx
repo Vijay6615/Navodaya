@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { Cormorant_Garamond } from "next/font/google";
+import PujaSchema from "@/app/components/PujaSchema";
 
 import {
   X,
@@ -148,6 +149,13 @@ export default function PujaDetail() {
 
   return (
     <>
+      <PujaSchema
+        name={puja.name}
+        description={puja.description || puja.shortDescription}
+        image={puja.image}
+        slug={puja.slug}
+      />
+
       <main className="min-h-screen bg-[#fffdfb] text-[#28221f]">
         <section className="mx-auto max-w-[1320px] px-4 py-6 pb-28 md:py-10 lg:pb-10">
           

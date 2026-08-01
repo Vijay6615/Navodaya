@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import Providers from "./providers";
 import AppShell from "./components/AppShell";
+import WebsiteSchema from "./components/WebsiteSchema";
 
 const WEBSITE_URL = "https://www.pujadham.co.in";
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
@@ -18,9 +19,16 @@ export const metadata = {
     "Experience authentic Vedic pujas with Puja Dham. Book online and offline puja services, astrology consultations, vastu guidance, and spiritual services with experienced Pandit Ji.",
 
   keywords: [
+    "puja dham",
     "Puja Dham",
     "Pujadham",
     "PujaDham",
+    "Online puja",
+    "Offline puja",
+    "Vedic puja",
+    "astrology services",
+    "vastu services",
+    "spiritual services",
     "online puja booking",
     "offline puja booking",
     "Pandit Ji in Mumbai",
@@ -162,6 +170,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        {/* Reusable Puja Dham website schema component */}
+        <WebsiteSchema />
+
         {/* Website schema for Google brand/site name */}
         <script
           type="application/ld+json"

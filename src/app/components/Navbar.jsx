@@ -35,7 +35,7 @@ const searchLinks = [
   { label: "Naam Jaap", href: "/sita-ram-counter" },
   { label: "My Bookings", href: "/my-bookings" },
   {
-    label: "Reviews",
+    label: "Review us",
     href: GOOGLE_REVIEW_URL,
     external: true,
   },
@@ -65,7 +65,7 @@ export default function Navbar() {
     { label: "My Bookings", href: "/my-bookings" },
 
     {
-      label: "Reviews",
+      label: "Review us",
       href: GOOGLE_REVIEW_URL,
       external: true,
     },

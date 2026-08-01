@@ -8,7 +8,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Sparkles,
 } from "lucide-react";
 
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
@@ -25,7 +24,7 @@ const quickLinks = [
   { label: "Seva", href: "/seva" },
   { label: "My Bookings", href: "/my-bookings" },
   {
-    label: "Reviews",
+    label: "Review us",
     href: GOOGLE_REVIEW_URL,
     external: true,
   },
@@ -40,16 +39,16 @@ const companyLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[#2b160d] text-white">
+    <footer className="relative mt-auto w-full shrink-0 overflow-hidden bg-[#2b160d] text-white">
       {/* Decorative background */}
       <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -right-24 h-80 w-80 rounded-full bg-amber-400/10 blur-3xl" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/25 to-transparent" />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-7 pt-10 sm:px-6 sm:pt-14 lg:px-8 lg:pt-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_0.8fr_1.2fr] lg:gap-8">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-[1.35fr_0.8fr_0.8fr_1.2fr] lg:gap-8">
           {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1 lg:pr-6">
+          <div className="col-span-2 lg:col-span-1 lg:pr-6">
             <Link
               href="/"
               aria-label="Puja Dham Home"
@@ -117,7 +116,7 @@ export default function Footer() {
           </FooterColumn>
 
           {/* Contact */}
-          <div>
+          <div className="col-span-2 lg:col-span-1">
             <FooterHeading title="Contact Us" />
 
             <div className="mt-5 space-y-3">
@@ -177,9 +176,6 @@ export default function Footer() {
           </p>
         </div>
       </div>
-
-      {/* Mobile bottom-nav clearance */}
-      <div className="h-[72px] md:hidden" />
     </footer>
   );
 }
@@ -188,7 +184,6 @@ function FooterHeading({ title }) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Sparkles size={14} className="text-orange-400" />
         <h4 className="text-[15px] font-extrabold text-white sm:text-base">
           {title}
         </h4>
@@ -201,7 +196,7 @@ function FooterHeading({ title }) {
 
 function FooterColumn({ title, children }) {
   return (
-    <div>
+    <div className="min-w-0">
       <FooterHeading title={title} />
       <ul className="mt-5 space-y-3">{children}</ul>
     </div>
