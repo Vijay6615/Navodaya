@@ -1,6 +1,6 @@
 // src/app/pujasData.js
 
-export const PUJAS = [
+const BASE_PUJAS = [
  {
   id: "1",
   slug: "ganesh-puja",
@@ -6351,3 +6351,419 @@ export const PUJAS = [
   ],
 },
 ];
+const HINDI_PUJA_NAMES = {
+  "ganesh-puja": "गणेश पूजा",
+  "laghrudra-abhishek": "लघुरुद्र अभिषेक",
+  "vastu-shanti-puja": "वास्तु शांति पूजा",
+  "bhoomi-puja": "भूमि पूजा",
+  "griha-pravesh-puja": "गृह प्रवेश पूजा",
+  "satyanarayan-puja": "सत्यनारायण पूजा",
+  "mahalaxmi-puja": "महालक्ष्मी पूजा",
+  "navagraha-shanti-puja": "नवग्रह शांति पूजा",
+  "maha-mrityunjaya-jaap-havan": "महामृत्युंजय जाप एवं हवन",
+  "rudrabhishek-puja": "रुद्राभिषेक पूजा",
+  "shiv-puja": "शिव पूजा",
+  "hanuman-chalisa-path": "हनुमान चालीसा पाठ",
+  "durga-puja": "दुर्गा पूजा",
+  "saraswati-puja": "सरस्वती पूजा",
+  "kaal-sarp-dosh-nivaran-puja": "कालसर्प दोष निवारण पूजा",
+  "mangal-dosh-nivaran-puja": "मंगल दोष निवारण पूजा",
+  "nakshatra-shanti-puja": "नक्षत्र शांति पूजा",
+  "business-success-puja": "व्यापार सफलता पूजा",
+  "marriage-blessing-puja": "विवाह आशीर्वाद पूजा",
+  "career-growth-puja": "करियर उन्नति पूजा",
+  "health-wellness-puja": "स्वास्थ्य एवं कल्याण पूजा",
+  "child-blessing-santan-prapti-puja": "संतान प्राप्ति पूजा",
+  "kanakdhara-path": "कनकधारा पाठ",
+  "office-inauguration-puja": "कार्यालय उद्घाटन पूजा",
+  "nauchandi-path": "नौचंडी पाठ",
+  "factory-inauguration-puja": "फैक्टरी उद्घाटन पूजा",
+  "education-success-puja": "शिक्षा सफलता पूजा",
+  "lakshmi-kuber-dhan-prapti-puja": "लक्ष्मी कुबेर धन प्राप्ति पूजा",
+  "family-harmony-puja": "पारिवारिक शांति पूजा",
+  "legal-victory-court-case-success-puja": "न्यायिक विजय एवं कोर्ट केस सफलता पूजा",
+  "debt-relief-rin-mukti-puja": "ऋण मुक्ति पूजा",
+  "pittra-dosh-nivaran-tripindi-shradh": "पितृ दोष निवारण त्रिपिंडी श्राद्ध",
+  "kumbha-vivah-puja": "कुंभ विवाह पूजा",
+  "ark-vivah-puja": "अर्क विवाह पूजा",
+  "narayan-bali-puja": "नारायण बलि पूजा",
+};
+
+const HINDI_CATEGORIES = {
+  "Daily Puja": "दैनिक पूजा",
+  "Home / Auspicious": "गृह एवं शुभ पूजा",
+  "Home / Construction": "गृह एवं निर्माण पूजा",
+  "Home / Prosperity": "गृह एवं समृद्धि पूजा",
+  Prosperity: "समृद्धि पूजा",
+  "Dosha Nivaran": "दोष निवारण पूजा",
+  "Health & Protection": "स्वास्थ्य एवं रक्षा पूजा",
+  "Devotional Path": "भक्ति पाठ",
+  "Education & Knowledge": "शिक्षा एवं ज्ञान",
+  "Marriage & Relationships": "विवाह एवं संबंध",
+  "Business & Career": "व्यापार एवं करियर",
+  "Wealth & Prosperity": "धन एवं समृद्धि",
+  "Protection & Success": "रक्षा एवं सफलता",
+  "Ancestral Rituals": "पितृ एवं पूर्वज अनुष्ठान",
+};
+
+const COMMON_HINDI = {
+  "Students": "विद्यार्थी",
+  "Business Owners": "व्यवसायी",
+  "Working Professionals": "नौकरीपेशा व्यक्ति",
+  "Families": "परिवार",
+  "Newly Married Couples": "नवविवाहित दंपति",
+  "Senior Citizens": "वरिष्ठ नागरिक",
+  "Entrepreneurs": "उद्यमी",
+  "Shop Owners": "दुकानदार",
+  "Office Owners": "कार्यालय मालिक",
+  "Factory Owners": "फैक्टरी मालिक",
+  "Builders": "निर्माता",
+  "Home Owners": "गृहस्वामी",
+  "Couples": "दंपति",
+  "Monday": "सोमवार",
+  "Tuesday": "मंगलवार",
+  "Wednesday": "बुधवार",
+  "Thursday": "गुरुवार",
+  "Friday": "शुक्रवार",
+  "Saturday": "शनिवार",
+  "Sunday": "रविवार",
+  "Purnima": "पूर्णिमा",
+  "Amavasya": "अमावस्या",
+  "Ekadashi": "एकादशी",
+  "Diwali": "दीपावली",
+  "Dhanteras": "धनतेरस",
+  "Ganesh Chaturthi": "गणेश चतुर्थी",
+  "Mahashivratri": "महाशिवरात्रि",
+  "Shravan Month": "श्रावण मास",
+  "Pradosh Vrat": "प्रदोष व्रत",
+  "Akshaya Tritiya": "अक्षय तृतीया",
+  "Vasant Panchami": "वसंत पंचमी",
+  "Vijaya Dashami": "विजयादशमी",
+  "Pitru Paksha": "पितृ पक्ष",
+  "Before Marriage": "विवाह से पहले",
+  "Suitable Muhurat": "उपयुक्त मुहूर्त",
+  "Any Auspicious Muhurat": "किसी भी शुभ मुहूर्त में",
+  "As Recommended by Pandit Ji": "पंडित जी की सलाह के अनुसार",
+  "Sankalp": "संकल्प",
+  "Ganesh Puja": "गणेश पूजा",
+  "Kalash Sthapana": "कलश स्थापना",
+  "Havan": "हवन",
+  "Sacred Havan": "वैदिक हवन",
+  "Aarti": "आरती",
+  "Maha Aarti": "महाआरती",
+  "Prasad": "प्रसाद",
+  "Blessings from Pandit Ji": "पंडित जी का आशीर्वाद",
+  "Purna Ahuti": "पूर्णाहुति",
+  "Mantra Jaap": "मंत्र जाप",
+  "Flowers": "फूल",
+  "Fresh Flowers": "ताजे फूल",
+  "Coconut": "नारियल",
+  "Kalash": "कलश",
+  "Gangajal": "गंगाजल",
+  "Milk": "दूध",
+  "Curd": "दही",
+  "Honey": "शहद",
+  "Ghee": "घी",
+  "Pure Ghee": "शुद्ध घी",
+  "Sugar": "शक्कर",
+  "Rice": "चावल",
+  "Haldi": "हल्दी",
+  "Kumkum": "कुमकुम",
+  "Akshat": "अक्षत",
+  "Incense": "धूप",
+  "Incense Sticks": "अगरबत्ती",
+  "Camphor": "कपूर",
+  "Cotton Wicks": "रुई की बाती",
+  "Fruits": "फल",
+  "Seasonal Fruits": "मौसमी फल",
+  "Sweets": "मिठाई",
+  "Havan Samagri": "हवन सामग्री",
+  "Mango Leaves": "आम के पत्ते",
+  "Tulsi Leaves": "तुलसी के पत्ते",
+  "Bilva Leaves": "बेलपत्र",
+  "Sacred Thread": "मौली",
+  "Red Cloth": "लाल वस्त्र",
+  "Yellow Cloth": "पीला वस्त्र",
+  "White Cloth": "सफेद वस्त्र",
+  "more...": "अन्य सामग्री...",
+};
+
+function translateCommon(value) {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  if (COMMON_HINDI[value]) {
+    return COMMON_HINDI[value];
+  }
+
+  return value
+    .replace(/hours?/gi, "घंटे")
+    .replace(/hour/gi, "घंटा")
+    .replace(/minutes?/gi, "मिनट");
+}
+
+function getDurationHi(duration) {
+  if (!duration) {
+    return "";
+  }
+
+  return String(duration)
+    .replace(/hours?/gi, "घंटे")
+    .replace(/hour/gi, "घंटा")
+    .replace(/minutes?/gi, "मिनट");
+}
+
+function getBenefitFallback(nameHi) {
+  return [
+    `${nameHi} से जीवन की बाधाओं और नकारात्मक ऊर्जा को कम करने में सहायता मिलती है`,
+    "मन की शांति, सकारात्मकता और आध्यात्मिक शक्ति बढ़ती है",
+    "परिवार में सुख, शांति और सामंजस्य का वातावरण बनता है",
+    "स्वास्थ्य, सफलता और समृद्धि के लिए दिव्य आशीर्वाद प्राप्त होता है",
+    "वैदिक मंत्रों और विधि से वातावरण की शुद्धि होती है",
+    "भक्त की श्रद्धा, आत्मविश्वास और मानसिक संतुलन मजबूत होता है",
+  ];
+}
+
+function getWhoShouldPerformHi(puja) {
+  const translated = (puja.whoShouldPerform || []).map(
+    (item) => COMMON_HINDI[item]
+  );
+
+  if (
+    translated.length &&
+    translated.every(Boolean)
+  ) {
+    return translated;
+  }
+
+  return [
+    "परिवार और गृहस्थ",
+    "व्यवसायी एवं नौकरीपेशा व्यक्ति",
+    "विद्यार्थी और युवा",
+    "स्वास्थ्य, शांति या सफलता की कामना करने वाले श्रद्धालु",
+    "पंडित जी या ज्योतिषाचार्य की सलाह प्राप्त व्यक्ति",
+  ];
+}
+
+function getBestTimeHi(puja) {
+  return {
+    days: (puja.bestTime?.days || []).map(
+      (day) => translateCommon(day)
+    ),
+
+    duration: getDurationHi(
+      puja.bestTime?.duration ||
+        puja.duration
+    ),
+
+    frequency:
+      puja.bestTime?.frequency
+        ? "पंडित जी की सलाह और शुभ मुहूर्त के अनुसार"
+        : "आवश्यकता और शुभ अवसर के अनुसार",
+  };
+}
+
+function getIncludesHi(puja) {
+  const translated = (puja.includes || []).map(
+    (item) => translateCommon(item)
+  );
+
+  return translated.map((item) =>
+    item === translateCommon(item) &&
+    /^[A-Za-z]/.test(item)
+      ? `वैदिक ${item}`
+      : item
+  );
+}
+
+function getSamagriHi(puja, nameHi) {
+  const samagri = puja.samagri || {};
+
+  return {
+    ...samagri,
+
+    mode:
+      samagri.mode === "included"
+        ? "शामिल"
+        : "सुविधानुसार",
+
+    note:
+      `${nameHi} की संपूर्ण पूजा सामग्री सूची बुकिंग के बाद WhatsApp और Email पर साझा की जाएगी।`,
+
+    items: (samagri.items || []).map(
+      (item) => translateCommon(item)
+    ),
+  };
+}
+
+function getTravelHi(puja) {
+  const travel = puja.travel || {};
+
+  return {
+    ...travel,
+    mode: "शामिल",
+    city:
+      travel.city === "Mumbai"
+        ? "मुंबई"
+        : travel.city || "मुंबई",
+
+    outsideCity:
+      "मुंबई शहर के बाहर दूरी और स्थान के अनुसार अतिरिक्त यात्रा शुल्क लागू हो सकता है।",
+
+    remoteArea:
+      "बुकिंग की अंतिम पुष्टि से पहले यात्रा शुल्क की जानकारी दी जाएगी।",
+  };
+}
+
+function getBookingProcessHi(nameHi) {
+  return [
+    "ऑनलाइन या घर पर पूजा का विकल्प चुनें",
+    "पूजा सामग्री का विकल्प चुनें",
+    "अपनी बुकिंग जानकारी भरें",
+    "पंडित जी द्वारा उपलब्धता की पुष्टि",
+    "पूजा सामग्री सूची और तैयारी निर्देश प्राप्त करें",
+    `${nameHi} वैदिक विधि से संपन्न की जाएगी`,
+  ];
+}
+
+function getFaqHi(nameHi, puja) {
+  return [
+    {
+      question: `${nameHi} में कितना समय लगता है?`,
+      answer:
+        `इस पूजा में सामान्यतः ${getDurationHi(
+          puja.duration
+        ) || "निर्धारित समय"} लगता है। वास्तविक समय पूजा की विधि और आवश्यक अनुष्ठानों पर निर्भर करता है।`,
+    },
+    {
+      question:
+        "क्या पंडित जी संपूर्ण पूजा सामग्री ला सकते हैं?",
+      answer:
+        "हाँ। बुकिंग के समय आप पंडित जी द्वारा संपूर्ण पूजा सामग्री की व्यवस्था वाला विकल्प चुन सकते हैं।",
+    },
+    {
+      question:
+        "क्या पूजा सामग्री की सूची दी जाएगी?",
+      answer:
+        "हाँ। बुकिंग के बाद विस्तृत पूजा सामग्री सूची WhatsApp और Email पर साझा की जाएगी।",
+    },
+    {
+      question:
+        "क्या यात्रा शुल्क शामिल है?",
+      answer:
+        "मुंबई शहर के भीतर सामान्य यात्रा शामिल है। शहर के बाहर स्थान और दूरी के अनुसार अतिरिक्त शुल्क लागू हो सकता है।",
+    },
+  ];
+}
+
+function buildHindiPujaData(puja) {
+  const nameHi =
+    HINDI_PUJA_NAMES[puja.slug] ||
+    puja.name;
+
+  return {
+    ...puja,
+
+    nameHi,
+
+    categoryHi:
+      HINDI_CATEGORIES[puja.category] ||
+      "विशेष वैदिक पूजा",
+
+    shortDescriptionHi:
+      `${nameHi} वैदिक मंत्रों और पारंपरिक विधि से संपन्न की जाने वाली पवित्र पूजा है, जो शांति, सुरक्षा, सफलता और समृद्धि के लिए की जाती है।`,
+
+    descriptionHi:
+      `${nameHi} एक पवित्र वैदिक अनुष्ठान है, जिसे अनुभवी पंडित जी द्वारा शास्त्रसम्मत मंत्रों और विधि से संपन्न किया जाता है। यह पूजा जीवन की बाधाओं, नकारात्मक ऊर्जा और मानसिक तनाव को कम करने तथा परिवार में सुख, शांति, स्वास्थ्य, सफलता और समृद्धि के लिए की जाती है। पूजा के दौरान संकल्प, देव आवाहन, मंत्र जाप, आवश्यक पूजन, आरती और प्रसाद की विधि पूरी की जाती है। श्रद्धा और सही विधि से की गई ${nameHi} भक्त के जीवन में सकारात्मक ऊर्जा, आध्यात्मिक संतुलन और दिव्य आशीर्वाद लाने में सहायक मानी जाती है।`,
+
+    durationHi:
+      getDurationHi(puja.duration),
+
+    benefitsHi:
+      getBenefitFallback(nameHi),
+
+    whoShouldPerformHi:
+      getWhoShouldPerformHi(puja),
+
+    bestTimeHi:
+      getBestTimeHi(puja),
+
+    includesHi:
+      getIncludesHi(puja),
+
+    samagriHi:
+      getSamagriHi(puja, nameHi),
+
+    travelHi:
+      getTravelHi(puja),
+
+    bookingProcessHi:
+      getBookingProcessHi(nameHi),
+
+    faqHi:
+      getFaqHi(nameHi, puja),
+  };
+}
+
+export const PUJAS =
+  BASE_PUJAS.map(buildHindiPujaData);
+
+export function getPujasByLanguage(
+  language = "en"
+) {
+  if (language !== "hi") {
+    return PUJAS;
+  }
+
+  return PUJAS.map((puja) => ({
+    ...puja,
+    name: puja.nameHi || puja.name,
+    category:
+      puja.categoryHi || puja.category,
+
+    shortDescription:
+      puja.shortDescriptionHi ||
+      puja.shortDescription,
+
+    description:
+      puja.descriptionHi ||
+      puja.description,
+
+    duration:
+      puja.durationHi ||
+      puja.duration,
+
+    benefits:
+      puja.benefitsHi ||
+      puja.benefits,
+
+    whoShouldPerform:
+      puja.whoShouldPerformHi ||
+      puja.whoShouldPerform,
+
+    bestTime:
+      puja.bestTimeHi ||
+      puja.bestTime,
+
+    includes:
+      puja.includesHi ||
+      puja.includes,
+
+    samagri:
+      puja.samagriHi ||
+      puja.samagri,
+
+    travel:
+      puja.travelHi ||
+      puja.travel,
+
+    bookingProcess:
+      puja.bookingProcessHi ||
+      puja.bookingProcess,
+
+    faq:
+      puja.faqHi ||
+      puja.faq,
+  }));
+}

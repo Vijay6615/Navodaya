@@ -1,8 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import Link from "next/link";
-import { Cormorant_Garamond } from "next/font/google";
+
+const displayFont = {
+  className: "font-display-en",
+};
+
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
+
 import {
   ArrowRight,
   BadgeCheck,
@@ -12,32 +24,58 @@ import {
   Star,
 } from "lucide-react";
 
-const displayFont = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
+import { useLanguage } from "../context/LanguageContext";
 
-const specializations = [
-  "Vedic Rituals",
-  "Havan",
-  "Vastu Puja",
-  "Navagraha Shanti",
-  "Mahamrityunjay Jaap",
+
+
+const SPECIALIZATION_KEYS = [
+  "vedicRituals",
+  "havan",
+  "vastuPuja",
+  "navagrahaShanti",
+  "mahamrityunjayJaap",
 ];
 
 export default function AboutPanditjiPage() {
-  const [pageReady, setPageReady] = useState(false);
+  const {
+    language,
+    t,
+  } = useLanguage();
+
+  const [pageReady, setPageReady] =
+    useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setPageReady(true), 80);
-    return () => clearTimeout(timer);
+    const timer = setTimeout(
+      () => setPageReady(true),
+      80
+    );
+
+    return () =>
+      clearTimeout(timer);
   }, []);
+
+  const headingFontClass =
+    language === "hi"
+      ? hindiDisplayFont.className
+      : displayFont.className;
+
+  const eyebrowClass =
+    language === "hi"
+      ? "tracking-[0.08em]"
+      : "uppercase tracking-[0.32em]";
+
+  const smallLabelClass =
+    language === "hi"
+      ? "tracking-[0.06em]"
+      : "uppercase tracking-[0.16em]";
 
   return (
     <main className="min-h-screen overflow-hidden bg-white text-[#28221f]">
       <section className="relative">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#fff5ef] blur-[100px]" />
+
           <div className="absolute -right-40 top-72 h-[440px] w-[440px] rounded-full bg-[#faf3ee] blur-[110px]" />
         </div>
 
@@ -49,9 +87,14 @@ export default function AboutPanditjiPage() {
                 : "-translate-y-5 opacity-0"
             }`}
           >
-            <p className="text-[12px] font-semibold uppercase tracking-[0.32em] text-[#a8441b] sm:text-[13px]">
-              Mantra · Vidhi · Aastha
+            <p
+              className={`text-[12px] font-semibold text-[#a8441b] sm:text-[13px] ${eyebrowClass}`}
+            >
+              {t(
+                "aboutPandit.mantraLine"
+              )}
             </p>
+
             <div className="mx-auto mt-4 h-px w-12 bg-[#a8441b]/40" />
           </div>
 
@@ -62,12 +105,16 @@ export default function AboutPanditjiPage() {
                 : "-translate-x-10 opacity-0"
             }`}
           >
-            
-
             <h1
-              className={`${displayFont.className} mt-5 text-[48px] font-semibold leading-[0.92] tracking-[-0.035em] sm:text-6xl lg:text-[78px]`}
+              className={`${headingFontClass} mt-5 text-[48px] font-semibold ${
+                language === "hi"
+                  ? "leading-[1.18] tracking-normal"
+                  : "leading-[0.92] tracking-[-0.035em]"
+              } sm:text-6xl lg:text-[78px]`}
             >
-              Faith in every mantra.
+              {t(
+                "aboutPandit.heroTitle"
+              )}
             </h1>
           </div>
 
@@ -81,21 +128,37 @@ export default function AboutPanditjiPage() {
             >
               <img
                 src="/images/panditji.jpg"
-                alt="Pt. Jayprakash Shukla"
+                alt={t(
+                  "aboutPandit.imageAlt"
+                )}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.025]"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
 
               <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">
-                  Vedic Scholar & Priest
+                <p
+                  className={`text-[10px] font-semibold text-white/70 ${
+                    language === "hi"
+                      ? "tracking-[0.06em]"
+                      : "uppercase tracking-[0.2em]"
+                  }`}
+                >
+                  {t(
+                    "aboutPandit.role"
+                  )}
                 </p>
 
                 <h2
-                  className={`${displayFont.className} mt-2 text-3xl font-semibold tracking-[-0.02em] sm:text-4xl`}
+                  className={`${headingFontClass} mt-2 text-3xl font-semibold ${
+                    language === "hi"
+                      ? "tracking-normal"
+                      : "tracking-[-0.02em]"
+                  } sm:text-4xl`}
                 >
-                  Pt. Jayprakash Shukla
+                  {t(
+                    "aboutPandit.panditName"
+                  )}
                 </h2>
               </div>
             </div>
@@ -108,31 +171,96 @@ export default function AboutPanditjiPage() {
               }`}
             >
               <div className="flex items-center gap-2 text-[#a8441b]">
-                <BadgeCheck size={18} strokeWidth={1.7} />
-                <span className="text-[11px] font-bold uppercase tracking-[0.16em]">
-                  Certified Vedic Scholar & Priest
+                <BadgeCheck
+                  size={18}
+                  strokeWidth={1.7}
+                />
+
+                <span
+                  className={`text-[11px] font-bold ${smallLabelClass}`}
+                >
+                  {t(
+                    "aboutPandit.certifiedRole"
+                  )}
                 </span>
               </div>
 
               <h2
-                className={`${displayFont.className} mt-6 text-4xl font-semibold tracking-[-0.025em] sm:text-5xl`}
+                className={`${headingFontClass} mt-6 text-4xl font-semibold ${
+                  language === "hi"
+                    ? "tracking-normal"
+                    : "tracking-[-0.025em]"
+                } sm:text-5xl`}
               >
-                Pt. Jayprakash Shukla
+                {t(
+                  "aboutPandit.panditName"
+                )}
               </h2>
 
               <div className="mt-6 flex flex-wrap gap-2">
-                <TrustTag icon={<BookOpen size={14} />} label="Knowledge" />
                 <TrustTag
-                  icon={<Sparkles size={14} />}
-                  label="Vedic Certified"
+                  icon={
+                    <BookOpen
+                      size={14}
+                    />
+                  }
+                  label={t(
+                    "aboutPandit.trust.knowledge"
+                  )}
                 />
-                <TrustTag icon={<Star size={14} />} label="Trusted" />
+
+                <TrustTag
+                  icon={
+                    <Sparkles
+                      size={14}
+                    />
+                  }
+                  label={t(
+                    "aboutPandit.trust.vedicCertified"
+                  )}
+                />
+
+                <TrustTag
+                  icon={
+                    <Star size={14} />
+                  }
+                  label={t(
+                    "aboutPandit.trust.trusted"
+                  )}
+                />
               </div>
 
               <div className="mt-9 grid grid-cols-3 border-y border-[#e9e1dc]">
-                <Stat value="30+" label="Years" />
-                <Stat value="20K+" label="Pujas" border />
-                <Stat value="4.9" label="Rating" />
+                <Stat
+                  value="30+"
+                  label={t(
+                    "aboutPandit.stats.years"
+                  )}
+                  fontClass={
+                    headingFontClass
+                  }
+                />
+
+                <Stat
+                  value="20K+"
+                  label={t(
+                    "aboutPandit.stats.pujas"
+                  )}
+                  border
+                  fontClass={
+                    headingFontClass
+                  }
+                />
+
+                <Stat
+                  value="4.9"
+                  label={t(
+                    "aboutPandit.stats.rating"
+                  )}
+                  fontClass={
+                    headingFontClass
+                  }
+                />
               </div>
 
               <div className="relative mt-9">
@@ -143,27 +271,42 @@ export default function AboutPanditjiPage() {
                 />
 
                 <p className="relative pl-8 text-[14px] leading-7 text-[#625750] sm:text-[15px]">
-                  With over 30 years of experience in sacred Vedic rituals,
-                  Panditji performs every puja with proper vidhi and devotion —
-                  bringing peace, prosperity and positivity into every
-                  devotee&apos;s life.
+                  {t(
+                    "aboutPandit.biography"
+                  )}
                 </p>
               </div>
 
               <div className="mt-9">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a8d85]">
-                  Specializations
+                <p
+                  className={`text-[10px] font-bold text-[#9a8d85] ${
+                    language === "hi"
+                      ? "tracking-[0.08em]"
+                      : "uppercase tracking-[0.2em]"
+                  }`}
+                >
+                  {t(
+                    "aboutPandit.specializationsLabel"
+                  )}
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {specializations.map((item) => (
-                    <span
-                      key={item}
-                      className="border border-[#e8ddd6] bg-white px-4 py-2 text-[12px] font-medium text-[#514640] transition duration-300 hover:-translate-y-0.5 hover:border-[#a8441b] hover:text-[#a8441b]"
-                    >
-                      {item}
-                    </span>
-                  ))}
+                  {SPECIALIZATION_KEYS.map(
+                    (key) => {
+                      const label = t(
+                        `aboutPandit.specializations.${key}`
+                      );
+
+                      return (
+                        <span
+                          key={key}
+                          className="border border-[#e8ddd6] bg-white px-4 py-2 text-[12px] font-medium text-[#514640] transition duration-300 hover:-translate-y-0.5 hover:border-[#a8441b] hover:text-[#a8441b]"
+                        >
+                          {label}
+                        </span>
+                      );
+                    }
+                  )}
                 </div>
               </div>
 
@@ -172,7 +315,10 @@ export default function AboutPanditjiPage() {
                   href="/pujas"
                   className="group inline-flex h-12 items-center justify-center gap-3 bg-[#a8441b] px-7 text-[13px] font-semibold text-white transition-all duration-300 hover:bg-[#873514] hover:shadow-[0_14px_30px_rgba(168,68,27,0.22)]"
                 >
-                  Explore Pujas
+                  {t(
+                    "aboutPandit.explorePujas"
+                  )}
+
                   <ArrowRight
                     size={17}
                     className="transition-transform duration-300 group-hover:translate-x-1"
@@ -193,18 +339,40 @@ export default function AboutPanditjiPage() {
                 : "translate-y-8 opacity-0"
             }`}
           >
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#a8441b]">
-              Sacred Philosophy
+            <p
+              className={`text-[10px] font-bold text-[#a8441b] ${
+                language === "hi"
+                  ? "tracking-[0.08em]"
+                  : "uppercase tracking-[0.22em]"
+              }`}
+            >
+              {t(
+                "aboutPandit.philosophy.eyebrow"
+              )}
             </p>
 
             <h2
-              className={`${displayFont.className} mt-5 text-4xl font-semibold leading-[0.98] tracking-[-0.025em] sm:text-5xl`}
+              className={`${headingFontClass} mt-5 text-4xl font-semibold ${
+                language === "hi"
+                  ? "leading-[1.2] tracking-normal"
+                  : "leading-[0.98] tracking-[-0.025em]"
+              } sm:text-5xl`}
             >
-              Every mantra.
+              {t(
+                "aboutPandit.philosophy.line1"
+              )}
+
               <br />
-              Every ritual.
+
+              {t(
+                "aboutPandit.philosophy.line2"
+              )}
+
               <br />
-              With purpose.
+
+              {t(
+                "aboutPandit.philosophy.line3"
+              )}
             </h2>
           </div>
 
@@ -216,18 +384,26 @@ export default function AboutPanditjiPage() {
             }`}
           >
             <p className="text-[16px] leading-8 text-[#6f635c] sm:text-[18px]">
-              Vedic rituals are a sacred connection between mantra, intention
-              and faith. Every sankalp and offering is performed with care,
-              preserving the original Vedic process while helping every family
-              experience the meaning, peace and devotion behind their puja.
+              {t(
+                "aboutPandit.philosophy.description"
+              )}
             </p>
 
             <div className="mt-10 h-px w-full bg-[#e8dfda]" />
 
             <div className="mt-7 flex items-center gap-4">
               <span className="h-px w-8 bg-[#a8441b]/50" />
-              <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#a8441b]">
-                Mantra · Sankalp · Samarpan
+
+              <p
+                className={`text-[12px] font-semibold text-[#a8441b] ${
+                  language === "hi"
+                    ? "tracking-[0.07em]"
+                    : "uppercase tracking-[0.18em]"
+                }`}
+              >
+                {t(
+                  "aboutPandit.philosophy.mantraLine"
+                )}
               </p>
             </div>
           </div>
@@ -237,24 +413,37 @@ export default function AboutPanditjiPage() {
   );
 }
 
-function TrustTag({ icon, label }) {
+function TrustTag({
+  icon,
+  label,
+}) {
   return (
     <span className="flex items-center gap-2 border border-[#e8ddd6] bg-white px-3 py-2 text-[11px] font-semibold text-[#5f534c] transition duration-300 hover:border-[#a8441b]/50">
-      <span className="text-[#a8441b]">{icon}</span>
+      <span className="text-[#a8441b]">
+        {icon}
+      </span>
+
       {label}
     </span>
   );
 }
 
-function Stat({ value, label, border = false }) {
+function Stat({
+  value,
+  label,
+  border = false,
+  fontClass,
+}) {
   return (
     <div
       className={`py-6 text-center ${
-        border ? "border-x border-[#e9e1dc]" : ""
+        border
+          ? "border-x border-[#e9e1dc]"
+          : ""
       }`}
     >
       <p
-        className={`${displayFont.className} text-3xl font-bold tracking-[-0.02em] text-[#a8441b] sm:text-4xl`}
+        className={`${fontClass} text-3xl font-bold tracking-[-0.02em] text-[#a8441b] sm:text-4xl`}
       >
         {value}
       </p>

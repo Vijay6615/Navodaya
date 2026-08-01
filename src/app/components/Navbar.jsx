@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useLanguage } from "../context/LanguageContext";
 
 import {
   Menu,
@@ -16,6 +17,7 @@ import {
   ChevronRight,
   ChevronDown,
   CircleUserRound,
+  Languages,
 } from "lucide-react";
 
 const WEBSITE_URL = "https://www.pujadham.co.in";
@@ -27,26 +29,61 @@ const GOOGLE_REVIEW_URL =
   "https://www.google.com/maps/search/?api=1&query=Puja+Dham+Mumbai";
 
 const searchLinks = [
-  { label: "Home", href: "/" },
-  { label: "All Pujas", href: "/pujas?mode=all" },
-  { label: "Online Pujas", href: "/pujas?mode=online" },
-  { label: "Home Visit", href: "/pujas?mode=offline" },
-  { label: "Gau Seva", href: "/gau-seva" },
-  { label: "Naam Jaap", href: "/sita-ram-counter" },
-  { label: "My Bookings", href: "/my-bookings" },
   {
-    label: "Review us",
+    labelKey: "navbar.home",
+    href: "/",
+  },
+  {
+    labelKey: "navbar.allPujas",
+    href: "/pujas?mode=all",
+  },
+  {
+    labelKey: "navbar.onlinePujas",
+    href: "/pujas?mode=online",
+  },
+  {
+    labelKey: "navbar.homeVisit",
+    href: "/pujas?mode=offline",
+  },
+  {
+    labelKey: "navbar.gauSeva",
+    href: "/gau-seva",
+  },
+  {
+    labelKey: "navbar.naamJaap",
+    href: "/sita-ram-counter",
+  },
+  {
+    labelKey: "navbar.myBookings",
+    href: "/my-bookings",
+  },
+  {
+    labelKey: "navbar.reviewUs",
     href: GOOGLE_REVIEW_URL,
     external: true,
   },
-  { label: "About us", href: "/aboutpanditji" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  {
+    labelKey: "navbar.aboutUs",
+    href: "/aboutpanditji",
+  },
+  {
+    labelKey: "navbar.gallery",
+    href: "/gallery",
+  },
+  {
+    labelKey: "navbar.contact",
+    href: "/contact",
+  },
 ];
 
 export default function Navbar() {
   const path = usePathname();
   const { data: session, status } = useSession();
+  const {
+    language,
+    setLanguage,
+    t,
+  } = useLanguage();
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
@@ -58,45 +95,68 @@ export default function Navbar() {
 
   // Pujas and Sevas use dropdowns. Naam Jaap is a separate main link.
   const links = [
-    { label: "Home", href: "/" },
-
-    { label: "Naam Jaap", href: "/sita-ram-counter" },
-
-    { label: "My Bookings", href: "/my-bookings" },
+    {
+      label: t("navbar.home"),
+      href: "/",
+    },
 
     {
-      label: "Review us",
+      label: t("navbar.naamJaap"),
+      href: "/sita-ram-counter",
+    },
+
+    {
+      label: t("navbar.myBookings"),
+      href: "/my-bookings",
+    },
+
+    {
+      label: t("navbar.reviewUs"),
       href: GOOGLE_REVIEW_URL,
       external: true,
     },
 
     ...(isAdmin
-      ? [{ label: "Dashboard", href: "/pandit-dashboard" }]
+      ? [
+          {
+            label: t("navbar.dashboard"),
+            href: "/pandit-dashboard",
+          },
+        ]
       : []),
 
-    { label: "About us", href: "/aboutpanditji" },
-    { label: "Gallery", href: "/gallery" },
-    { label: "Contact", href: "/contact" },
+    {
+      label: t("navbar.aboutUs"),
+      href: "/aboutpanditji",
+    },
+    {
+      label: t("navbar.gallery"),
+      href: "/gallery",
+    },
+    {
+      label: t("navbar.contact"),
+      href: "/contact",
+    },
   ];
 
   const pujaMenuLinks = [
     {
-      label: "All Pujas",
+      label: t("navbar.allPujas"),
       href: "/pujas?mode=all",
     },
     {
-      label: "Home Visit",
+      label: t("navbar.homeVisit"),
       href: "/pujas?mode=offline",
     },
     {
-      label: "Online Puja",
+      label: t("navbar.onlinePuja"),
       href: "/pujas?mode=online",
     },
   ];
 
   const sevaMenuLinks = [
     {
-      label: "Gau Seva",
+      label: t("navbar.gauSeva"),
       href: "/gau-seva",
     },
   ];
@@ -123,11 +183,11 @@ export default function Navbar() {
   const userName =
     session?.user?.name ||
     session?.user?.email?.split("@")[0] ||
-    "Guest User";
+    t("navbar.guestUser");
 
   const userEmail =
     session?.user?.email ||
-    "Login to manage your account";
+    t("navbar.loginToManage");
 
   const userImage = session?.user?.image;
   const firstLetter =
@@ -222,32 +282,30 @@ export default function Navbar() {
     };
   }, []);
 
-  const filteredSearchLinks = searchLinks.filter(
-    (item) =>
+  const localizedSearchLinks =
+    searchLinks.map((item) => ({
+      ...item,
+      label: t(item.labelKey),
+    }));
+
+  const filteredSearchLinks =
+    localizedSearchLinks.filter((item) =>
       item.label
         .toLowerCase()
-        .includes(searchText.trim().toLowerCase())
-  );
+        .includes(
+          searchText.trim().toLowerCase()
+        )
+    );
 
   const SHARE_IMAGE_URL = "/Pujadhamlogo1.png";
 
 const getShareMessage = () => {
-  return `🙏 Puja Dham 🙏
+  // Rebuild message whenever selected language changes.
+  void language;
 
-Experience authentic Vedic pujas and spiritual services with experienced Pandit Ji.
-
-🛕 Online & Offline Puja Services
-🔮 Astrology Consultations
-🧭 Vastu Guidance
-🐄 Gau Seva & Spiritual Sevas
-
-🌐 Website:
-${WEBSITE_URL}
-
-📸 Instagram:
-${INSTAGRAM_URL}
-
-Please share Puja Dham with your family and friends. 🙏`;
+  return t("share.message")
+    .replace("{website}", WEBSITE_URL)
+    .replace("{instagram}", INSTAGRAM_URL);
 };
 
 const getShareImageFile = async () => {
@@ -300,7 +358,7 @@ const handleShareApp = async () => {
       shareMessage
     );
 
-    alert("Puja Dham message copied!");
+    alert(t("navbar.copied"));
 
     setSettingsOpen(false);
   } catch (error) {
@@ -313,7 +371,7 @@ const handleShareApp = async () => {
         );
 
         alert(
-          "Image sharing was unavailable, so the complete message was copied."
+          t("navbar.copiedFallback")
         );
       } catch (clipboardError) {
         console.error(
@@ -390,19 +448,30 @@ const handleInstallApp = () => {
                   : "-translate-x-full"
               }`}
             >
-              <div className="flex h-[78px] shrink-0 items-center justify-between border-b border-[#eee8e2] px-4">
+              {/* MOBILE DRAWER TOP BAR */}
+              <div className="grid h-[84px] shrink-0 grid-cols-[1fr_auto_1fr] items-center border-b border-[#eee8e2] bg-white px-3">
                 <Link
                   href="/"
                   onClick={() => setMenuOpen(false)}
                   aria-label="Puja Dham Home"
-                  className="flex items-center"
+                  className="flex items-center justify-self-start"
                 >
                   <img
                     src="/Pujadhamlogo1.png"
                     alt="Puja Dham Logo"
-                    className="h-[74px] w-auto max-w-[170px] object-contain"
+                    className="h-[62px] w-auto max-w-[86px] object-contain"
                   />
                 </Link>
+
+                {/* Language switch exactly in top center */}
+                <div className="justify-self-center">
+                  <NavbarLanguageToggle
+                    language={language}
+                    setLanguage={setLanguage}
+                    t={t}
+                    compact
+                  />
+                </div>
 
                 <button
                   type="button"
@@ -412,9 +481,9 @@ const handleInstallApp = () => {
                     setMobilePujaOpen(false);
                     setMobileSevaOpen(false);
                   }}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8f3ef] text-[#28221f] transition hover:bg-[#f2e8e1] hover:text-[#a8441b] active:scale-90"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center justify-self-end rounded-full border border-[#eadfd7] bg-[#fffaf6] text-[#4c4039] shadow-sm transition hover:border-[#dcbda9] hover:bg-[#f8eee7] hover:text-[#a8441b] active:scale-90"
                 >
-                  <X size={21} strokeWidth={1.8} />
+                  <X size={20} strokeWidth={1.8} />
                 </button>
               </div>
 
@@ -428,7 +497,7 @@ const handleInstallApp = () => {
                       : "text-[#332c28] hover:text-[#b34d1d]"
                   }`}
                 >
-                  Home
+                  {t("navbar.home")}
 
                   <ChevronRight
                     size={16}
@@ -451,7 +520,7 @@ const handleInstallApp = () => {
                         : "text-[#332c28] hover:text-[#b34d1d]"
                     }`}
                   >
-                    <span>Pujas</span>
+                    <span>{t("navbar.pujas")}</span>
 
                     <ChevronDown
                       size={17}
@@ -511,7 +580,7 @@ const handleInstallApp = () => {
                         : "text-[#332c28] hover:text-[#b34d1d]"
                     }`}
                   >
-                    <span>Sevas</span>
+                    <span>{t("navbar.sevas")}</span>
 
                     <ChevronDown
                       size={17}
@@ -600,7 +669,7 @@ const handleInstallApp = () => {
 
               <div className="shrink-0 border-t border-[#eee8e2] bg-[#fffaf6] px-4 py-3 text-center">
                 <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#a8441b]">
-                  Mantra · Vidhi · Aastha
+                  {t("navbar.mantraLine")}
                 </p>
               </div>
             </aside>
@@ -629,7 +698,7 @@ const handleInstallApp = () => {
                   : "text-[#28221f] hover:text-[#a8441b]"
               }`}
             >
-              Home
+              {t("navbar.home")}
 
               {isActive("/") && (
                 <span className="absolute bottom-[22px] left-0 h-px w-full bg-[#a8441b]" />
@@ -664,7 +733,7 @@ const handleInstallApp = () => {
                     : "text-[#28221f] hover:text-[#a8441b]"
                 }`}
               >
-                Pujas
+                {t("navbar.pujas")}
 
                 <ChevronDown
                   size={15}
@@ -731,7 +800,7 @@ const handleInstallApp = () => {
                     : "text-[#28221f] hover:text-[#a8441b]"
                 }`}
               >
-                Sevas
+                {t("navbar.sevas")}
 
                 <ChevronDown
                   size={15}
@@ -805,6 +874,16 @@ const handleInstallApp = () => {
 
           {/* RIGHT ACTIONS */}
           <div className="relative z-30 ml-auto flex items-center gap-1 sm:gap-2">
+            {/* Desktop language switch only.
+                Mobile switch is inside the hamburger drawer. */}
+            <div className="hidden lg:block">
+              <NavbarLanguageToggle
+                language={language}
+                setLanguage={setLanguage}
+                t={t}
+              />
+            </div>
+
             <div
               ref={searchRef}
               className="relative hidden sm:block"
@@ -851,7 +930,7 @@ const handleInstallApp = () => {
                           event.target.value
                         )
                       }
-                      placeholder="Search Puja Dham..."
+                      placeholder={t("navbar.searchPlaceholder")}
                       className="w-full bg-transparent text-[13px] text-[#28221f] outline-none placeholder:text-[#a89d96]"
                     />
                   </div>
@@ -888,7 +967,7 @@ const handleInstallApp = () => {
                       )
                     ) : (
                       <p className="px-3 py-5 text-center text-xs text-[#958981]">
-                        No page found
+                        {t("navbar.noPageFound")}
                       </p>
                     )}
                   </div>
@@ -966,13 +1045,13 @@ const handleInstallApp = () => {
                       <p className="truncate text-[14px] font-semibold text-[#28221f]">
                         {isLoggedIn
                           ? userName
-                          : "Welcome"}
+                          : t("navbar.welcome")}
                       </p>
 
                       <p className="mt-1 truncate text-[11px] text-[#8f837c]">
                         {isLoggedIn
                           ? userEmail
-                          : "Login or create your account"}
+                          : t("navbar.loginOrCreate")}
                       </p>
                     </div>
                   </div>
@@ -989,7 +1068,7 @@ const handleInstallApp = () => {
                       <CircleUserRound size={18} />
 
                       <span className="flex-1">
-                        Account
+                        {t("navbar.account")}
                       </span>
 
                       <ChevronRight size={15} />
@@ -1003,7 +1082,7 @@ const handleInstallApp = () => {
                       <Download size={18} />
 
                       <span className="flex-1">
-                        Download App
+                        {t("navbar.downloadApp")}
                       </span>
 
                       <ChevronRight size={15} />
@@ -1017,7 +1096,7 @@ const handleInstallApp = () => {
                       <Share2 size={18} />
 
                       <span className="flex-1">
-                        Share
+                        {t("navbar.share")}
                       </span>
 
                       <ChevronRight size={15} />
@@ -1036,7 +1115,7 @@ const handleInstallApp = () => {
                         <LogOut size={18} />
 
                         <span className="flex-1">
-                          Logout
+                          {t("navbar.logout")}
                         </span>
                       </button>
                     )}
@@ -1053,5 +1132,82 @@ const handleInstallApp = () => {
         aria-hidden="true"
       />
     </>
+  );
+}
+
+function NavbarLanguageToggle({
+  language,
+  setLanguage,
+  t,
+  compact = false,
+}) {
+  return (
+    <div
+      role="group"
+      aria-label="Website language"
+      className={`flex items-center rounded-full border border-[#e6d7cc] bg-[#fffaf6] shadow-[0_5px_18px_rgba(83,50,30,0.10)] ${
+        compact
+          ? "h-9 gap-0.5 p-0.5"
+          : "h-10 gap-1 p-1"
+      }`}
+    >
+      {!compact && (
+        <span
+          aria-hidden="true"
+          className="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-[#a8441b]"
+        >
+          <Languages
+            size={15}
+            strokeWidth={1.8}
+          />
+        </span>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setLanguage("en")}
+        aria-pressed={language === "en"}
+        aria-label={t(
+          "language.switchToEnglish"
+        )}
+        title={t(
+          "language.switchToEnglish"
+        )}
+        className={`flex items-center justify-center rounded-full font-bold tracking-[0.02em] transition-all duration-200 ${
+          compact
+            ? "h-8 min-w-[34px] px-2 text-[10px]"
+            : "h-8 min-w-[38px] px-2.5 text-[10px]"
+        } ${
+          language === "en"
+            ? "bg-[#a8441b] text-white shadow-[0_3px_9px_rgba(168,68,27,0.28)]"
+            : "text-[#65574f] hover:bg-white hover:text-[#a8441b]"
+        }`}
+      >
+        EN
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setLanguage("hi")}
+        aria-pressed={language === "hi"}
+        aria-label={t(
+          "language.switchToHindi"
+        )}
+        title={t(
+          "language.switchToHindi"
+        )}
+        className={`flex items-center justify-center rounded-full font-bold transition-all duration-200 ${
+          compact
+            ? "h-8 min-w-[42px] px-2 text-[11px]"
+            : "h-8 min-w-[48px] px-2.5 text-[11px]"
+        } ${
+          language === "hi"
+            ? "bg-[#a8441b] text-white shadow-[0_3px_9px_rgba(168,68,27,0.28)]"
+            : "text-[#65574f] hover:bg-white hover:text-[#a8441b]"
+        }`}
+      >
+        हिंदी
+      </button>
+    </div>
   );
 }

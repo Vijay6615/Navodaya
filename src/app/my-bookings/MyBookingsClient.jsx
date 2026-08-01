@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useLanguage } from "../context/LanguageContext";
 import {
   BadgeCheck,
   CalendarDays,
@@ -34,37 +35,42 @@ export const dynamic = "force-dynamic";
 
 const STATUS_META = {
   pending: {
-    label: "Pending Verification",
+    labelKey: "myBookings.status.pending",
+    badge: "border-amber-200 bg-amber-50 text-amber-700",
+    dot: "bg-amber-500",
+  },
+  submitted: {
+    labelKey: "myBookings.status.submitted",
     badge: "border-amber-200 bg-amber-50 text-amber-700",
     dot: "bg-amber-500",
   },
   confirmed: {
-    label: "Confirmed",
+    labelKey: "myBookings.status.confirmed",
     badge: "border-emerald-200 bg-emerald-50 text-emerald-700",
     dot: "bg-emerald-500",
   },
   success: {
-    label: "Confirmed",
+    labelKey: "myBookings.status.confirmed",
     badge: "border-emerald-200 bg-emerald-50 text-emerald-700",
     dot: "bg-emerald-500",
   },
   completed: {
-    label: "Completed",
+    labelKey: "myBookings.status.completed",
     badge: "border-green-200 bg-green-50 text-green-800",
     dot: "bg-green-600",
   },
   cancelled: {
-    label: "Cancelled",
+    labelKey: "myBookings.status.cancelled",
     badge: "border-red-200 bg-red-50 text-red-700",
     dot: "bg-red-500",
   },
   rejected: {
-    label: "Rejected",
+    labelKey: "myBookings.status.rejected",
     badge: "border-red-200 bg-red-50 text-red-700",
     dot: "bg-red-500",
   },
   failed: {
-    label: "Failed",
+    labelKey: "myBookings.status.failed",
     badge: "border-red-200 bg-red-50 text-red-700",
     dot: "bg-red-500",
   },
@@ -78,8 +84,12 @@ function getStatusMeta(value) {
   return STATUS_META[normalizeStatus(value)] || STATUS_META.pending;
 }
 
-function formatDateTime(value) {
-  if (!value) return "Not available";
+function formatDateTime(
+  value,
+  language,
+  fallback
+) {
+  if (!value) return fallback;
 
   const date = new Date(value);
 
@@ -87,29 +97,41 @@ function formatDateTime(value) {
     return String(value);
   }
 
-  return date.toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return date.toLocaleString(
+    language === "hi" ? "hi-IN" : "en-IN",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+  );
 }
 
-function formatBookingDate(value) {
-  if (!value) return "Date not selected";
+function formatBookingDate(
+  value,
+  language,
+  fallback
+) {
+  if (!value) return fallback;
 
-  const date = new Date(`${value}T00:00:00`);
+  const date = new Date(
+    `${value}T00:00:00`
+  );
 
   if (Number.isNaN(date.getTime())) {
     return String(value);
   }
 
-  return date.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  return date.toLocaleDateString(
+    language === "hi" ? "hi-IN" : "en-IN",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }
+  );
 }
 
 function bookingKey(booking, index = 0) {
@@ -143,7 +165,7 @@ function mergeBookings(localBookings, apiBookings) {
   });
 }
 
-function StatusBadge({ status }) {
+function StatusBadge({ status, t }) {
   const meta = getStatusMeta(status);
 
   return (
@@ -151,7 +173,7 @@ function StatusBadge({ status }) {
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${meta.badge}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-      {meta.label}
+      {t(meta.labelKey)}
     </span>
   );
 }
@@ -160,6 +182,7 @@ function InfoItem({
   icon: Icon,
   label,
   value,
+  fallback = "",
   className = "",
   valueClassName = "",
 }) {
@@ -178,7 +201,7 @@ function InfoItem({
         <p
           className={`mt-1 break-words text-xs font-semibold leading-5 text-[#38322e] sm:text-sm ${valueClassName}`}
         >
-          {value || "Not available"}
+          {value || fallback || "—"}
         </p>
       </div>
     </div>
@@ -204,7 +227,12 @@ function SectionLabel({ icon: Icon, title, description }) {
   );
 }
 
-function PriceRow({ label, value, strong = false }) {
+function PriceRow({
+  label,
+  value,
+  fallback = "",
+  strong = false,
+}) {
   return (
     <div
       className={`flex items-center justify-between gap-4 py-2.5 text-xs sm:text-sm ${
@@ -212,7 +240,7 @@ function PriceRow({ label, value, strong = false }) {
       }`}
     >
       <span>{label}</span>
-      <span className="shrink-0 font-bold">{value || "Not available"}</span>
+      <span className="shrink-0 font-bold">{value || fallback || "—"}</span>
     </div>
   );
 }
@@ -222,14 +250,20 @@ function PujaBookingCard({
   index,
   onBookingAction,
   actionLoading,
+  language,
+  t,
 }) {
   const status = normalizeStatus(booking.status);
   const isCompleted = status === "completed";
   const canCancel = ["pending", "confirmed", "success"].includes(status);
 
+  const notAvailable = t(
+    "myBookings.common.notAvailable"
+  );
+
   const bookingId = booking.bookingId || booking._id || `PUJA-${index + 1}`;
-  const pujaName = booking.pujaName || booking.puja || "Puja Booking";
-  const pujaType = booking.pujaType || "Offline Puja";
+  const pujaName = booking.pujaName || booking.puja || t("myBookings.puja.defaultName");
+  const pujaType = booking.pujaType || t("myBookings.puja.offlinePuja");
   const isOnline = pujaType.toLowerCase().includes("online");
 
   const isSpecialEvent =
@@ -237,27 +271,27 @@ function PujaBookingCard({
     Boolean(booking.eventTitle);
 
   const eventOffer =
-    booking.eventOffer || "No special offer recorded";
+    booking.eventOffer || t("myBookings.puja.noOffer");
 
   const eventMonth =
-    booking.eventMonth || "Not specified";
+    booking.eventMonth || t("myBookings.common.notSpecified");
 
   const bookingCategory =
     booking.bookingCategory ||
-    (isSpecialEvent ? "Monthly Vedic Event" : "Regular Puja");
+    (isSpecialEvent ? t("myBookings.puja.monthlyEvent") : t("myBookings.puja.regularPuja"));
 
   const customerName =
-    booking.name || booking.customerName || booking.userName || "Not available";
-  const email = booking.email || booking.userEmail || "Not available";
-  const phone = booking.phone || "Not available";
+    booking.name || booking.customerName || booking.userName || notAvailable;
+  const email = booking.email || booking.userEmail || notAvailable;
+  const phone = booking.phone || notAvailable;
   const address =
     booking.address ||
-    (isOnline ? "Online Puja — no venue required" : "Not available");
+    (isOnline ? t("myBookings.puja.onlineNoVenue") : notAvailable);
 
-  const basePrice = booking.basePrice || booking.price || "Not available";
+  const basePrice = booking.basePrice || booking.price || notAvailable;
   const samagriCharge = booking.samagriCharge || "₹ 0";
   const totalPrice =
-    booking.totalPrice || booking.price || booking.amount || "Not available";
+    booking.totalPrice || booking.price || booking.amount || notAvailable;
 
   const samagriProvidedBy =
     booking.samagriProvidedBy ||
@@ -270,8 +304,8 @@ function PujaBookingCard({
   const samagriOption =
     booking.samagriOption ||
     (samagriProvidedBy === "Pandit Ji"
-      ? "Pandit Ji will bring complete Puja Samagri"
-      : "Customer will arrange Puja Samagri");
+      ? t("myBookings.puja.panditSamagri")
+      : t("myBookings.puja.customerSamagri"));
 
   const samagriItems = Array.isArray(booking.samagriItems)
     ? booking.samagriItems.filter(Boolean)
@@ -279,7 +313,7 @@ function PujaBookingCard({
 
   const transactionId =
     booking.transactionId ||
-    (isOnline ? "Not provided" : "Pay on service");
+    (isOnline ? t("myBookings.common.notProvided") : t("myBookings.puja.payOnService"));
 
   return (
     <article className="overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_14px_40px_rgba(65,40,22,0.06)]">
@@ -287,7 +321,7 @@ function PujaBookingCard({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <StatusBadge status={status} />
+              <StatusBadge status={status} t={t} />
 
               <span className="inline-flex items-center gap-1 rounded-full border border-[#eadfd7] bg-white px-2.5 py-1 text-[10px] font-bold text-gray-600">
                 {isOnline ? <Video size={12} /> : <Home size={12} />}
@@ -297,7 +331,7 @@ function PujaBookingCard({
               {isSpecialEvent && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-[10px] font-bold text-violet-700">
                   <Sparkles size={12} />
-                  Special Event
+                  {t("myBookings.puja.specialEvent")}
                 </span>
               )}
             </div>
@@ -307,13 +341,13 @@ function PujaBookingCard({
             </h2>
 
             <p className="mt-1 break-all font-mono text-[10px] text-gray-400 sm:text-[11px]">
-              Booking ID: {bookingId}
+              {t("myBookings.common.bookingId")}: {bookingId}
             </p>
           </div>
 
           <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#d8e7dd] bg-white/90 px-4 py-3 sm:block sm:min-w-[145px] sm:text-right">
             <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#5f7b6d]">
-              Total Amount
+              {t("myBookings.common.totalAmount")}
             </p>
             <p
               className={`mt-1 font-extrabold text-[#173f32] ${
@@ -330,34 +364,34 @@ function PujaBookingCard({
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
           <div className="rounded-2xl border border-white bg-white/80 p-3">
             <p className="text-[9px] font-bold uppercase tracking-wide text-gray-400">
-              Puja Date
+              {t("myBookings.puja.pujaDate")}
             </p>
             <p className="mt-1 text-xs font-bold text-[#38322e]">
-              {formatBookingDate(booking.date)}
+              {formatBookingDate(booking.date, language, t("myBookings.common.dateNotSelected"))}
             </p>
           </div>
 
           <div className="rounded-2xl border border-white bg-white/80 p-3">
             <p className="text-[9px] font-bold uppercase tracking-wide text-gray-400">
-              Time Slot
+              {t("myBookings.puja.timeSlot")}
             </p>
             <p className="mt-1 break-words text-xs font-bold text-[#38322e]">
-              {booking.timeSlot || booking.slot || "Flexible"}
+              {booking.timeSlot || booking.slot || t("myBookings.common.flexible")}
             </p>
           </div>
 
           <div className="col-span-2 rounded-2xl border border-white bg-white/80 p-3 sm:col-span-1">
             <p className="text-[9px] font-bold uppercase tracking-wide text-gray-400">
-              {isSpecialEvent ? "Booking Type" : "Samagri"}
+              {isSpecialEvent ? t("myBookings.puja.bookingType") : t("myBookings.puja.samagri")}
             </p>
             <p className="mt-1 break-words text-xs font-bold text-[#38322e]">
               {isSpecialEvent
-                ? "Special Event"
+                ? t("myBookings.puja.specialEvent")
                 : samagriProvidedBy === "Pandit Ji"
-                ? "By Pandit Ji"
+                ? t("myBookings.puja.byPanditJi")
                 : samagriProvidedBy === "To be confirmed"
-                ? "To be confirmed"
-                : "Self-arranged"}
+                ? t("myBookings.common.toBeConfirmed")
+                : t("myBookings.puja.selfArranged")}
             </p>
           </div>
         </div>
@@ -367,27 +401,27 @@ function PujaBookingCard({
         <section>
           <SectionLabel
             icon={User}
-            title="Devotee Details"
-            description="Contact information submitted with this booking"
+            title={t("myBookings.sections.devoteeDetails")}
+            description={t("myBookings.sections.contactInfo")}
           />
 
           <div className="grid gap-2.5 sm:grid-cols-2">
-            <InfoItem icon={User} label="Full Name" value={customerName} />
+            <InfoItem icon={User} label={t("myBookings.fields.fullName")} value={customerName} />
             <InfoItem
               icon={Phone}
-              label="Phone Number"
+              label={t("myBookings.fields.phoneNumber")}
               value={phone}
               valueClassName="break-all"
             />
             <InfoItem
               icon={Mail}
-              label="Email Address"
+              label={t("myBookings.fields.emailAddress")}
               value={email}
               valueClassName="break-all"
             />
             <InfoItem
               icon={MapPin}
-              label={isOnline ? "Puja Venue" : "Complete Address"}
+              label={isOnline ? t("myBookings.fields.pujaVenue") : t("myBookings.fields.completeAddress")}
               value={address}
             />
           </div>
@@ -397,32 +431,32 @@ function PujaBookingCard({
           <section className="rounded-[22px] border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-[#fff8f2] p-4">
             <SectionLabel
               icon={Sparkles}
-              title="Special Event Details"
-              description="Event information saved with this booking"
+              title={t("myBookings.sections.specialEventDetails")}
+              description={t("myBookings.sections.eventInfo")}
             />
 
             <div className="grid gap-2.5 sm:grid-cols-2">
               <InfoItem
                 icon={Sparkles}
-                label="Booking Category"
+                label={t("myBookings.fields.bookingCategory")}
                 value={bookingCategory}
               />
 
               <InfoItem
                 icon={CalendarDays}
-                label="Event Month"
+                label={t("myBookings.fields.eventMonth")}
                 value={eventMonth}
               />
 
               <InfoItem
                 icon={Tag}
-                label="Event Offer"
+                label={t("myBookings.fields.eventOffer")}
                 value={eventOffer}
               />
 
               <InfoItem
                 icon={Clock3}
-                label="Price Status"
+                label={t("myBookings.fields.priceStatus")}
                 value={totalPrice}
               />
             </div>
@@ -433,13 +467,13 @@ function PujaBookingCard({
           <div className="rounded-[22px] border border-[#eee6df] bg-[#fffdfb] p-4">
             <SectionLabel
               icon={PackageCheck}
-              title="Samagri Arrangement"
-              description="Materials selected during booking"
+              title={t("myBookings.sections.samagriArrangement")}
+              description={t("myBookings.sections.materialsSelected")}
             />
 
             <div className="rounded-2xl border border-[#eee4dc] bg-white p-3.5">
               <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">
-                Selected Option
+                {t("myBookings.puja.selectedOption")}
               </p>
               <p className="mt-1.5 text-sm font-bold leading-6 text-[#342e2a]">
                 {samagriOption}
@@ -447,10 +481,10 @@ function PujaBookingCard({
 
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-[#f2f6f3] px-3 py-1.5 text-[10px] font-bold text-[#416b56]">
-                  Provider: {samagriProvidedBy}
+                  {t("myBookings.puja.provider")}: {samagriProvidedBy}
                 </span>
                 <span className="rounded-full bg-[#fff3e9] px-3 py-1.5 text-[10px] font-bold text-[#a8441b]">
-                  Charge: {samagriCharge}
+                  {t("myBookings.puja.charge")}: {samagriCharge}
                 </span>
               </div>
             </div>
@@ -458,7 +492,7 @@ function PujaBookingCard({
             {samagriItems.length > 0 ? (
               <div className="mt-3">
                 <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">
-                  Included Samagri ({samagriItems.length})
+                  {t("myBookings.puja.includedSamagri")} ({samagriItems.length})
                 </p>
 
                 <div className="mt-2 flex flex-wrap gap-1.5">
@@ -475,8 +509,8 @@ function PujaBookingCard({
             ) : (
               <p className="mt-3 text-[11px] leading-5 text-gray-400">
                 {isSpecialEvent
-                  ? "Samagri details will be confirmed directly by Pandit Ji."
-                  : "No Pandit-provided Samagri items were added to this booking."}
+                  ? t("myBookings.puja.samagriConfirmedLater")
+                  : t("myBookings.puja.noSamagriItems")}
               </p>
             )}
           </div>
@@ -484,19 +518,19 @@ function PujaBookingCard({
           <div className="rounded-[22px] border border-[#dbe9e0] bg-gradient-to-br from-[#eef8f2] to-[#fbfdfb] p-4">
             <SectionLabel
               icon={ReceiptText}
-              title="Price & Payment"
+              title={t("myBookings.sections.pricePayment")}
               description={
                 isSpecialEvent
-                  ? "Final event price will be confirmed by Pandit Ji"
-                  : "Complete booking price breakdown"
+                  ? t("myBookings.puja.finalPriceLater")
+                  : t("myBookings.puja.priceBreakdown")
               }
             />
 
             <div className="divide-y divide-[#dce9e1] rounded-2xl bg-white/75 px-3.5">
-              <PriceRow label="Base Puja price" value={basePrice} />
-              <PriceRow label="Samagri charge" value={samagriCharge} />
+              <PriceRow label={t("myBookings.price.basePuja")} value={basePrice} fallback={notAvailable} />
+              <PriceRow label={t("myBookings.price.samagriCharge")} value={samagriCharge} fallback={notAvailable} />
               <PriceRow
-                label="Total booking amount"
+                label={t("myBookings.price.totalBooking")}
                 value={totalPrice}
                 strong
               />
@@ -506,7 +540,7 @@ function PujaBookingCard({
               <div className="flex items-center gap-2">
                 <WalletCards size={16} className="text-[#bfe4cf]" />
                 <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/60">
-                  Payment / Transaction
+                  {t("myBookings.puja.paymentTransaction")}
                 </p>
               </div>
 
@@ -516,8 +550,8 @@ function PujaBookingCard({
 
               <p className="mt-2 text-[10px] leading-4 text-white/60">
                 {isOnline
-                  ? "Online payment details submitted for verification."
-                  : "Payment will be collected according to the confirmed service arrangement."}
+                  ? t("myBookings.puja.onlinePaymentVerification")
+                  : t("myBookings.puja.paymentByArrangement")}
               </p>
             </div>
           </div>
@@ -527,8 +561,8 @@ function PujaBookingCard({
           <section className="rounded-[22px] border border-[#efe1ce] bg-[#fffaf1] p-4">
             <SectionLabel
               icon={MessageSquareText}
-              title="Special Instructions"
-              description="Message shared during booking"
+              title={t("myBookings.sections.specialInstructions")}
+              description={t("myBookings.sections.messageShared")}
             />
 
             <p className="whitespace-pre-wrap break-words text-xs leading-6 text-gray-600 sm:text-sm">
@@ -546,11 +580,10 @@ function PujaBookingCard({
 
               <div className="min-w-0">
                 <p className="text-xs font-bold text-emerald-900">
-                  Puja completed successfully
+                  {t("myBookings.puja.completedTitle")}
                 </p>
                 <p className="mt-1 text-[10px] leading-5 text-emerald-700">
-                  You can now remove this completed booking from your booking
-                  history. This action cannot be undone.
+                  {t("myBookings.puja.completedDescription")}
                 </p>
               </div>
             </div>
@@ -563,9 +596,9 @@ function PujaBookingCard({
                 className="mt-0.5 shrink-0 text-[#a8441b]"
               />
               <span>
-                Booking created:{" "}
+                {t("myBookings.common.bookingCreated")}:{" "}
                 <strong className="font-semibold text-gray-600">
-                  {formatDateTime(booking.createdAt)}
+                  {formatDateTime(booking.createdAt, language, notAvailable)}
                 </strong>
               </span>
             </div>
@@ -584,7 +617,7 @@ function PujaBookingCard({
                 ) : (
                   <Trash2 size={14} />
                 )}
-                Delete from History
+                {t("myBookings.actions.deleteHistory")}
               </button>
             ) : canCancel ? (
               <button
@@ -598,11 +631,11 @@ function PujaBookingCard({
                 ) : (
                   <XCircle size={14} />
                 )}
-                Cancel Booking
+                {t("myBookings.actions.cancelBooking")}
               </button>
             ) : (
               <span className="inline-flex min-h-10 items-center justify-center rounded-xl bg-gray-100 px-4 text-[10px] font-bold uppercase tracking-wide text-gray-500">
-                No action available
+                {t("myBookings.actions.noAction")}
               </span>
             )}
           </div>
@@ -612,7 +645,12 @@ function PujaBookingCard({
   );
 }
 
-function SevaBookingCard({ booking, index }) {
+function SevaBookingCard({
+  booking,
+  index,
+  language,
+  t,
+}) {
   const bookingStatus = booking.bookingStatus || booking.status || "pending";
   const paymentStatus = booking.paymentStatus || "pending";
   const amount =
@@ -627,24 +665,24 @@ function SevaBookingCard({ booking, index }) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <StatusBadge status={bookingStatus} />
+              <StatusBadge status={bookingStatus} t={t} />
               <span className="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase text-blue-700">
-                Payment: {paymentStatus}
+                {t("myBookings.seva.payment")}: {paymentStatus}
               </span>
             </div>
 
             <h2 className="mt-3 text-xl font-extrabold text-[#27221f] sm:text-2xl">
-              {booking.sevaType || "Gau Seva"}
+              {booking.sevaType || t("myBookings.seva.defaultName")}
             </h2>
 
             <p className="mt-1 break-all font-mono text-[10px] text-gray-400">
-              Booking ID: {booking.bookingId || booking._id || `SEVA-${index + 1}`}
+              {t("myBookings.common.bookingId")}: {booking.bookingId || booking._id || `SEVA-${index + 1}`}
             </p>
           </div>
 
           <div className="flex items-center justify-between rounded-2xl border border-[#efe2cf] bg-white px-4 py-3 sm:block sm:min-w-[140px] sm:text-right">
             <p className="text-[9px] font-bold uppercase tracking-wide text-gray-400">
-              Seva Amount
+              {t("myBookings.seva.amount")}
             </p>
             <p className="mt-1 text-xl font-extrabold text-[#a8441b]">
               {amount}
@@ -657,35 +695,35 @@ function SevaBookingCard({ booking, index }) {
         <div className="grid gap-2.5 sm:grid-cols-2">
           <InfoItem
             icon={User}
-            label="Devotee Name"
+            label={t("myBookings.fields.devoteeName")}
             value={booking.name || booking.userName}
           />
           <InfoItem
             icon={Phone}
-            label="Phone Number"
+            label={t("myBookings.fields.phoneNumber")}
             value={booking.phone}
             valueClassName="break-all"
           />
           <InfoItem
             icon={Mail}
-            label="Email Address"
+            label={t("myBookings.fields.emailAddress")}
             value={booking.email || booking.userEmail}
             valueClassName="break-all"
           />
           <InfoItem
             icon={Sparkles}
-            label="Sankalp Name"
-            value={booking.sankalpName || "Not provided"}
+            label={t("myBookings.fields.sankalpName")}
+            value={booking.sankalpName || t("myBookings.common.notProvided")}
           />
           <InfoItem
             icon={HeartHandshake}
-            label="Gotra"
-            value={booking.gotra || "Not provided"}
+            label={t("myBookings.fields.gotra")}
+            value={booking.gotra || t("myBookings.common.notProvided")}
           />
           <InfoItem
             icon={CalendarDays}
-            label="Booked On"
-            value={formatDateTime(booking.createdAt)}
+            label={t("myBookings.fields.bookedOn")}
+            value={formatDateTime(booking.createdAt, language, notAvailable)}
           />
         </div>
 
@@ -693,7 +731,7 @@ function SevaBookingCard({ booking, index }) {
           <div className="rounded-[22px] border border-[#efe1ce] bg-[#fffaf1] p-4">
             <SectionLabel
               icon={MessageSquareText}
-              title="Prayer / Message"
+              title={t("myBookings.sections.prayerMessage")}
             />
             <p className="whitespace-pre-wrap break-words text-xs leading-6 text-gray-600 sm:text-sm">
               {booking.message}
@@ -705,7 +743,7 @@ function SevaBookingCard({ booking, index }) {
   );
 }
 
-function EmptyState({ activeTab }) {
+function EmptyState({ activeTab, t }) {
   const isSeva = activeTab === "seva";
 
   return (
@@ -716,20 +754,20 @@ function EmptyState({ activeTab }) {
         </span>
 
         <h2 className="mt-5 text-xl font-bold text-[#2b2622]">
-          No {isSeva ? "Seva" : "Puja"} Bookings Found
+          {isSeva ? t("myBookings.empty.sevaTitle") : t("myBookings.empty.pujaTitle")}
         </h2>
 
         <p className="mt-2 text-xs leading-6 text-gray-500">
           {isSeva
-            ? "You have not offered any Seva from this account yet."
-            : "Your Puja booking history will appear here after you submit a booking."}
+            ? t("myBookings.empty.sevaDescription")
+            : t("myBookings.empty.pujaDescription")}
         </p>
 
         <Link
           href={isSeva ? "/seva" : "/pujas"}
           className="mt-5 inline-flex rounded-full bg-[#a8441b] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#8d3816]"
         >
-          {isSeva ? "Explore Seva" : "Explore Pujas"}
+          {isSeva ? t("myBookings.empty.exploreSeva") : t("myBookings.empty.explorePujas")}
         </Link>
       </div>
     </div>
@@ -739,6 +777,11 @@ function EmptyState({ activeTab }) {
 export default function MyBookingsPage() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
+  const { language, t } = useLanguage();
+
+  const notAvailable = t(
+    "myBookings.common.notAvailable"
+  );
 
   const initialTab =
     searchParams.get("tab") === "seva" ? "seva" : "puja";
@@ -846,16 +889,16 @@ export default function MyBookingsPage() {
         mergedPujaBookings.length === 0
       ) {
         setErrorMessage(
-          "Bookings could not be loaded from the server. Please refresh after some time."
+          t("myBookings.errors.serverUnavailable")
         );
       } else if (pujaApiFailed && mergedPujaBookings.length > 0) {
         setErrorMessage(
-          "Server sync is temporarily unavailable. Showing the booking details saved on this device."
+          t("myBookings.errors.localOnly")
         );
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
-      setErrorMessage("Unable to load your booking history.");
+      setErrorMessage(t("myBookings.errors.loadHistory"));
     } finally {
       setLoading(false);
     }
@@ -895,14 +938,14 @@ export default function MyBookingsPage() {
       isCompletedDelete &&
       normalizeStatus(booking.status) !== "completed"
     ) {
-      alert("Only completed bookings can be deleted from history.");
+      alert(t("myBookings.alerts.onlyCompleted"));
       return;
     }
 
     const confirmed = window.confirm(
       isCompletedDelete
-        ? "Delete this completed booking permanently from your history? This action cannot be undone."
-        : "Are you sure you want to cancel this Puja booking?"
+        ? t("myBookings.alerts.confirmDelete")
+        : t("myBookings.alerts.confirmCancel")
     );
 
     if (!confirmed) return;
@@ -925,8 +968,8 @@ export default function MyBookingsPage() {
           throw new Error(
             errorText ||
               (isCompletedDelete
-                ? "Failed to delete completed booking."
-                : "Failed to cancel booking.")
+                ? t("myBookings.errors.deleteCompleted")
+                : t("myBookings.errors.cancelBooking"))
           );
         }
       }
@@ -986,16 +1029,16 @@ export default function MyBookingsPage() {
 
       alert(
         isCompletedDelete
-          ? "Completed booking deleted from history."
-          : "Booking cancelled successfully."
+          ? t("myBookings.alerts.deleted")
+          : t("myBookings.alerts.cancelled")
       );
     } catch (error) {
       console.error("Booking action failed:", error);
       alert(
         error.message ||
           (isCompletedDelete
-            ? "Unable to delete this completed booking."
-            : "Unable to cancel this booking.")
+            ? t("myBookings.errors.unableDelete")
+            : t("myBookings.errors.unableCancel"))
       );
     } finally {
       setActionLoading(null);
@@ -1044,7 +1087,7 @@ export default function MyBookingsPage() {
             <Loader2 size={27} className="animate-spin" />
           </span>
           <p className="mt-4 text-sm font-semibold text-gray-500">
-            Loading your sacred bookings...
+            {t("myBookings.loading")}
           </p>
         </div>
       </main>
@@ -1060,18 +1103,18 @@ export default function MyBookingsPage() {
           </span>
 
           <h1 className="mt-5 text-2xl font-bold text-[#2b2622]">
-            Login Required
+            {t("myBookings.auth.title")}
           </h1>
 
           <p className="mt-3 text-sm leading-7 text-gray-500">
-            Please log in to view your complete Puja and Seva booking history.
+            {t("myBookings.auth.description")}
           </p>
 
           <Link
             href="/login?callbackUrl=/my-bookings"
             className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#a8441b] px-7 text-sm font-bold text-white shadow-md transition hover:bg-[#8d3816]"
           >
-            Login / Sign Up
+            {t("myBookings.auth.button")}
           </Link>
         </div>
       </main>
@@ -1086,12 +1129,11 @@ export default function MyBookingsPage() {
             <div>
 
               <h1 className="mt-4 text-2xl font-extrabold leading-tight text-[#28231f] sm:text-4xl">
-                My Sacred Bookings
+                {t("myBookings.header.title")}
               </h1>
 
               <p className="mt-2 max-w-2xl break-all text-xs leading-6 text-gray-500 sm:text-sm">
-                Track booking status and review all Puja, Samagri, payment,
-                devotee and schedule details linked to{" "}
+                {t("myBookings.header.description")}{" "}
                 <strong className="font-semibold text-[#4c433d]">
                   {session?.user?.email}
                 </strong>
@@ -1103,7 +1145,7 @@ export default function MyBookingsPage() {
               type="button"
               onClick={fetchMyBookings}
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#e4d8cf] bg-white text-gray-500 shadow-sm transition hover:border-[#a8441b] hover:text-[#a8441b]"
-              title="Refresh bookings"
+              title={t("myBookings.actions.refresh")}
             >
               <RefreshCw size={17} />
             </button>
@@ -1112,17 +1154,17 @@ export default function MyBookingsPage() {
           <div className="mt-5 grid grid-cols-3 gap-2 sm:max-w-lg sm:gap-3">
             {[
               {
-                label: "Total",
+                label: t("myBookings.stats.total"),
                 value: bookingStats.total,
                 className: "bg-white text-[#2f2925]",
               },
               {
-                label: "Pending",
+                label: t("myBookings.stats.pending"),
                 value: bookingStats.pending,
                 className: "bg-[#fff7e7] text-[#8a5c12]",
               },
               {
-                label: "Confirmed",
+                label: t("myBookings.stats.confirmed"),
                 value: bookingStats.confirmed,
                 className: "bg-[#eaf7ef] text-[#276748]",
               },
@@ -1147,11 +1189,10 @@ export default function MyBookingsPage() {
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
             <div>
               <h3 className="text-sm font-bold text-emerald-900">
-                Booking submitted successfully
+                {t("myBookings.success.title")}
               </h3>
               <p className="mt-1 text-xs leading-5 text-emerald-700">
-                Your booking is pending verification. All submitted details
-                are shown below.
+                {t("myBookings.success.description")}
               </p>
             </div>
           </div>
@@ -1174,7 +1215,7 @@ export default function MyBookingsPage() {
             }`}
           >
             <Sparkles size={15} />
-            <span>Puja</span>
+            <span>{t("myBookings.tabs.puja")}</span>
             <span
               className={`rounded-full px-2 py-0.5 text-[9px] ${
                 activeTab === "puja"
@@ -1196,7 +1237,7 @@ export default function MyBookingsPage() {
             }`}
           >
             <HeartHandshake size={15} />
-            <span>Seva</span>
+            <span>{t("myBookings.tabs.seva")}</span>
             <span
               className={`rounded-full px-2 py-0.5 text-[9px] ${
                 activeTab === "seva"
@@ -1210,7 +1251,7 @@ export default function MyBookingsPage() {
         </div>
 
         {displayedBookings.length === 0 ? (
-          <EmptyState activeTab={activeTab} />
+          <EmptyState activeTab={activeTab} t={t} />
         ) : activeTab === "puja" ? (
           <div className="space-y-5">
             {pujaBookings.map((booking, index) => (
@@ -1220,6 +1261,8 @@ export default function MyBookingsPage() {
                 index={index}
                 onBookingAction={handleBookingAction}
                 actionLoading={actionLoading}
+                language={language}
+                t={t}
               />
             ))}
           </div>
@@ -1230,6 +1273,8 @@ export default function MyBookingsPage() {
                 key={bookingKey(booking, index)}
                 booking={booking}
                 index={index}
+                language={language}
+                t={t}
               />
             ))}
           </div>
@@ -1238,15 +1283,14 @@ export default function MyBookingsPage() {
         <div className="mt-6 flex flex-col items-center justify-between gap-3 rounded-[20px] border border-[#e8ddd5] bg-white px-4 py-4 text-center sm:flex-row sm:text-left">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <ShieldAlert size={15} className="shrink-0 text-[#a8441b]" />
-            Completed bookings can be deleted by the user. Pending and
-            confirmed bookings remain available for tracking.
+            {t("myBookings.footer.note")}
           </div>
 
           <Link
             href={activeTab === "seva" ? "/seva" : "/pujas"}
             className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#a8441b] px-5 text-xs font-bold text-[#a8441b] transition hover:bg-[#a8441b] hover:text-white"
           >
-            {activeTab === "seva" ? "Book Another Seva" : "Book Another Puja"}
+            {activeTab === "seva" ? t("myBookings.footer.bookSeva") : t("myBookings.footer.bookPuja")}
           </Link>
         </div>
       </div>

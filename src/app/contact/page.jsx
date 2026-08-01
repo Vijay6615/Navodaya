@@ -1,68 +1,164 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Cormorant_Garamond } from "next/font/google";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import emailjs from "@emailjs/browser";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+
 import {
   ArrowRight,
   Mail,
   MapPin,
   MessageCircle,
   Phone,
-  Sparkles,
   X,
 } from "lucide-react";
 
-const displayFont = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
+import { useLanguage } from "../context/LanguageContext";
 
-const pujas = [
-  "Others",
-  "Ganesh Puja",
-  "Satyanarayan Puja",
-  "Rudrabhishek",
-  "Mahamrityunjay Jaap",
-  "Lakshmi Puja",
-  "Griha Pravesh Puja",
-  "Bhoomi Puja",
-  "Vastu Shanti Puja",
-  "Navagraha Shanti",
-  "Kaal Sarp Dosh Puja",
-  "Naamkaran Sanskar",
-  "Mundan Sanskar",
-  "Pitru Dosh Puja",
-  "Shiv Puja / Rudrabhishek",
-  "Durga Puja",
-  "Vishnu Puja",
-  "Rahu–Ketu Shanti Puja",
-  "Dhan Prapti Havan",
-  "Shanti Havan",
-  "Saraswati Puja",
-  "SundarKand Path",
-  "Hanuman Chalisa Path",
-  "Akhand Ramayan Path",
-  "Office Opening Puja",
+const displayFont = {
+  className: "font-display-en",
+};
+
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
+
+const PUJA_OPTIONS = [
+  {
+    key: "others",
+    value: "Others",
+  },
+  {
+    key: "ganeshPuja",
+    value: "Ganesh Puja",
+  },
+  {
+    key: "satyanarayanPuja",
+    value: "Satyanarayan Puja",
+  },
+  {
+    key: "rudrabhishek",
+    value: "Rudrabhishek",
+  },
+  {
+    key: "mahamrityunjayJaap",
+    value: "Mahamrityunjay Jaap",
+  },
+  {
+    key: "lakshmiPuja",
+    value: "Lakshmi Puja",
+  },
+  {
+    key: "grihaPraveshPuja",
+    value: "Griha Pravesh Puja",
+  },
+  {
+    key: "bhoomiPuja",
+    value: "Bhoomi Puja",
+  },
+  {
+    key: "vastuShantiPuja",
+    value: "Vastu Shanti Puja",
+  },
+  {
+    key: "navagrahaShanti",
+    value: "Navagraha Shanti",
+  },
+  {
+    key: "kaalSarpDoshPuja",
+    value: "Kaal Sarp Dosh Puja",
+  },
+  {
+    key: "naamkaranSanskar",
+    value: "Naamkaran Sanskar",
+  },
+  {
+    key: "mundanSanskar",
+    value: "Mundan Sanskar",
+  },
+  {
+    key: "pitruDoshPuja",
+    value: "Pitru Dosh Puja",
+  },
+  {
+    key: "shivPujaRudrabhishek",
+    value: "Shiv Puja / Rudrabhishek",
+  },
+  {
+    key: "durgaPuja",
+    value: "Durga Puja",
+  },
+  {
+    key: "vishnuPuja",
+    value: "Vishnu Puja",
+  },
+  {
+    key: "rahuKetuShantiPuja",
+    value: "Rahu–Ketu Shanti Puja",
+  },
+  {
+    key: "dhanPraptiHavan",
+    value: "Dhan Prapti Havan",
+  },
+  {
+    key: "shantiHavan",
+    value: "Shanti Havan",
+  },
+  {
+    key: "saraswatiPuja",
+    value: "Saraswati Puja",
+  },
+  {
+    key: "sundarKandPath",
+    value: "SundarKand Path",
+  },
+  {
+    key: "hanumanChalisaPath",
+    value: "Hanuman Chalisa Path",
+  },
+  {
+    key: "akhandRamayanPath",
+    value: "Akhand Ramayan Path",
+  },
+  {
+    key: "officeOpeningPuja",
+    value: "Office Opening Puja",
+  },
 ];
 
 export default function ContactPage() {
+  const {
+    language,
+    t,
+  } = useLanguage();
+
   const { status } = useSession();
   const router = useRouter();
 
-  const isLoggedIn = status === "authenticated";
+  const isLoggedIn =
+    status === "authenticated";
+
+  const headingFontClass =
+    language === "hi"
+      ? hindiDisplayFont.className
+      : displayFont.className;
 
   const requireLogin = () => {
     if (!isLoggedIn) {
       router.push("/login");
       return false;
     }
+
     return true;
   };
 
-  const [pageReady, setPageReady] = useState(false);
+  const [pageReady, setPageReady] =
+    useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -75,8 +171,19 @@ export default function ContactPage() {
     message: "",
   });
 
-  const [showList, setShowList] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [
+    selectedPujaKey,
+    setSelectedPujaKey,
+  ] = useState(null);
+
+  const [pujaQuery, setPujaQuery] =
+    useState("");
+
+  const [showList, setShowList] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(false);
 
   const [toast, setToast] = useState({
     show: false,
@@ -85,12 +192,34 @@ export default function ContactPage() {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => setPageReady(true), 80);
+    const timer = setTimeout(
+      () => setPageReady(true),
+      80
+    );
 
     return () => clearTimeout(timer);
   }, []);
 
-  const showToast = (type, message) => {
+  useEffect(() => {
+    if (!selectedPujaKey) {
+      return;
+    }
+
+    setPujaQuery(
+      t(
+        `contactPage.pujas.${selectedPujaKey}`
+      )
+    );
+  }, [
+    language,
+    selectedPujaKey,
+    t,
+  ]);
+
+  const showToast = (
+    type,
+    message
+  ) => {
     setToast({
       show: true,
       type,
@@ -106,15 +235,37 @@ export default function ContactPage() {
     }, 4000);
   };
 
-  const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
+  const handleChange = (event) => {
+    const {
+      name,
+      value,
+    } = event.target;
+
+    setForm((previous) => ({
+      ...previous,
+      [name]: value,
     }));
   };
 
-  const sendEmail = async (e) => {
-    e.preventDefault();
+  const resetForm = () => {
+    setForm({
+      name: "",
+      surname: "",
+      age: "",
+      gender: "",
+      email: "",
+      phone: "",
+      puja: "",
+      message: "",
+    });
+
+    setPujaQuery("");
+    setSelectedPujaKey(null);
+    setShowList(false);
+  };
+
+  const sendEmail = async (event) => {
+    event.preventDefault();
 
     if (!requireLogin()) return;
 
@@ -128,38 +279,72 @@ export default function ContactPage() {
         "gGm69Djy_97dOYF1O"
       );
 
-      showToast("success", "Message sent successfully 🙏");
+      showToast(
+        "success",
+        t(
+          "contactPage.toast.success"
+        )
+      );
 
-      setForm({
-        name: "",
-        surname: "",
-        age: "",
-        gender: "",
-        email: "",
-        phone: "",
-        puja: "",
-        message: "",
-      });
+      resetForm();
     } catch (error) {
       console.error(error);
 
       showToast(
         "error",
-        "Something went wrong. Please try again."
+        t(
+          "contactPage.toast.error"
+        )
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredPujas = pujas.filter((puja) =>
-    puja.toLowerCase().includes(form.puja.toLowerCase())
-  );
+  const normalizedQuery = pujaQuery
+    .toLowerCase()
+    .trim();
+
+  const filteredPujas =
+    PUJA_OPTIONS.filter((option) => {
+      const translatedLabel = t(
+        `contactPage.pujas.${option.key}`
+      );
+
+      const searchableValue = [
+        option.value,
+        translatedLabel,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return searchableValue.includes(
+        normalizedQuery
+      );
+    });
+
+  const selectPuja = (option) => {
+    setSelectedPujaKey(option.key);
+
+    setPujaQuery(
+      t(
+        `contactPage.pujas.${option.key}`
+      )
+    );
+
+    setForm((previous) => ({
+      ...previous,
+      // EmailJS aur backend consistency ke liye
+      // canonical English value send hoti rahegi.
+      puja: option.value,
+    }));
+
+    setShowList(false);
+  };
 
   return (
     <main className="min-h-screen overflow-hidden bg-white text-[#28221f]">
       {/* TOAST */}
-
       {toast.show && (
         <div
           className={`
@@ -200,9 +385,12 @@ export default function ContactPage() {
 
           <button
             type="button"
+            aria-label={t(
+              "contactPage.toast.close"
+            )}
             onClick={() =>
-              setToast((prev) => ({
-                ...prev,
+              setToast((previous) => ({
+                ...previous,
                 show: false,
               }))
             }
@@ -215,7 +403,6 @@ export default function ContactPage() {
 
       <section className="relative">
         {/* BACKGROUND */}
-
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-40 top-20 h-[440px] w-[440px] rounded-full bg-[#fff4ed] blur-[110px]" />
 
@@ -224,7 +411,6 @@ export default function ContactPage() {
 
         <div className="relative mx-auto max-w-[1280px] px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-20">
           {/* HEADING */}
-
           <div
             className={`max-w-4xl transition-all duration-1000 ease-out ${
               pageReady
@@ -232,22 +418,40 @@ export default function ContactPage() {
                 : "-translate-x-10 opacity-0"
             }`}
           >
-            
+            <p
+              className={`text-[10px] font-bold text-[#a8441b] ${
+                language === "hi"
+                  ? "tracking-[0.08em]"
+                  : "uppercase tracking-[0.24em]"
+              }`}
+            >
+              {t(
+                "contactPage.eyebrow"
+              )}
+            </p>
 
             <h1
-              className={`${displayFont.className} mt-5 text-[47px] font-semibold leading-[0.94] tracking-[-0.035em] sm:text-6xl lg:text-[78px]`}
+              className={`${headingFontClass} mt-5 text-[47px] font-semibold ${
+                language === "hi"
+                  ? "leading-[1.16] tracking-normal"
+                  : "leading-[0.94] tracking-[-0.035em]"
+              } sm:text-6xl lg:text-[78px]`}
             >
-              Guidance begins
+              {t(
+                "contactPage.headingLine1"
+              )}
+
               <br />
-              with a conversation.
+
+              {t(
+                "contactPage.headingLine2"
+              )}
             </h1>
           </div>
 
           {/* MAIN */}
-
           <div className="mt-12 grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:gap-10">
             {/* CONTACT INFO */}
-
             <div
               className={`flex flex-col justify-between border border-[#eee8e2] bg-[#431407] p-7 text-white transition-all delay-150 duration-1000 ease-out sm:p-9 lg:p-11 ${
                 pageReady
@@ -256,58 +460,111 @@ export default function ContactPage() {
               }`}
             >
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
-                  Contact Information
+                <p
+                  className={`text-[10px] font-semibold text-white/55 ${
+                    language === "hi"
+                      ? "tracking-[0.07em]"
+                      : "uppercase tracking-[0.22em]"
+                  }`}
+                >
+                  {t(
+                    "contactPage.contactInfo.label"
+                  )}
                 </p>
 
                 <h2
-                  className={`${displayFont.className} mt-5 text-4xl font-semibold leading-[1] sm:text-5xl`}
+                  className={`${headingFontClass} mt-5 text-4xl font-semibold ${
+                    language === "hi"
+                      ? "leading-[1.18] tracking-normal"
+                      : "leading-[1]"
+                  } sm:text-5xl`}
                 >
-                  We&apos;re here to
+                  {t(
+                    "contactPage.contactInfo.headingLine1"
+                  )}
+
                   <br />
-                  guide you.
+
+                  {t(
+                    "contactPage.contactInfo.headingLine2"
+                  )}
                 </h2>
 
                 <div className="mt-10 space-y-3">
                   <ContactItem
-                    icon={<MapPin size={18} />}
-                    label="Location"
+                    icon={
+                      <MapPin
+                        size={18}
+                      />
+                    }
+                    label={t(
+                      "contactPage.contactInfo.location"
+                    )}
                     value="Mumbai / Palghar"
                   />
 
                   <ContactItem
-                    icon={<Phone size={18} />}
-                    label="Phone"
-                    value="Click to call"
+                    icon={
+                      <Phone size={18} />
+                    }
+                    label={t(
+                      "contactPage.contactInfo.phone"
+                    )}
+                    value={t(
+                      "contactPage.contactInfo.clickToCall"
+                    )}
                     href="tel:+919594943609"
-                    requireLogin={requireLogin}
+                    requireLogin={
+                      requireLogin
+                    }
                   />
 
                   <ContactItem
-                    icon={<MessageCircle size={18} />}
+                    icon={
+                      <MessageCircle
+                        size={18}
+                      />
+                    }
                     label="WhatsApp"
-                    value="Available"
+                    value={t(
+                      "contactPage.contactInfo.available"
+                    )}
                     href="https://wa.me/919594943609"
-                    requireLogin={requireLogin}
+                    requireLogin={
+                      requireLogin
+                    }
                   />
 
                   <ContactItem
-                    icon={<Mail size={18} />}
-                    label="Email"
+                    icon={
+                      <Mail size={18} />
+                    }
+                    label={t(
+                      "contactPage.contactInfo.email"
+                    )}
                     value="pujadham@gmail.com"
                     href="mailto:pujadham@gmail.com"
-                    requireLogin={requireLogin}
+                    requireLogin={
+                      requireLogin
+                    }
                   />
                 </div>
               </div>
 
-              <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
-                Mantra · Vidhi · Aastha
+              <p
+                className={`mt-6 text-[10px] font-semibold text-white/40 ${
+                  language === "hi"
+                    ? "tracking-[0.07em]"
+                    : "uppercase tracking-[0.18em]"
+                }`}
+              >
+                {t(
+                  "contactPage.mantraLine"
+                )}
               </p>
             </div>
 
             {/* FORM */}
-
             <div
               className={`border border-[#eee8e2] bg-[#fffdfb] p-6 transition-all delay-300 duration-1000 ease-out sm:p-9 lg:p-11 ${
                 pageReady
@@ -315,14 +572,28 @@ export default function ContactPage() {
                   : "translate-x-14 opacity-0"
               }`}
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#a8441b]">
-                Consultation Form
+              <p
+                className={`text-[10px] font-bold text-[#a8441b] ${
+                  language === "hi"
+                    ? "tracking-[0.08em]"
+                    : "uppercase tracking-[0.22em]"
+                }`}
+              >
+                {t(
+                  "contactPage.form.label"
+                )}
               </p>
 
               <h2
-                className={`${displayFont.className} mt-4 text-4xl font-semibold leading-none tracking-[-0.025em] sm:text-5xl`}
+                className={`${headingFontClass} mt-4 text-4xl font-semibold ${
+                  language === "hi"
+                    ? "leading-[1.18] tracking-normal"
+                    : "leading-none tracking-[-0.025em]"
+                } sm:text-5xl`}
               >
-                Tell us how we can help.
+                {t(
+                  "contactPage.form.heading"
+                )}
               </h2>
 
               <form
@@ -332,29 +603,47 @@ export default function ContactPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <input
                     name="name"
-                    placeholder="First Name"
+                    placeholder={t(
+                      "contactPage.form.firstName"
+                    )}
                     required
                     value={form.name}
-                    onChange={handleChange}
+                    onChange={
+                      handleChange
+                    }
+                    autoComplete="given-name"
                     className="contactInput"
                   />
 
                   <input
                     name="surname"
-                    placeholder="Surname"
+                    placeholder={t(
+                      "contactPage.form.surname"
+                    )}
                     required
-                    value={form.surname}
-                    onChange={handleChange}
+                    value={
+                      form.surname
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    autoComplete="family-name"
                     className="contactInput"
                   />
 
                   <input
                     name="age"
                     type="number"
-                    placeholder="Age"
+                    min="1"
+                    max="120"
+                    placeholder={t(
+                      "contactPage.form.age"
+                    )}
                     required
                     value={form.age}
-                    onChange={handleChange}
+                    onChange={
+                      handleChange
+                    }
                     className="contactInput"
                   />
 
@@ -362,73 +651,131 @@ export default function ContactPage() {
                     name="gender"
                     required
                     value={form.gender}
-                    onChange={handleChange}
+                    onChange={
+                      handleChange
+                    }
                     className="contactInput"
                   >
-                    <option value="">Select Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
+                    <option value="">
+                      {t(
+                        "contactPage.form.selectGender"
+                      )}
+                    </option>
+
+                    <option value="Male">
+                      {t(
+                        "contactPage.form.male"
+                      )}
+                    </option>
+
+                    <option value="Female">
+                      {t(
+                        "contactPage.form.female"
+                      )}
+                    </option>
+
+                    <option value="Other">
+                      {t(
+                        "contactPage.form.otherGender"
+                      )}
+                    </option>
                   </select>
 
                   <input
                     name="email"
                     type="email"
-                    placeholder="Email Address"
+                    placeholder={t(
+                      "contactPage.form.emailAddress"
+                    )}
                     required
                     value={form.email}
-                    onChange={handleChange}
+                    onChange={
+                      handleChange
+                    }
+                    autoComplete="email"
                     className="contactInput"
                   />
 
                   <input
                     name="phone"
-                    placeholder="Phone Number"
+                    type="tel"
+                    placeholder={t(
+                      "contactPage.form.phoneNumber"
+                    )}
                     required
                     value={form.phone}
-                    onChange={handleChange}
+                    onChange={
+                      handleChange
+                    }
+                    autoComplete="tel"
+                    inputMode="tel"
                     className="contactInput"
                   />
                 </div>
 
                 {/* PUJA SEARCH */}
-
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search or select Puja"
-                    value={form.puja}
-                    onChange={(e) => {
-                      setForm((prev) => ({
-                        ...prev,
-                        puja: e.target.value,
-                      }));
+                    placeholder={t(
+                      "contactPage.form.searchPuja"
+                    )}
+                    value={pujaQuery}
+                    onChange={(event) => {
+                      const value =
+                        event.target.value;
+
+                      setPujaQuery(value);
+                      setSelectedPujaKey(
+                        null
+                      );
+
+                      setForm(
+                        (previous) => ({
+                          ...previous,
+                          puja: value,
+                        })
+                      );
 
                       setShowList(true);
                     }}
-                    onFocus={() => setShowList(true)}
+                    onFocus={() =>
+                      setShowList(true)
+                    }
                     className="contactInput"
                   />
 
                   {showList && (
                     <div className="pujaList absolute z-50 mt-2 max-h-52 w-full overflow-y-auto rounded-2xl border border-[#eee8e2] bg-white p-2 shadow-[0_20px_50px_rgba(50,25,10,0.12)]">
-                      {filteredPujas.map((puja) => (
-                        <button
-                          key={puja}
-                          type="button"
-                          onClick={() => {
-                            setForm((prev) => ({
-                              ...prev,
-                              puja,
-                            }));
-
-                            setShowList(false);
-                          }}
-                          className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-[#574b44] transition hover:bg-[#fff6f0] hover:text-[#a8441b]"
-                        >
-                          {puja}
-                        </button>
-                      ))}
+                      {filteredPujas.length >
+                      0 ? (
+                        filteredPujas.map(
+                          (option) => (
+                            <button
+                              key={
+                                option.key
+                              }
+                              type="button"
+                              onClick={() =>
+                                selectPuja(
+                                  option
+                                )
+                              }
+                              className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-[#574b44] transition hover:bg-[#fff6f0] hover:text-[#a8441b]"
+                            >
+                              {t(
+                                `contactPage.pujas.${option.key}`
+                              )}
+                            </button>
+                          )
+                        )
+                      ) : (
+                        <p className="px-4 py-3 text-sm text-[#8a7d75]">
+                          {t(
+                            "contactPage.form.noPujaFound"
+                          )}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -436,7 +783,9 @@ export default function ContactPage() {
                 <textarea
                   name="message"
                   rows={4}
-                  placeholder="Describe your requirement"
+                  placeholder={t(
+                    "contactPage.form.requirement"
+                  )}
                   required
                   value={form.message}
                   onChange={handleChange}
@@ -445,10 +794,19 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={
+                    loading ||
+                    status === "loading"
+                  }
                   className="group flex min-h-[54px] w-full items-center justify-center gap-3 rounded-full bg-[#a8441b] px-7 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#873515] hover:shadow-[0_16px_35px_rgba(168,68,27,0.24)] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
-                  {loading ? "Sending..." : "Send Message"}
+                  {loading
+                    ? t(
+                        "contactPage.form.sending"
+                      )
+                    : t(
+                        "contactPage.form.sendMessage"
+                      )}
 
                   {!loading && (
                     <ArrowRight
@@ -494,18 +852,21 @@ export default function ContactPage() {
 
         .contactInput:focus {
           border-color: #a8441b;
-          box-shadow: 0 0 0 4px rgba(168, 68, 27, 0.07);
+          box-shadow: 0 0 0 4px
+            rgba(168, 68, 27, 0.07);
           transform: translateY(-1px);
         }
 
         .contactToast {
           animation: contactToast 0.5s
-            cubic-bezier(0.22, 1, 0.36, 1) both;
+            cubic-bezier(0.22, 1, 0.36, 1)
+            both;
         }
 
         .pujaList {
           animation: pujaListReveal 0.35s
-            cubic-bezier(0.22, 1, 0.36, 1) both;
+            cubic-bezier(0.22, 1, 0.36, 1)
+            both;
         }
 
         @keyframes contactToast {
@@ -523,12 +884,14 @@ export default function ContactPage() {
         @keyframes pujaListReveal {
           from {
             opacity: 0;
-            transform: translateY(-8px) scale(0.98);
+            transform: translateY(-8px)
+              scale(0.98);
           }
 
           to {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0)
+              scale(1);
           }
         }
       `}</style>
@@ -536,9 +899,15 @@ export default function ContactPage() {
   );
 }
 
-function ContactItem({ icon, label, value, href, requireLogin }) {
+function ContactItem({
+  icon,
+  label,
+  value,
+  href,
+  requireLogin,
+}) {
   const content = (
-    <div className="group flex items-center gap-4 border-b bordder-[#6b2a18] bg-[#541b0d] px-4 py-5">
+    <div className="group flex items-center gap-4 border-b border-[#6b2a18] bg-[#541b0d] px-4 py-5">
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white/80 transition duration-300 group-hover:bg-white group-hover:text-[#431407]">
         {icon}
       </div>
@@ -562,8 +931,14 @@ function ContactItem({ icon, label, value, href, requireLogin }) {
         onClick={() => {
           if (!requireLogin()) return;
 
-          if (href.startsWith("https")) {
-            window.open(href, "_blank", "noopener,noreferrer");
+          if (
+            href.startsWith("https")
+          ) {
+            window.open(
+              href,
+              "_blank",
+              "noopener,noreferrer"
+            );
           } else {
             window.location.href = href;
           }

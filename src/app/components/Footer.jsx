@@ -1,3 +1,5 @@
+"use client";
+
 // src/app/components/Footer.jsx
 
 import Link from "next/link";
@@ -10,6 +12,8 @@ import {
   Phone,
 } from "lucide-react";
 
+import { useLanguage } from "../context/LanguageContext";
+
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
 
 const GOOGLE_REVIEW_URL =
@@ -17,27 +21,68 @@ const GOOGLE_REVIEW_URL =
   "https://www.google.com/maps/search/?api=1&query=Puja+Dham+Mumbai";
 
 const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "All Pujas", href: "/pujas?mode=all" },
-  { label: "Home Visit", href: "/pujas?mode=offline" },
-  { label: "Online Puja", href: "/pujas?mode=online" },
-  { label: "Seva", href: "/seva" },
-  { label: "My Bookings", href: "/my-bookings" },
   {
-    label: "Review us",
+    labelKey: "footer.home",
+    href: "/",
+  },
+  {
+    labelKey: "footer.allPujas",
+    href: "/pujas?mode=all",
+  },
+  {
+    labelKey: "footer.homeVisit",
+    href: "/pujas?mode=offline",
+  },
+  {
+    labelKey: "footer.onlinePuja",
+    href: "/pujas?mode=online",
+  },
+  {
+    labelKey: "footer.seva",
+    href: "/seva",
+  },
+  {
+    labelKey: "footer.myBookings",
+    href: "/my-bookings",
+  },
+  {
+    labelKey: "footer.reviewUs",
     href: GOOGLE_REVIEW_URL,
     external: true,
   },
 ];
 
 const companyLinks = [
-  { label: "About Us", href: "/aboutpanditji" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact Us", href: "/contact" },
-  { label: "Monthly Events", href: "/#FrostCard" },
+  {
+    labelKey: "footer.aboutUs",
+    href: "/aboutpanditji",
+  },
+  {
+    labelKey: "footer.gallery",
+    href: "/gallery",
+  },
+  {
+    labelKey: "footer.contactUs",
+    href: "/contact",
+  },
+  {
+    labelKey: "footer.monthlyEvents",
+    href: "/#FrostCard",
+  },
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const currentYear = new Date().getFullYear();
+
+  const copyrightText = t(
+    "footer.copyright"
+  ).replace(
+    "{year}",
+    String(currentYear)
+  );
+
   return (
     <footer className="relative mt-auto w-full shrink-0 overflow-hidden bg-[#2b160d] text-white">
       {/* Decorative background */}
@@ -62,7 +107,7 @@ export default function Footer() {
             </Link>
 
             <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#f2a56f] sm:text-[12px]">
-              Mantra · Vidhi · Aastha
+              {t("footer.mantraLine")}
             </p>
 
             {/* Instagram CTA */}
@@ -79,8 +124,9 @@ export default function Footer() {
 
               <span className="min-w-0 text-left">
                 <span className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-orange-50/45">
-                  Follow us on Instagram
+                  {t("footer.followInstagram")}
                 </span>
+
                 <span className="block text-[12px] font-bold text-white">
                   @puja_dham
                 </span>
@@ -94,43 +140,54 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <FooterColumn title="Quick Links">
+          <FooterColumn
+            title={t("footer.quickLinks")}
+          >
             {quickLinks.map((item) => (
               <FooterLink
-                key={`${item.label}-${item.href}`}
+                key={`${item.labelKey}-${item.href}`}
                 href={item.href}
                 external={item.external}
               >
-                {item.label}
+                {t(item.labelKey)}
               </FooterLink>
             ))}
           </FooterColumn>
 
           {/* Explore */}
-          <FooterColumn title="Explore">
+          <FooterColumn
+            title={t("footer.explore")}
+          >
             {companyLinks.map((item) => (
-              <FooterLink key={item.href} href={item.href}>
-                {item.label}
+              <FooterLink
+                key={item.href}
+                href={item.href}
+              >
+                {t(item.labelKey)}
               </FooterLink>
             ))}
           </FooterColumn>
 
           {/* Contact */}
           <div className="col-span-2 lg:col-span-1">
-            <FooterHeading title="Contact Us" />
+            <FooterHeading
+              title={t("footer.contactUs")}
+            />
 
             <div className="mt-5 space-y-3">
               <ContactLink
                 href="tel:+919594943609"
                 icon={<Phone size={16} />}
-                label="Call Pandit Ji"
+                label={t(
+                  "footer.callPanditJi"
+                )}
                 value="+91 95949 43609"
               />
 
               <ContactLink
                 href="mailto:navodayapuja@gmail.com"
                 icon={<Mail size={16} />}
-                label="Email Us"
+                label={t("footer.emailUs")}
                 value="pujadham@gmail.com"
               />
 
@@ -141,10 +198,13 @@ export default function Footer() {
 
                 <div className="min-w-0 pt-0.5">
                   <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-orange-50/35">
-                    Location
+                    {t("footer.location")}
                   </p>
+
                   <p className="mt-1 text-[12px] leading-5 text-orange-50/70">
-                    Mumbai, Maharashtra, India
+                    {t(
+                      "footer.locationValue"
+                    )}
                   </p>
                 </div>
               </div>
@@ -158,13 +218,12 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-4 pt-6 text-center sm:flex-row sm:text-left">
           <div>
             <p className="text-[11px] text-orange-50/50 sm:text-xs">
-              © {new Date().getFullYear()} Puja Dham Services. All rights
-              reserved.
+              {copyrightText}
             </p>
           </div>
 
           <p className="text-[10px] text-orange-50/40 sm:text-[11px]">
-            Designed &amp; Developed by{" "}
+            {t("footer.designedBy")}{" "}
             <a
               href="https://vijayshukla-portfolio.vercel.app"
               target="_blank"
@@ -198,12 +257,18 @@ function FooterColumn({ title, children }) {
   return (
     <div className="min-w-0">
       <FooterHeading title={title} />
-      <ul className="mt-5 space-y-3">{children}</ul>
+      <ul className="mt-5 space-y-3">
+        {children}
+      </ul>
     </div>
   );
 }
 
-function FooterLink({ href, children, external = false }) {
+function FooterLink({
+  href,
+  children,
+  external = false,
+}) {
   const classes =
     "group inline-flex items-center gap-2 text-[13px] text-orange-50/70 transition-colors duration-200 hover:text-orange-400";
 
@@ -234,18 +299,27 @@ function FooterLink({ href, children, external = false }) {
 
   return (
     <li>
-      <Link href={href} className={classes}>
+      <Link
+        href={href}
+        className={classes}
+      >
         <ChevronRight
           size={14}
           className="shrink-0 text-orange-500 transition-transform group-hover:translate-x-1"
         />
+
         {children}
       </Link>
     </li>
   );
 }
 
-function ContactLink({ href, icon, label, value }) {
+function ContactLink({
+  href,
+  icon,
+  label,
+  value,
+}) {
   return (
     <a
       href={href}
@@ -259,6 +333,7 @@ function ContactLink({ href, icon, label, value }) {
         <span className="block text-[9px] font-semibold uppercase tracking-[0.15em] text-orange-50/35">
           {label}
         </span>
+
         <span className="mt-1 block break-all text-[12px] leading-5 text-orange-50/70 transition group-hover:text-orange-300">
           {value}
         </span>

@@ -1042,3 +1042,23 @@ textarea {
   .section,
   .page-section { padding: 40px 20px; }
 }
+
+
+/* English decorative headings */
+.font-display-en {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    Times,
+    serif;
+}
+
+/* Hindi decorative headings */
+.font-display-hi {
+  font-family:
+    "Nirmala UI",
+    Mangal,
+    Kokila,
+    "Arial Unicode MS",
+    serif;
+}

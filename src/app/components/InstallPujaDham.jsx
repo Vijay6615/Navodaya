@@ -8,16 +8,18 @@ import {
 
 import {
   Download,
-  MoreVertical,
-  Share,
   Smartphone,
   X,
 } from "lucide-react";
+
+import { useLanguage } from "../context/LanguageContext";
 
 const INSTALL_DISMISSED_KEY =
   "puja-dham-install-dismissed";
 
 export default function InstallPujaDham() {
+  const { t } = useLanguage();
+
   const [deferredPrompt, setDeferredPrompt] =
     useState(null);
 
@@ -225,12 +227,11 @@ export default function InstallPujaDham() {
 
           <div className="min-w-0">
             <p className="text-[15px] font-extrabold text-[#2b160d]">
-              Install Puja Dham
+              {t("install.title")}
             </p>
 
             <p className="mt-1 text-[11px] leading-4 text-gray-500">
-              Quick access ke liye Puja Dham ko
-              apne home screen par add karein.
+              {t("install.description")}
             </p>
           </div>
         </div>
@@ -241,7 +242,7 @@ export default function InstallPujaDham() {
           className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#a8441b] px-4 text-xs font-bold text-white transition hover:bg-[#873514] active:scale-[0.98]"
         >
           <Download size={16} />
-          Install Puja Dham
+          {t("install.installButton")}
         </button>
 
         <button
@@ -249,7 +250,7 @@ export default function InstallPujaDham() {
           onClick={dismissForCurrentVisit}
           className="mt-2 h-9 w-full rounded-xl text-[11px] font-semibold text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
         >
-          Not now
+          {t("install.notNow")}
         </button>
       </section>
 
@@ -272,7 +273,7 @@ export default function InstallPujaDham() {
                 />
 
                 <h3 className="text-base font-bold text-[#2b160d]">
-                  Install Puja Dham
+                  {t("install.title")}
                 </h3>
               </div>
 
@@ -290,85 +291,34 @@ export default function InstallPujaDham() {
               <div className="mt-5 space-y-4">
                 <Instruction
                   number="1"
-                  text={
-                    <>
-                      Safari ka{" "}
-                      <strong className="inline-flex items-center gap-1 text-gray-800">
-                        Share <Share size={15} />
-                      </strong>{" "}
-                      button tap karo.
-                    </>
-                  }
+                  text={t("install.iosStep1")}
                 />
 
                 <Instruction
                   number="2"
-                  text={
-                    <>
-                      <strong className="text-gray-800">
-                        Add to Home Screen
-                      </strong>{" "}
-                      select karo.
-                    </>
-                  }
+                  text={t("install.iosStep2")}
                 />
 
                 <Instruction
                   number="3"
-                  text={
-                    <>
-                      Upar right side ka{" "}
-                      <strong className="text-gray-800">
-                        Add
-                      </strong>{" "}
-                      button tap karo.
-                    </>
-                  }
+                  text={t("install.iosStep3")}
                 />
               </div>
             ) : (
               <div className="mt-5 space-y-4">
                 <Instruction
                   number="1"
-                  text={
-                    <>
-                      Chrome ka{" "}
-                      <strong className="inline-flex items-center gap-1 text-gray-800">
-                        Menu{" "}
-                        <MoreVertical size={15} />
-                      </strong>{" "}
-                      open karo.
-                    </>
-                  }
+                  text={t("install.androidStep1")}
                 />
 
                 <Instruction
                   number="2"
-                  text={
-                    <>
-                      <strong className="text-gray-800">
-                        Install app
-                      </strong>{" "}
-                      ya{" "}
-                      <strong className="text-gray-800">
-                        Add to Home screen
-                      </strong>{" "}
-                      select karo.
-                    </>
-                  }
+                  text={t("install.androidStep2")}
                 />
 
                 <Instruction
                   number="3"
-                  text={
-                    <>
-                      Confirmation me{" "}
-                      <strong className="text-gray-800">
-                        Install
-                      </strong>{" "}
-                      dabao.
-                    </>
-                  }
+                  text={t("install.androidStep3")}
                 />
               </div>
             )}
@@ -378,7 +328,7 @@ export default function InstallPujaDham() {
               onClick={() => setShowHelp(false)}
               className="mt-6 h-11 w-full rounded-xl bg-[#a8441b] text-sm font-bold text-white"
             >
-              Got it
+              {t("install.gotIt")}
             </button>
           </div>
         </div>

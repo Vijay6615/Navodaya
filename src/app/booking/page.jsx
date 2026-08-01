@@ -2,7 +2,6 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Cormorant_Garamond } from "next/font/google";
 import {
   ArrowRight,
   BadgeCheck,
@@ -29,15 +28,94 @@ import {
 } from "lucide-react";
 
 import { PUJAS } from "../pujasData";
+import { useLanguage } from "../context/LanguageContext";
 
 export const dynamic = "force-dynamic";
 
 const UPI_ID = "9594943609@ptsbi";
 
-const displayFont = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
+const displayFont = {
+  className: "font-display-en",
+};
+
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
+
+
+function getHindiField(item, field) {
+  if (!item || typeof item !== "object") {
+    return undefined;
+  }
+
+  const capitalizedField =
+    field.charAt(0).toUpperCase() +
+    field.slice(1);
+
+  return (
+    item[`${field}Hi`] ??
+    item[`hindi${capitalizedField}`] ??
+    item?.hi?.[field]
+  );
+}
+
+function getHindiSection(item, section) {
+  if (!item || typeof item !== "object") {
+    return undefined;
+  }
+
+  const capitalizedSection =
+    section.charAt(0).toUpperCase() +
+    section.slice(1);
+
+  return (
+    item[`${section}Hi`] ??
+    item[`hindi${capitalizedSection}`] ??
+    item?.hi?.[section]
+  );
+}
+
+function getLocalizedPuja(puja, language) {
+  if (!puja || language !== "hi") {
+    return puja;
+  }
+
+  return {
+    ...puja,
+
+    name:
+      getHindiField(puja, "name") ??
+      puja.name,
+
+    duration:
+      getHindiField(puja, "duration") ??
+      puja.duration,
+
+    includes:
+      getHindiField(puja, "includes") ??
+      puja.includes,
+
+    benefits:
+      getHindiField(puja, "benefits") ??
+      puja.benefits,
+
+    samagri: {
+      ...(puja.samagri || {}),
+      ...(getHindiSection(
+        puja,
+        "samagri"
+      ) || {}),
+    },
+
+    travel: {
+      ...(puja.travel || {}),
+      ...(getHindiSection(
+        puja,
+        "travel"
+      ) || {}),
+    },
+  };
+}
 
 function parsePrice(value) {
   if (typeof value === "number") return value;
@@ -143,6 +221,12 @@ function AccordionCard({
 function BookingForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { language, t } = useLanguage();
+
+  const headingFontClass =
+    language === "hi"
+      ? hindiDisplayFont.className
+      : displayFont.className;
 
   const selectedPujaName =
     searchParams.get("slug") || searchParams.get("puja") || "";
@@ -156,6 +240,11 @@ function BookingForm() {
         item?.slug?.toLowerCase() === selectedPujaName.toLowerCase()
     );
   }, [selectedPujaName]);
+
+  const displayPuja = useMemo(
+    () => getLocalizedPuja(puja, language),
+    [puja, language]
+  );
 
   const initialPujaType =
     urlType === "online" || urlType === "offline" ? urlType : "";
@@ -186,16 +275,17 @@ function BookingForm() {
   const [openProcess, setOpenProcess] = useState(false);
 
   const baseAmount = useMemo(() => {
-    if (pujaType === "online") return parsePrice(puja?.onlinePrice);
-    if (pujaType === "offline") return parsePrice(puja?.offlinePrice);
+    if (pujaType === "online") return parsePrice(displayPuja?.onlinePrice);
+    if (pujaType === "offline") return parsePrice(displayPuja?.offlinePrice);
     return 0;
-  }, [puja, pujaType]);
+  }, [displayPuja, pujaType]);
 
   const availableSamagriCharge = useMemo(() => {
     return parsePrice(
-      puja?.samagri?.extraCharge ?? puja?.priceBreakdown?.samagriCharge
+      displayPuja?.samagri?.extraCharge ??
+      displayPuja?.priceBreakdown?.samagriCharge
     );
-  }, [puja]);
+  }, [displayPuja]);
 
   const samagriCharge =
     pujaType === "offline" && samagriOption === "pandit"
@@ -212,12 +302,12 @@ function BookingForm() {
 
   const samagriLabel =
     pujaType === "online"
-      ? "Self-arranged"
+      ? t("bookingPage.summary.selfArranged")
       : samagriOption === "pandit"
-      ? "Pandit Ji brings it"
+      ? t("bookingPage.summary.panditBrings")
       : samagriOption === "self"
-      ? "I will arrange it"
-      : "Select an option";
+      ? t("bookingPage.summary.selfArrange")
+      : t("bookingPage.summary.selectOption");
 
   const handleModeSelect = (type) => {
     setPujaType(type);
@@ -240,24 +330,42 @@ function BookingForm() {
 
   const bookingSummary = [
     {
-      label: "Puja mode",
+      label: t(
+        "bookingPage.summary.pujaMode"
+      ),
       value:
         pujaType === "online"
-          ? "Online via video"
+          ? t(
+              "bookingPage.summary.onlineVideo"
+            )
           : pujaType === "offline"
-          ? "Pandit home visit"
-          : "Not selected",
+          ? t(
+              "bookingPage.summary.homeVisit"
+            )
+          : t(
+              "bookingPage.summary.notSelected"
+            ),
     },
     {
-      label: "Preferred date",
-      value: form.date || "Not selected",
+      label: t(
+        "bookingPage.summary.preferredDate"
+      ),
+      value:
+        form.date ||
+        t(
+          "bookingPage.summary.notSelected"
+        ),
     },
     {
-      label: "Samagri",
+      label: t(
+        "bookingPage.summary.samagri"
+      ),
       value: samagriLabel,
     },
     {
-      label: "Estimated total",
+      label: t(
+        "bookingPage.summary.estimatedTotal"
+      ),
       value: totalPriceText,
     },
   ];
@@ -266,12 +374,12 @@ function BookingForm() {
     event.preventDefault();
 
     if (!puja) {
-      alert("Puja not found");
+      alert(t("bookingPage.alerts.pujaNotFound"));
       return;
     }
 
     if (!pujaType) {
-      alert("Please select Online or Offline Puja");
+      alert(t("bookingPage.alerts.selectMode"));
       return;
     }
 
@@ -280,12 +388,12 @@ function BookingForm() {
       puja?.samagri &&
       !samagriOption
     ) {
-      alert("Please select who will arrange the Puja Samagri");
+      alert(t("bookingPage.alerts.selectSamagri"));
       return;
     }
 
     if (pujaType === "online" && !form.transactionId.trim()) {
-      alert("Please enter UPI Transaction ID / UTR");
+      alert(t("bookingPage.alerts.enterTransaction"));
       return;
     }
 
@@ -384,7 +492,7 @@ function BookingForm() {
       }, 1200);
     } catch (error) {
       console.error(error);
-      alert("Booking operation failed. Please try again.");
+      alert(t("bookingPage.alerts.failed"));
     } finally {
       setLoading(false);
     }
@@ -397,14 +505,15 @@ function BookingForm() {
           <Sparkles className="mx-auto mb-5 h-12 w-12 text-[#a8441b]" />
 
           <h1
-            className={`${displayFont.className} text-4xl font-semibold text-[#252525]`}
+            className={`${headingFontClass} text-4xl font-semibold text-[#252525]`}
           >
-            Puja Not Found
+            {t("bookingPage.notFound.title")}
           </h1>
 
           <p className="mt-4 text-sm leading-7 text-gray-500">
-            We could not find the selected puja. Please return to the puja
-            list and choose a valid service.
+            {t(
+              "bookingPage.notFound.description"
+            )}
           </p>
 
           <button
@@ -412,7 +521,7 @@ function BookingForm() {
             onClick={() => router.push("/pujas")}
             className="mt-8 rounded-full bg-[#a8441b] px-8 py-3 text-sm font-semibold text-white transition hover:bg-[#8f3a17]"
           >
-            Explore Pujas
+            {t("bookingPage.notFound.button")}
           </button>
         </div>
       </main>
@@ -420,7 +529,13 @@ function BookingForm() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#fbf7f2]">
+    <main
+      className={`min-h-screen overflow-hidden bg-[#fbf7f2] ${
+        language === "hi"
+          ? "bookingHindi"
+          : ""
+      }`}
+    >
       <section className="mx-auto max-w-[1380px] px-4 py-5 pb-28 md:px-8 md:py-10 lg:pb-12">
         <div className="mb-5 flex items-center justify-between gap-4">
           <button
@@ -429,14 +544,14 @@ function BookingForm() {
             className="inline-flex items-center gap-2 rounded-full border border-[#e9ddd4] bg-white px-4 py-2.5 text-sm font-semibold text-[#555] shadow-sm transition hover:border-[#a8441b] hover:text-[#a8441b]"
           >
             <ChevronLeft size={17} />
-            Back
+            {t("bookingPage.top.back")}
           </button>
 
           <div className="hidden items-center gap-2 text-xs font-semibold text-gray-500 sm:flex">
             <LockKeyhole size={15} className="text-green-600" />
-            Secure booking
+            {t("bookingPage.top.secureBooking")}
             <span className="h-1 w-1 rounded-full bg-gray-300" />
-            Details verified before confirmation
+            {t("bookingPage.top.verifiedBeforeConfirmation")}
           </div>
         </div>
 
@@ -444,18 +559,18 @@ function BookingForm() {
           {/* IMAGE PANEL KEPT UNCHANGED */}
           <div className="relative flex h-[220px] sm:h-[320px] lg:h-[calc(100vh-3rem)] lg:max-h-[640px] items-center justify-center overflow-hidden bg-[#fffaf6] m-4 rounded-3xl lg:sticky lg:top-6 lg:m-6 lg:self-start lg:rounded-[26px]">
             <img
-              src={puja.image}
-              alt={puja.name}
+              src={displayPuja.image}
+              alt={displayPuja.name}
               className="max-h-full max-w-full object-contain p-4"
             />
             <div className="absolute inset-x-4 bottom-4 hidden items-center justify-between gap-3 rounded-2xl bg-white/90 px-4 py-3 backdrop-blur-sm lg:flex">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#252525]">
                 <ShieldCheck size={16} className="text-[#a8441b]" />
-                Verified Pandit Ji
+                {t("bookingPage.image.verifiedPandit")}
               </div>
               <div className="flex items-center gap-2 text-xs font-semibold text-[#252525]">
                 <BadgeCheck size={16} className="text-[#a8441b]" />
-                Authentic Vedic Rituals
+                {t("bookingPage.image.authenticRituals")}
               </div>
             </div>
           </div>
@@ -465,29 +580,29 @@ function BookingForm() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="max-w-xl">
                   <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#a8441b]">
-                    Complete your booking
+                    {t("bookingPage.header.eyebrow")}
                   </p>
 
                   <h1
-                    className={`${displayFont.className} mt-2 text-3xl font-bold leading-tight text-[#25211e] sm:text-4xl md:text-5xl`}
+                    className={`${headingFontClass} mt-2 text-3xl font-bold leading-tight text-[#25211e] sm:text-4xl md:text-5xl`}
                   >
-                    {puja.name}
+                    {displayPuja.name}
                   </h1>
 
                   <p className="mt-3 text-sm leading-6 text-gray-500 sm:leading-7">
-                    Select the service mode, choose the Samagri arrangement,
-                    and share your details. Our team will verify everything
-                    before confirming the booking.
+                    {t(
+                      "bookingPage.header.description"
+                    )}
                   </p>
                 </div>
 
                 <div className="rounded-2xl bg-[#fff4ec] px-4 py-3 text-right">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                    Duration
+                    {t("bookingPage.header.duration")}
                   </p>
                   <p className="mt-1 flex items-center gap-1.5 font-bold text-[#a8441b]">
                     <Clock size={16} />
-                    {puja.duration}
+                    {displayPuja.duration}
                   </p>
                 </div>
               </div>
@@ -519,13 +634,13 @@ function BookingForm() {
                 <SectionTitle
                   step="1"
                   icon={pujaType === "online" ? Video : Home}
-                  title="Choose Puja Mode"
-                  description="Select how you want the Puja to be performed."
+                  title={t("bookingPage.mode.title")}
+                  description={t("bookingPage.mode.description")}
                 />
 
                 <div className="mt-4 rounded-[18px] border border-[#eadfd7] bg-[#f7f3ef] p-1.5 sm:rounded-[20px]">
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-1.5">
-                    {puja.onlineAvailable && (
+                    {displayPuja.onlineAvailable && (
                       <button
                         type="button"
                         onClick={() => handleModeSelect("online")}
@@ -548,16 +663,16 @@ function BookingForm() {
 
                         <span className="min-w-0 flex-1">
                           <span className="block text-sm font-bold leading-5 text-[#28231f] sm:text-base">
-                            Online Puja
+                            {t("bookingPage.mode.online")}
                           </span>
                           <span className="mt-0.5 block text-[11px] leading-4 text-gray-500 sm:text-xs">
-                            Join through live video
+                            {t("bookingPage.mode.onlineDescription")}
                           </span>
                         </span>
 
                         <span className="flex shrink-0 flex-col items-end gap-1.5">
                           <span className="whitespace-nowrap text-sm font-extrabold text-[#a8441b]">
-                            {puja.onlinePrice}
+                            {displayPuja.onlinePrice}
                           </span>
                           <span
                             className={`flex h-5 w-5 items-center justify-center rounded-full border ${
@@ -572,7 +687,7 @@ function BookingForm() {
                       </button>
                     )}
 
-                    {puja.offlineAvailable && (
+                    {displayPuja.offlineAvailable && (
                       <button
                         type="button"
                         onClick={() => handleModeSelect("offline")}
@@ -595,16 +710,16 @@ function BookingForm() {
 
                         <span className="min-w-0 flex-1">
                           <span className="block text-sm font-bold leading-5 text-[#28231f] sm:text-base">
-                            Home Visit Puja
+                            {t("bookingPage.mode.offline")}
                           </span>
                           <span className="mt-0.5 block text-[11px] leading-4 text-gray-500 sm:text-xs">
-                            Pandit Ji visits your place
+                            {t("bookingPage.mode.offlineDescription")}
                           </span>
                         </span>
 
                         <span className="flex shrink-0 flex-col items-end gap-1.5">
                           <span className="whitespace-nowrap text-sm font-extrabold text-[#a8441b]">
-                            {puja.offlinePrice}
+                            {displayPuja.offlinePrice}
                           </span>
                           <span
                             className={`flex h-5 w-5 items-center justify-center rounded-full border ${
@@ -628,15 +743,19 @@ function BookingForm() {
                   <SectionTitle
                     step="2"
                     icon={PackageCheck}
-                    title="Puja Samagri"
+                    title={t("bookingPage.samagri.title")}
                     description={
                       pujaType === "offline"
-                        ? "Choose who should arrange the Puja materials."
-                        : "For online Puja, you will arrange the items using our checklist."
+                        ? t(
+                            "bookingPage.samagri.offlineDescription"
+                          )
+                        : t(
+                            "bookingPage.samagri.onlineDescription"
+                          )
                     }
                   />
 
-                  {pujaType === "offline" && puja?.samagri ? (
+                  {pujaType === "offline" && displayPuja?.samagri ? (
                     <div className="mt-4 rounded-[20px] border border-[#e6e0da] bg-[#f8f7f5] p-1.5">
                       <div className="grid gap-1.5 sm:grid-cols-2">
                         <button
@@ -661,10 +780,10 @@ function BookingForm() {
 
                           <span className="min-w-0 flex-1">
                             <span className="block text-sm font-bold text-[#28231f]">
-                              I will arrange
+                              {t("bookingPage.samagri.selfTitle")}
                             </span>
                             <span className="mt-0.5 block text-[10px] leading-4 text-gray-500 sm:text-xs">
-                              Checklist will be shared
+                              {t("bookingPage.samagri.selfDescription")}
                             </span>
                           </span>
 
@@ -706,10 +825,10 @@ function BookingForm() {
 
                           <span className="min-w-0 flex-1">
                             <span className="block text-sm font-bold text-[#28231f]">
-                              Pandit Ji brings it
+                              {t("bookingPage.samagri.panditTitle")}
                             </span>
                             <span className="mt-0.5 block text-[10px] leading-4 text-gray-500 sm:text-xs">
-                              Complete Samagri arranged
+                              {t("bookingPage.samagri.panditDescription")}
                             </span>
                           </span>
 
@@ -738,10 +857,10 @@ function BookingForm() {
 
                       <div className="min-w-0">
                         <p className="text-sm font-bold text-[#263c61]">
-                          You will arrange the Samagri
+                          {t("bookingPage.samagri.onlineInfoTitle")}
                         </p>
                         <p className="mt-0.5 text-[11px] leading-4 text-[#5b6f90]">
-                          We will share the checklist. No extra Samagri charge.
+                          {t("bookingPage.samagri.onlineInfoDescription")}
                         </p>
                       </div>
                     </div>
@@ -749,19 +868,20 @@ function BookingForm() {
 
                   {pujaType === "offline" &&
                     samagriOption === "pandit" &&
-                    puja?.samagri?.items?.length > 0 && (
+                    displayPuja?.samagri?.items?.length > 0 && (
                       <div className="mt-3 rounded-[18px] border border-[#f0e3ca] bg-[#fffaf0] px-4 py-3">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-[#9a6410]">
-                            Included package preview
+                            {t("bookingPage.samagri.packagePreview")}
                           </p>
                           <span className="text-[10px] font-semibold text-gray-500">
-                            {puja.samagri.items.length} items
+                            {displayPuja.samagri.items.length}{" "}
+                            {t("bookingPage.samagri.items")}
                           </span>
                         </div>
 
                         <div className="mt-2 flex flex-wrap gap-1.5">
-                          {puja.samagri.items.slice(0, 6).map((item) => (
+                          {displayPuja.samagri.items.slice(0, 6).map((item) => (
                             <span
                               key={item}
                               className="rounded-full border border-[#f0e3ca] bg-white px-2.5 py-1 text-[10px] font-semibold text-gray-600"
@@ -770,9 +890,10 @@ function BookingForm() {
                             </span>
                           ))}
 
-                          {puja.samagri.items.length > 6 && (
+                          {displayPuja.samagri.items.length > 6 && (
                             <span className="rounded-full bg-[#a16a10] px-2.5 py-1 text-[10px] font-bold text-white">
-                              +{puja.samagri.items.length - 6} more
+                              +{displayPuja.samagri.items.length - 6}{" "}
+                              {t("bookingPage.samagri.more")}
                             </span>
                           )}
                         </div>
@@ -786,18 +907,18 @@ function BookingForm() {
                 <SectionTitle
                   step="3"
                   icon={User}
-                  title="Devotee Details"
-                  description="Enter the details our team should use for booking confirmation."
+                  title={t("bookingPage.devotee.title")}
+                  description={t("bookingPage.devotee.description")}
                 />
 
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
                   <label className="sm:col-span-2">
-                    <span className="fieldLabel">Full name</span>
+                    <span className="fieldLabel">{t("bookingPage.devotee.fullName")}</span>
                     <input
                       name="name"
                       value={form.name}
                       onChange={handleChange}
-                      placeholder="Enter devotee name"
+                      placeholder={t("bookingPage.devotee.namePlaceholder")}
                       autoComplete="name"
                       required
                       className="bookingInput"
@@ -805,13 +926,13 @@ function BookingForm() {
                   </label>
 
                   <label>
-                    <span className="fieldLabel">Phone number</span>
+                    <span className="fieldLabel">{t("bookingPage.devotee.phone")}</span>
                     <input
                       name="phone"
                       type="tel"
                       value={form.phone}
                       onChange={handleChange}
-                      placeholder="Enter phone number"
+                      placeholder={t("bookingPage.devotee.phonePlaceholder")}
                       autoComplete="tel"
                       inputMode="tel"
                       required
@@ -820,13 +941,13 @@ function BookingForm() {
                   </label>
 
                   <label>
-                    <span className="fieldLabel">Email address</span>
+                    <span className="fieldLabel">{t("bookingPage.devotee.email")}</span>
                     <input
                       name="email"
                       type="email"
                       value={form.email}
                       onChange={handleChange}
-                      placeholder="Enter email address"
+                      placeholder={t("bookingPage.devotee.emailPlaceholder")}
                       autoComplete="email"
                       required
                       className="bookingInput"
@@ -840,13 +961,13 @@ function BookingForm() {
                 <SectionTitle
                   step="4"
                   icon={Calendar}
-                  title="Date, Time & Venue"
-                  description="Choose your preferred schedule. Final availability is confirmed by our team."
+                  title={t("bookingPage.schedule.title")}
+                  description={t("bookingPage.schedule.description")}
                 />
 
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
                   <label>
-                    <span className="fieldLabel">Preferred date</span>
+                    <span className="fieldLabel">{t("bookingPage.schedule.preferredDate")}</span>
                     <input
                       name="date"
                       type="date"
@@ -858,7 +979,7 @@ function BookingForm() {
                   </label>
 
                   <label>
-                    <span className="fieldLabel">Preferred time</span>
+                    <span className="fieldLabel">{t("bookingPage.schedule.preferredTime")}</span>
                     <select
                       name="timeSlot"
                       value={form.timeSlot}
@@ -866,23 +987,43 @@ function BookingForm() {
                       required
                       className="bookingInput"
                     >
-                      <option value="">Select a time slot</option>
-                      <option>Morning (6 AM - 10 AM)</option>
-                      <option>Afternoon (10 AM - 2 PM)</option>
-                      <option>Evening (2 PM - 6 PM)</option>
-                      <option>Night (After 6 PM)</option>
+                      <option value="">
+                        {t(
+                          "bookingPage.schedule.selectTime"
+                        )}
+                      </option>
+                      <option value="Morning (6 AM - 10 AM)">
+                        {t(
+                          "bookingPage.schedule.morning"
+                        )}
+                      </option>
+                      <option value="Afternoon (10 AM - 2 PM)">
+                        {t(
+                          "bookingPage.schedule.afternoon"
+                        )}
+                      </option>
+                      <option value="Evening (2 PM - 6 PM)">
+                        {t(
+                          "bookingPage.schedule.evening"
+                        )}
+                      </option>
+                      <option value="Night (After 6 PM)">
+                        {t(
+                          "bookingPage.schedule.night"
+                        )}
+                      </option>
                     </select>
                   </label>
 
                   {pujaType === "offline" && (
                     <>
                       <label>
-                        <span className="fieldLabel">City</span>
+                        <span className="fieldLabel">{t("bookingPage.schedule.city")}</span>
                         <input
                           name="city"
                           value={form.city}
                           onChange={handleChange}
-                          placeholder="Enter city"
+                          placeholder={t("bookingPage.schedule.cityPlaceholder")}
                           autoComplete="address-level2"
                           required
                           className="bookingInput"
@@ -890,12 +1031,12 @@ function BookingForm() {
                       </label>
 
                       <label>
-                        <span className="fieldLabel">Complete address</span>
+                        <span className="fieldLabel">{t("bookingPage.schedule.address")}</span>
                         <input
                           name="address"
                           value={form.address}
                           onChange={handleChange}
-                          placeholder="House, area and landmark"
+                          placeholder={t("bookingPage.schedule.addressPlaceholder")}
                           autoComplete="street-address"
                           required
                           className="bookingInput"
@@ -905,7 +1046,7 @@ function BookingForm() {
                   )}
                 </div>
 
-                {pujaType === "offline" && puja?.travel && (
+                {pujaType === "offline" && displayPuja?.travel && (
                   <div className="mt-4 flex items-start gap-3 rounded-2xl border border-orange-100 bg-[#fff9f4] p-4">
                     <MapPin
                       size={19}
@@ -913,12 +1054,20 @@ function BookingForm() {
                     />
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-[#302923]">
-                        Travel information
+                        {t("bookingPage.schedule.travelTitle")}
                       </p>
                       <p className="mt-1 text-xs leading-5 text-gray-500">
-                        Within-city service: {puja.travel.city || "As listed"}.
-                        Outside-city or remote-area charges, if applicable, are
-                        confirmed before booking.
+                        {t(
+                          "bookingPage.schedule.withinCity"
+                        )}:{" "}
+                        {displayPuja.travel.city ||
+                          t(
+                            "bookingPage.schedule.asListed"
+                          )}
+                        .{" "}
+                        {t(
+                          "bookingPage.schedule.outsideCityNote"
+                        )}
                       </p>
                     </div>
                   </div>
@@ -932,11 +1081,12 @@ function BookingForm() {
                     />
                     <div>
                       <p className="text-sm font-bold text-green-900">
-                        Live video joining details
+                        {t("bookingPage.schedule.videoTitle")}
                       </p>
                       <p className="mt-1 text-xs leading-5 text-green-700">
-                        The joining link and preparation checklist will be
-                        shared after the booking is verified.
+                        {t(
+                          "bookingPage.schedule.videoDescription"
+                        )}
                       </p>
                     </div>
                   </div>
@@ -949,8 +1099,8 @@ function BookingForm() {
                   <div className="flex flex-wrap items-start justify-between gap-4 border-b border-orange-100 px-5 py-5 sm:px-6">
                     <SectionTitle
                       icon={CreditCard}
-                      title="Complete UPI Payment"
-                      description="Pay the exact amount and enter the Transaction ID below."
+                      title={t("bookingPage.payment.title")}
+                      description={t("bookingPage.payment.description")}
                     />
 
                     <div className="rounded-full bg-[#a8441b] px-4 py-2 text-sm font-bold text-white">
@@ -962,7 +1112,7 @@ function BookingForm() {
                     <div className="mx-auto w-fit rounded-[24px] bg-white p-3 shadow-sm lg:mx-0">
                       <img
                         src="/paytmQr.jpeg"
-                        alt="UPI QR"
+                        alt={t("bookingPage.payment.qrAlt")}
                         className="h-40 w-40 object-contain"
                       />
                     </div>
@@ -970,7 +1120,7 @@ function BookingForm() {
                     <div>
                       <div className="rounded-2xl border border-orange-100 bg-white p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                          UPI ID
+                          {t("bookingPage.payment.upiId")}
                         </p>
                         <p className="mt-1 break-all text-lg font-extrabold text-[#a8441b]">
                           {UPI_ID}
@@ -979,10 +1129,18 @@ function BookingForm() {
 
                       <div className="mt-4 grid gap-2 sm:grid-cols-2">
                         {[
-                          "Scan the QR code",
-                          `Pay ${totalPriceText}`,
-                          "Save your Transaction ID",
-                          "Submit it for verification",
+                          t(
+                            "bookingPage.payment.scanQr"
+                          ),
+                          `${t(
+                            "bookingPage.payment.pay"
+                          )} ${totalPriceText}`,
+                          t(
+                            "bookingPage.payment.saveTransaction"
+                          ),
+                          t(
+                            "bookingPage.payment.submitVerification"
+                          ),
                         ].map((step) => (
                           <div
                             key={step}
@@ -999,13 +1157,13 @@ function BookingForm() {
 
                       <label className="mt-4 block">
                         <span className="fieldLabel">
-                          UPI Transaction ID / UTR
+                          {t("bookingPage.payment.transactionId")}
                         </span>
                         <input
                           name="transactionId"
                           value={form.transactionId}
                           onChange={handleChange}
-                          placeholder="Enter payment reference number"
+                          placeholder={t("bookingPage.payment.transactionPlaceholder")}
                           required
                           className="bookingInput"
                         />
@@ -1019,8 +1177,8 @@ function BookingForm() {
               <section className="rounded-[28px] border border-[#eee4dc] bg-white p-5 shadow-[0_10px_30px_rgba(55,35,15,0.04)] sm:p-6">
                 <SectionTitle
                   icon={MessageSquare}
-                  title="Special Instructions"
-                  description="Optional: mention language preference, Sankalp details, accessibility needs, or any other request."
+                  title={t("bookingPage.notes.title")}
+                  description={t("bookingPage.notes.description")}
                 />
 
                 <textarea
@@ -1028,7 +1186,7 @@ function BookingForm() {
                   value={form.message}
                   onChange={handleChange}
                   rows={4}
-                  placeholder="Write your instructions here..."
+                  placeholder={t("bookingPage.notes.placeholder")}
                   className="bookingInput mt-5 resize-none"
                 />
               </section>
@@ -1038,10 +1196,10 @@ function BookingForm() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#4e7f68]">
-                      Transparent pricing
+                      {t("bookingPage.price.eyebrow")}
                     </p>
                     <h3 className="mt-1 text-xl font-bold text-[#17392f]">
-                      Price Summary
+                      {t("bookingPage.price.title")}
                     </h3>
                   </div>
 
@@ -1054,10 +1212,16 @@ function BookingForm() {
                   <div className="flex items-center justify-between gap-4 py-3 text-sm">
                     <span className="text-[#5f756b]">
                       {pujaType === "online"
-                        ? "Online Puja"
+                        ? t(
+                            "bookingPage.price.onlinePuja"
+                          )
                         : pujaType === "offline"
-                        ? "Home Visit Puja"
-                        : "Puja service"}
+                        ? t(
+                            "bookingPage.price.homeVisit"
+                          )
+                        : t(
+                            "bookingPage.price.service"
+                          )}
                     </span>
                     <span className="font-bold text-[#17392f]">
                       {basePriceText}
@@ -1066,7 +1230,7 @@ function BookingForm() {
 
                   <div className="flex items-center justify-between gap-4 py-3 text-sm">
                     <span className="text-[#5f756b]">
-                      Samagri arrangement
+                      {t("bookingPage.price.samagri")}
                     </span>
                     <span className="font-bold text-[#17392f]">
                       {samagriPriceText}
@@ -1076,10 +1240,10 @@ function BookingForm() {
                   {pujaType === "offline" && (
                     <div className="flex items-center justify-between gap-4 py-3 text-sm">
                       <span className="text-[#5f756b]">
-                        Outside-city travel
+                        {t("bookingPage.price.outsideTravel")}
                       </span>
                       <span className="font-bold text-[#7a6541]">
-                        If applicable
+                        {t("bookingPage.price.ifApplicable")}
                       </span>
                     </div>
                   )}
@@ -1089,8 +1253,12 @@ function BookingForm() {
                   <div>
                     <p className="text-[11px] text-white/65">
                       {pujaType === "online"
-                        ? "Total payable now"
-                        : "Estimated booking total"}
+                        ? t(
+                            "bookingPage.price.payableNow"
+                          )
+                        : t(
+                            "bookingPage.price.estimatedTotal"
+                          )}
                     </p>
                     <p className="mt-1 text-2xl font-extrabold sm:text-3xl">
                       {totalPriceText}
@@ -1099,30 +1267,31 @@ function BookingForm() {
 
                   <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#d8f1e4]">
                     <ShieldCheck size={15} />
-                    Secure
+                    {t("bookingPage.price.secure")}
                   </div>
                 </div>
 
                 {pujaType === "offline" && (
                   <p className="mt-3 text-[11px] leading-5 text-[#698075]">
-                    Any applicable outside-city travel charge will be confirmed
-                    separately before final booking confirmation.
+                    {t(
+                      "bookingPage.price.travelNote"
+                    )}
                   </p>
                 )}
               </section>
 
               {/* HELPFUL ACCORDIONS */}
               <div className="space-y-3">
-                {puja?.includes?.length > 0 && (
+                {displayPuja?.includes?.length > 0 && (
                   <AccordionCard
                     icon={CheckCircle2}
-                    eyebrow="Service Details"
-                    title="What is included in this Puja?"
+                    eyebrow={t("bookingPage.accordions.serviceEyebrow")}
+                    title={t("bookingPage.accordions.includesTitle")}
                     open={openIncludes}
                     onToggle={() => setOpenIncludes((value) => !value)}
                   >
                     <div className="grid gap-2.5 sm:grid-cols-2">
-                      {puja.includes.map((item) => (
+                      {displayPuja.includes.map((item) => (
                         <div
                           key={item}
                           className="flex items-start gap-2.5 rounded-xl border border-green-100 bg-white p-3"
@@ -1140,16 +1309,16 @@ function BookingForm() {
                   </AccordionCard>
                 )}
 
-                {puja?.samagri?.items?.length > 0 && (
+                {displayPuja?.samagri?.items?.length > 0 && (
                   <AccordionCard
                     icon={Gift}
-                    eyebrow="Item Checklist"
-                    title="View complete Puja Samagri list"
+                    eyebrow={t("bookingPage.accordions.itemsEyebrow")}
+                    title={t("bookingPage.accordions.itemsTitle")}
                     open={openSamagriList}
                     onToggle={() => setOpenSamagriList((value) => !value)}
                   >
                     <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                      {puja.samagri.items.map((item) => (
+                      {displayPuja.samagri.items.map((item) => (
                         <div
                           key={item}
                           className="flex items-center gap-2 rounded-xl border border-orange-100 bg-white px-3 py-2.5"
@@ -1165,24 +1334,24 @@ function BookingForm() {
                       ))}
                     </div>
 
-                    {puja.samagri.note && (
+                    {displayPuja.samagri.note && (
                       <p className="mt-4 rounded-xl bg-orange-50 p-3 text-xs leading-5 text-gray-500">
-                        {puja.samagri.note}
+                        {displayPuja.samagri.note}
                       </p>
                     )}
                   </AccordionCard>
                 )}
 
-                {puja?.benefits?.length > 0 && (
+                {displayPuja?.benefits?.length > 0 && (
                   <AccordionCard
                     icon={HeartHandshake}
-                    eyebrow="Why This Puja"
-                    title="Spiritual benefits"
+                    eyebrow={t("bookingPage.accordions.benefitsEyebrow")}
+                    title={t("bookingPage.accordions.benefitsTitle")}
                     open={openBenefits}
                     onToggle={() => setOpenBenefits((value) => !value)}
                   >
                     <div className="space-y-2.5">
-                      {puja.benefits.slice(0, 8).map((benefit) => (
+                      {displayPuja.benefits.slice(0, 8).map((benefit) => (
                         <div
                           key={benefit}
                           className="flex items-start gap-3 rounded-xl bg-white p-3"
@@ -1202,28 +1371,44 @@ function BookingForm() {
 
                 <AccordionCard
                   icon={ClipboardList}
-                  eyebrow="What Happens Next"
-                  title="Booking process"
+                  eyebrow={t("bookingPage.accordions.processEyebrow")}
+                  title={t("bookingPage.accordions.processTitle")}
                   open={openProcess}
                   onToggle={() => setOpenProcess((value) => !value)}
                 >
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {[
                       {
-                        title: "Submit",
-                        description: "Share booking details",
+                        title: t(
+                          "bookingPage.process.submit"
+                        ),
+                        description: t(
+                          "bookingPage.process.submitDescription"
+                        ),
                       },
                       {
-                        title: "Verify",
-                        description: "Our team checks availability",
+                        title: t(
+                          "bookingPage.process.verify"
+                        ),
+                        description: t(
+                          "bookingPage.process.verifyDescription"
+                        ),
                       },
                       {
-                        title: "Confirm",
-                        description: "Receive final confirmation",
+                        title: t(
+                          "bookingPage.process.confirm"
+                        ),
+                        description: t(
+                          "bookingPage.process.confirmDescription"
+                        ),
                       },
                       {
-                        title: "Puja",
-                        description: "Pandit Ji performs the ritual",
+                        title: t(
+                          "bookingPage.process.puja"
+                        ),
+                        description: t(
+                          "bookingPage.process.pujaDescription"
+                        ),
                       },
                     ].map((step, index) => (
                       <div
@@ -1254,9 +1439,9 @@ function BookingForm() {
                     className="mt-1 h-4 w-4 shrink-0 accent-[#a8441b]"
                   />
                   <span className="text-xs leading-5 text-gray-500 sm:text-sm sm:leading-6">
-                    I confirm that the details above are correct and agree to
-                    be contacted for Pandit availability, Muhurat, travel, and
-                    final booking verification.
+                    {t(
+                      "bookingPage.confirmation"
+                    )}
                   </span>
                 </label>
               </section>
@@ -1269,10 +1454,10 @@ function BookingForm() {
                     </div>
                     <div>
                       <h3 className="font-bold text-green-900">
-                        Booking submitted successfully
+                        {t("bookingPage.success.title")}
                       </h3>
                       <p className="mt-1 text-sm text-green-700">
-                        Redirecting to your booking history...
+                        {t("bookingPage.success.description")}
                       </p>
                     </div>
                   </div>
@@ -1287,15 +1472,23 @@ function BookingForm() {
                 {loading ? (
                   <>
                     <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Processing booking...
+                    {t("bookingPage.actions.processing")}
                   </>
                 ) : (
                   <>
                     {pujaType === "online"
-                      ? `Pay ${totalPriceText} & Submit`
+                      ? `${t(
+                          "bookingPage.actions.pay"
+                        )} ${totalPriceText} ${t(
+                          "bookingPage.actions.andSubmit"
+                        )}`
                       : pujaType === "offline"
-                      ? `Request Booking • ${totalPriceText}`
-                      : "Select Puja Mode"}
+                      ? `${t(
+                          "bookingPage.actions.requestBooking"
+                        )} • ${totalPriceText}`
+                      : t(
+                          "bookingPage.actions.selectMode"
+                        )}
                     <ArrowRight size={18} />
                   </>
                 )}
@@ -1315,7 +1508,7 @@ function BookingForm() {
         <div className="mx-auto flex max-w-[680px] items-center gap-3">
           <div className="min-w-0">
             <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400">
-              Total
+              {t("bookingPage.actions.total")}
             </p>
             <p className="truncate text-lg font-extrabold text-[#a8441b]">
               {totalPriceText}
@@ -1333,10 +1526,16 @@ function BookingForm() {
             ) : (
               <>
                 {pujaType === "online"
-                  ? "Pay & Submit"
+                  ? t(
+                      "bookingPage.actions.paySubmit"
+                    )
                   : pujaType === "offline"
-                  ? "Request Booking"
-                  : "Select Puja Mode"}
+                  ? t(
+                      "bookingPage.actions.requestBooking"
+                    )
+                  : t(
+                      "bookingPage.actions.selectMode"
+                    )}
                 <ArrowRight size={17} />
               </>
             )}
@@ -1353,6 +1552,11 @@ function BookingForm() {
           letter-spacing: 0.08em;
           text-transform: uppercase;
           color: #766b65;
+        }
+
+        .bookingHindi .fieldLabel {
+          letter-spacing: 0.03em;
+          text-transform: none;
         }
 
         .bookingInput {

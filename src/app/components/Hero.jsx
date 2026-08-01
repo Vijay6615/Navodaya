@@ -2,31 +2,40 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
-import { ChevronLeft, ChevronRight, CalendarCheck, Compass } from "lucide-react";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  style: ["normal", "italic"],
-});
+import {
+  CalendarCheck,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+} from "lucide-react";
+
+import { useLanguage } from "../context/LanguageContext";
+
+const displayFont = {
+  className: "font-display-en",
+};
+
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
 
 const HERO_SLIDES = [
   {
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826364/jivdanimata_vyk5tc.png",
-    alt: "Jivdani Mata Puja by Puja Dham",
+    altKey: "hero.slides.jivdaniAlt",
   },
   {
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826288/heropuja_qcaug6.png",
-    alt: "Online and offline Vedic Puja services",
+    altKey: "hero.slides.pujaAlt",
   },
   {
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826294/gouseva_xfepxu.png",
-    alt: "Gau Seva by Puja Dham",
+    altKey: "hero.slides.gauSevaAlt",
   },
   {
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826327/naamjaap_wj9dix.png",
-    alt: "Sita Ram Naam Jaap",
+    altKey: "hero.slides.naamJaapAlt",
   },
 ];
 
@@ -34,7 +43,18 @@ const TOTAL_SLIDES = HERO_SLIDES.length;
 const AUTOPLAY_MS = 5000;
 
 export default function Hero() {
+  const { language, t } = useLanguage();
   const [index, setIndex] = useState(0);
+
+  const headingFontClass =
+    language === "hi"
+      ? hindiDisplayFont.className
+      : displayFont.className;
+
+  const headingLineHeightClass =
+    language === "hi"
+      ? "leading-[1.28] sm:leading-[1.24] md:leading-[1.2]"
+      : "leading-[1.15] sm:leading-[1.15] md:leading-[1.12]";
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -64,7 +84,8 @@ export default function Hero() {
       >
         <Image
           src={HERO_SLIDES[index].src}
-          alt={HERO_SLIDES[index].alt}
+          alt={t(HERO_SLIDES[index].altKey)}
+          unoptimized
           fill
           priority={index === 0}
           fetchPriority={index === 0 ? "high" : "auto"}
@@ -87,7 +108,7 @@ export default function Hero() {
       <button
         type="button"
         onClick={prev}
-        aria-label="Previous puja"
+        aria-label={t("hero.previousPuja")}
         className="
           hidden md:flex
           absolute left-7 lg:left-10 top-1/2 -translate-y-1/2 z-30
@@ -106,7 +127,7 @@ export default function Hero() {
       <button
         type="button"
         onClick={next}
-        aria-label="Next puja"
+        aria-label={t("hero.nextPuja")}
         className="
           hidden md:flex
           absolute right-7 lg:right-10 top-1/2 -translate-y-1/2 z-30
@@ -140,16 +161,17 @@ export default function Hero() {
 
             <h1
               className={`
-                ${playfair.className}
-                mt-5 text-white text-[2.1rem] leading-[1.15]
-                sm:text-5xl sm:leading-[1.15]
-                md:text-6xl md:leading-[1.12]
+                ${headingFontClass}
+                mt-5 text-white text-[2.1rem]
+                sm:text-5xl
+                md:text-6xl
+                ${headingLineHeightClass}
                 font-bold whitespace-pre-line
                 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
-              {"Invite Divine Grace\nInto Your Home"}
+              {t("hero.slide1.heading")}
             </h1>
 
             
@@ -170,7 +192,7 @@ export default function Hero() {
               >
                 <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
                 <Compass size={16} strokeWidth={2.2} />
-                Explore Pujas
+                {t("hero.explorePujas")}
               </a>
 
               <a
@@ -187,7 +209,7 @@ export default function Hero() {
                 "
               >
                 <CalendarCheck size={16} strokeWidth={2.2} />
-                Book a Puja
+                {t("hero.bookPuja")}
               </a>
             </div>
 
@@ -202,16 +224,17 @@ export default function Hero() {
 
             <h1
               className={`
-                ${playfair.className}
-                mt-5 text-white text-[2.1rem] leading-[1.15]
-                sm:text-5xl sm:leading-[1.15]
-                md:text-6xl md:leading-[1.12]
+                ${headingFontClass}
+                mt-5 text-white text-[2.1rem]
+                sm:text-5xl
+                md:text-6xl
+                ${headingLineHeightClass}
                 font-bold whitespace-pre-line
                 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
-              {"Sankalp · Vidhi · Siddhi"}
+              {t("hero.slide2.heading")}
             </h1>
 
             
@@ -232,7 +255,7 @@ export default function Hero() {
               >
                 <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
                 <Compass size={16} strokeWidth={2.2} />
-                Explore Pujas
+                {t("hero.explorePujas")}
               </a>
 
               
@@ -248,16 +271,17 @@ export default function Hero() {
 
             <h1
               className={`
-                ${playfair.className}
-                mt-5 text-white text-[2.1rem] leading-[1.15]
-                sm:text-5xl sm:leading-[1.15]
-                md:text-6xl md:leading-[1.12]
+                ${headingFontClass}
+                mt-5 text-white text-[2.1rem]
+                sm:text-5xl
+                md:text-6xl
+                ${headingLineHeightClass}
                 font-bold whitespace-pre-line
                 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
-              {"Prem · Seva · Punya"}
+              {t("hero.slide3.heading")}
             </h1>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.45s_forwards]">
@@ -276,7 +300,7 @@ export default function Hero() {
               >
                 <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
                 <Compass size={16} strokeWidth={2.2} />
-                Explore Gau Seva
+                {t("hero.exploreGauSeva")}
               </a>
 
               
@@ -290,16 +314,17 @@ export default function Hero() {
             
             <h1
               className={`
-                ${playfair.className}
-                mt-5 text-white text-[2.1rem] leading-[1.15]
-                sm:text-5xl sm:leading-[1.15]
-                md:text-6xl md:leading-[1.12]
+                ${headingFontClass}
+                mt-5 text-white text-[2.1rem]
+                sm:text-5xl
+                md:text-6xl
+                ${headingLineHeightClass}
                 font-bold whitespace-pre-line
                 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
-              {"Chant · Connect · Awaken"}
+              {t("hero.slide4.heading")}
             </h1>
 
             
@@ -320,7 +345,7 @@ export default function Hero() {
               >
                 <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
                 <Compass size={16} strokeWidth={2.2} />
-                Sita Ram Naam Jaap
+                {t("hero.sitaRamNaamJaap")}
               </a>
 
               
@@ -338,25 +363,25 @@ export default function Hero() {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
         <button
           type="button"
-          aria-label="Jivdanimata Puja"
+          aria-label={t("hero.showJivdaniPuja")}
           onClick={() => goTo(0)}
           className={`rounded-full transition-all duration-300 ${index === 0 ? "w-7 h-2 bg-[#e8973a]" : "w-2 h-2 bg-white/40 hover:bg-white/70"}`}
         />
         <button
           type="button"
-          aria-label="Show Homam & Yagna"
+          aria-label={t("hero.showPujaServices")}
           onClick={() => goTo(1)}
           className={`rounded-full transition-all duration-300 ${index === 1 ? "w-7 h-2 bg-[#e8973a]" : "w-2 h-2 bg-white/40 hover:bg-white/70"}`}
         />
         <button
           type="button"
-          aria-label="Gau Seva"
+          aria-label={t("hero.showGauSeva")}
           onClick={() => goTo(2)}
           className={`rounded-full transition-all duration-300 ${index === 2 ? "w-7 h-2 bg-[#e8973a]" : "w-2 h-2 bg-white/40 hover:bg-white/70"}`}
         />
         <button
           type="button"
-          aria-label="Sita Ram Naam Jaap"
+          aria-label={t("hero.showNaamJaap")}
           onClick={() => goTo(3)}
           className={`rounded-full transition-all duration-300 ${index === 3 ? "w-7 h-2 bg-[#e8973a]" : "w-2 h-2 bg-white/40 hover:bg-white/70"}`}
         />
@@ -400,14 +425,14 @@ export default function Hero() {
           className="flex shrink-0 items-center"
         >
           {[
-            "✦ आपका संकल्प, हमारी सेवा",
-            "✦ वैदिक पूजा एवं अनुष्ठान",
-            "✦ सुख शांति एवं समृद्धि",
-            "✦ सीता राम नाम जप",
-            "✦ आपका संकल्प, हमारी सेवा",
-            "✦ वैदिक पूजा एवं अनुष्ठान",
-            "✦ सुख शांति एवं समृद्धि",
-            "✦ सीता राम नाम जप",
+            t("hero.marquee.resolve"),
+            t("hero.marquee.vedic"),
+            t("hero.marquee.prosperity"),
+            t("hero.marquee.naamJaap"),
+            t("hero.marquee.resolve"),
+            t("hero.marquee.vedic"),
+            t("hero.marquee.prosperity"),
+            t("hero.marquee.naamJaap"),
           ].map((text, i) => (
             <span
               key={`${copy}-${i}`}

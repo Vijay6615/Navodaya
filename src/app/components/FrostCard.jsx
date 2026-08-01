@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
 import {
   ArrowRight,
   CalendarDays,
@@ -19,12 +20,23 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+import { useLanguage } from "../context/LanguageContext";
+
+const displayFont = {
+  className: "font-display-en",
+};
+
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
+
 // ================= EVENTS =================
 
 const EVENTS = {
   August: [
     {
       img: "/images/Shivratri.png",
+      key: "sawanShivratri",
       title: "Sawan Shivratri, Maha Rudra Abhishek & Havan",
       desc: "Experience the divine blessings of Lord Shiva through Maha Rudra Abhishek and Havan during the sacred month of Sawan. This powerful ritual removes negativity, fulfills wishes, improves health, and brings peace, prosperity, and spiritual growth.",
       offer: "10% OFF this month",
@@ -32,6 +44,7 @@ const EVENTS = {
     },
     {
       img: "/images/naappanchmi.png",
+      key: "nagPanchami",
       title: "Nag Panchami Special Puja",
       desc: "Celebrate Nag Panchami with traditional Vedic rituals dedicated to the divine serpent deities. Seek protection from Kaal Sarp Dosha, receive blessings for prosperity, family well-being, and spiritual harmony through sacred mantra chanting.",
       offer: "10% OFF this month + Free Muhurat Consultation",
@@ -42,6 +55,7 @@ const EVENTS = {
   September: [
     {
       img: "/images/KrishnaJanmashtami.jpg",
+      key: "janmashtami",
       title: "Krishna Janmashtami Special Puja",
       desc: "Celebrate the birth of Lord Krishna with devotional puja, bhajans, mantra chanting, and sacred rituals. Receive blessings for happiness, prosperity, protection, and spiritual enlightenment while strengthening devotion towards Lord Krishna.",
       offer: "10% OFF this month",
@@ -49,6 +63,7 @@ const EVENTS = {
     },
     {
       img: "/images/ganesh-puja.jpg",
+      key: "ganeshChaturthi",
       title: "Ganesh Chaturthi Special Puja",
       desc: "Celebrate Ganesh Chaturthi with sacred Vedic rituals, Ganapati Atharvashirsha recitation, and special puja to invite Lord Ganesha's blessings for success, happiness, wealth, and obstacle-free beginnings.",
       offer: "10% OFF this month + Free Muhurat Consultation",
@@ -56,6 +71,7 @@ const EVENTS = {
     },
     {
       img: "/images/GaneshVisarjan.jpg",
+      key: "ganeshVisarjan",
       title: "Ganesh Visarjan",
       desc: "Offer a heartfelt farewell to Lord Ganesha with traditional Visarjan rituals, prayers, and Aarti. Seek blessings for wisdom, prosperity, success, and the removal of obstacles before bidding farewell to Bappa.",
       offer: "10% OFF this month",
@@ -64,6 +80,7 @@ const EVENTS = {
   
     {
       img: "/images/PitraDoshNivaran.jpg",
+      key: "pitruPaksha",
       title: "Pitru Paksha Special Puja",
       desc: "Honor your ancestors during Pitru Paksha with traditional Shradh, Tarpan, and Pitra Dosh Nivaran rituals. Seek ancestral blessings for family harmony, prosperity, health, and relief from karmic obstacles.",
       offer: "10% OFF this month",
@@ -74,6 +91,7 @@ const EVENTS = {
   October: [
     {
       img: "/images/durgapuja.png",
+      key: "navratriDurga",
       title: "Sharadiya Navratri & Durga Puja",
       desc: "Celebrate the nine divine nights of Goddess Durga with Chandi Path, Durga Puja, and special Vedic rituals for protection, prosperity, courage, and victory over negativity.",
       offer: "15% OFF this month",
@@ -81,6 +99,7 @@ const EVENTS = {
     },
     {
       img: "/images/Vijayadashami.png",
+      key: "dussehra",
       title: "Vijayadashami (Dussehra) Special Puja",
       desc: "Celebrate the victory of good over evil with Vijayadashami Puja. Seek blessings for success, new beginnings, career growth, courage, and prosperity through sacred Vedic rituals.",
       offer: "10% OFF this month",
@@ -88,6 +107,7 @@ const EVENTS = {
     },
     {
       img: "/images/laxmi.jpg",
+      key: "diwaliLakshmi",
       title: "Diwali Lakshmi Puja",
       desc: "Welcome Goddess Lakshmi into your home with traditional Diwali Lakshmi Puja. Receive blessings for wealth, abundance, business growth, happiness, and lasting prosperity.",
       offer: "20% OFF this month + Free Muhurat Consultation",
@@ -98,9 +118,21 @@ const EVENTS = {
 
 const months = Object.keys(EVENTS);
 
+function getEventText(t, event, field) {
+  if (!event) {
+    return "";
+  }
+
+  return t(
+    `events.items.${event.key}.${field}`,
+    event[field] || ""
+  );
+}
+
 // ================= COUNTDOWN =================
 
 function Countdown({ date }) {
+  const { t } = useLanguage();
   const [timeLeft, setTimeLeft] = useState({});
 
   useEffect(() => {
@@ -131,7 +163,7 @@ function Countdown({ date }) {
   if (timeLeft.expired) {
     return (
       <p className="text-[11px] uppercase tracking-[0.2em] text-[#9b5b4c]">
-        Event Completed
+        {t("events.eventCompleted")}
       </p>
     );
   }
@@ -139,15 +171,15 @@ function Countdown({ date }) {
   const items = [
     {
       value: timeLeft.days ?? 0,
-      label: "Days",
+      label: t("events.days"),
     },
     {
       value: timeLeft.hours ?? 0,
-      label: "Hours",
+      label: t("events.hours"),
     },
     {
       value: timeLeft.mins ?? 0,
-      label: "Minutes",
+      label: t("events.minutes"),
     },
   ];
 
@@ -185,6 +217,15 @@ export default function MonthlyEventsSection() {
   const router = useRouter();
 
   const { data: session, status } = useSession();
+  const { language, t } = useLanguage();
+
+  const dateLocale =
+    language === "hi" ? "hi-IN" : "en-IN";
+
+  const headingFontClass =
+    language === "hi"
+      ? hindiDisplayFont.className
+      : displayFont.className;
 
   const [month, setMonth] = useState(months[0]);
 
@@ -373,7 +414,7 @@ export default function MonthlyEventsSection() {
         throw new Error(
           data?.message ||
             data?.error ||
-            "Booking failed"
+            t("events.bookingFailed")
         );
       }
 
@@ -427,7 +468,7 @@ export default function MonthlyEventsSection() {
 
       setError(
         error?.message ||
-          "Booking failed. Please try again."
+          t("events.bookingFailedRetry")
       );
     } finally {
       setLoading(false);
@@ -449,17 +490,23 @@ export default function MonthlyEventsSection() {
               <span className="h-px w-8 bg-[#b97b66]" />
 
               <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#a85c43]">
-                Sacred Calendar
+                {t("events.sacredCalendar")}
               </p>
 
               <span className="h-px w-8 bg-[#b97b66]" />
 
             </div>
 
-            <h2 className="font-serif text-[42px] leading-[1.05] text-[#2c2421] md:text-[64px]">
-              Upcoming Vedic
+            <h2
+              className={`${headingFontClass} text-[42px] text-[#2c2421] md:text-[64px] ${
+                language === "hi"
+                  ? "leading-[1.25]"
+                  : "leading-[1.05]"
+              }`}
+            >
+              {t("events.upcomingLine1")}
               <br />
-              Events
+              {t("events.upcomingLine2")}
             </h2>
 
           </div>
@@ -482,7 +529,10 @@ export default function MonthlyEventsSection() {
                       : "text-[#625752] hover:bg-[#f6eee9]"
                   }`}
                 >
-                  {m}
+                  {t(
+                    `events.months.${m.toLowerCase()}`,
+                    m
+                  )}
                 </button>
               ))}
 
@@ -501,12 +551,14 @@ export default function MonthlyEventsSection() {
                 className="mx-auto text-[#a85c43]"
               />
 
-              <h3 className="mt-5 font-serif text-3xl text-[#332925]">
-                No sacred events scheduled
+              <h3
+                className={`${headingFontClass} mt-5 text-3xl text-[#332925]`}
+              >
+                {t("events.noEventsTitle")}
               </h3>
 
               <p className="mt-3 text-sm text-[#81756f]">
-                New Vedic ceremonies will be announced soon.
+                {t("events.noEventsDescription")}
               </p>
 
             </div>
@@ -533,7 +585,7 @@ export default function MonthlyEventsSection() {
 
                     <img
                       src={event.img}
-                      alt={event.title}
+                      alt={getEventText(t, event, "title")}
                       className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
                     />
 
@@ -543,7 +595,7 @@ export default function MonthlyEventsSection() {
                       <div className="absolute left-5 top-5 bg-[#fffdfb] px-4 py-2">
 
                         <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8f321c]">
-                          {event.offer}
+                          {getEventText(t, event, "offer")}
                         </p>
 
                       </div>
@@ -567,7 +619,7 @@ export default function MonthlyEventsSection() {
                         {new Date(
                           event.date
                         ).toLocaleDateString(
-                          "en-IN",
+                          dateLocale,
                           {
                             day: "2-digit",
 
@@ -581,12 +633,26 @@ export default function MonthlyEventsSection() {
 
                     </div>
 
-                    <h3 className="font-serif text-[32px] leading-tight text-[#302724] md:text-[38px]">
-                      {event.title}
+                    <h3
+                      className={`${headingFontClass} text-[32px] text-[#302724] md:text-[38px] ${
+                        language === "hi"
+                          ? "leading-[1.35]"
+                          : "leading-tight"
+                      }`}
+                    >
+                      {getEventText(
+                        t,
+                        event,
+                        "title"
+                      )}
                     </h3>
 
                     <p className="mt-4 max-w-lg text-[14px] leading-7 text-[#746963]">
-                      {event.desc}
+                      {getEventText(
+                        t,
+                        event,
+                        "desc"
+                      )}
                     </p>
 
                     <div className="my-7 h-px w-full bg-[#e8dfda]" />
@@ -611,10 +677,10 @@ export default function MonthlyEventsSection() {
                     >
 
                       {expired
-                        ? "Event Closed"
+                        ? t("events.eventClosed")
                         : status === "loading"
-                        ? "Please Wait..."
-                        : "Book Puja"}
+                        ? t("events.pleaseWait")
+                        : t("events.bookPuja")}
 
                       {!expired &&
                         status !== "loading" && (
@@ -676,17 +742,21 @@ export default function MonthlyEventsSection() {
               />
 
               <p className="mt-8 text-[10px] uppercase tracking-[0.25em] text-[#a85c43]">
-                Mantra · Vidhi · Aastha
+                {t("events.mantraLine")}
               </p>
 
-              <h2 className="mt-4 font-serif text-[35px] leading-tight text-[#2c2421]">
-                Login to book your special puja
+              <h2
+                className={`${headingFontClass} mt-4 text-[35px] text-[#2c2421] ${
+                  language === "hi"
+                    ? "leading-[1.35]"
+                    : "leading-tight"
+                }`}
+              >
+                {t("events.loginTitle")}
               </h2>
 
               <p className="mt-4 text-[13px] leading-6 text-[#81756f]">
-                Sign in to securely book this offline
-                Vedic ceremony and manage your booking
-                from My Bookings.
+                {t("events.loginDescription")}
               </p>
 
               <button
@@ -696,7 +766,7 @@ export default function MonthlyEventsSection() {
                 }
                 className="mt-9 h-[54px] w-full bg-[#8f321c] text-[11px] font-semibold uppercase tracking-[0.15em] text-white transition hover:bg-[#762814]"
               >
-                Login to Continue
+                {t("events.loginContinue")}
               </button>
 
               <button
@@ -706,14 +776,14 @@ export default function MonthlyEventsSection() {
                 }
                 className="mt-3 h-[54px] w-full border border-[#ddd3cd] bg-white text-[11px] font-semibold uppercase tracking-[0.15em] text-[#6c4c3d] transition hover:bg-[#fff8f4]"
               >
-                Create Account
+                {t("events.createAccount")}
               </button>
 
               <div className="mt-7 flex items-center justify-center gap-2 text-[10px] text-[#9a8d86]">
 
                 <ShieldCheck size={14} />
 
-                Secure account access
+                {t("events.secureAccess")}
 
               </div>
 
@@ -742,7 +812,7 @@ export default function MonthlyEventsSection() {
             >
               <button
                 type="button"
-                aria-label="Close booking form"
+                aria-label={t("events.closeBookingForm")}
                 onClick={() => {
                   if (!loading) setSelectedEvent(null);
                 }}
@@ -756,7 +826,7 @@ export default function MonthlyEventsSection() {
                 <div className="relative hidden h-full overflow-hidden md:block">
                   <img
                     src={selectedEvent.img}
-                    alt={selectedEvent.title}
+                    alt={getEventText(t, selectedEvent, "title")}
                     className="h-full w-full object-cover"
                   />
 
@@ -764,26 +834,35 @@ export default function MonthlyEventsSection() {
 
                   <div className="absolute bottom-0 left-0 right-0 p-9 lg:p-14">
                     <span className="inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-orange-100 backdrop-blur-md">
-                      Special Offline Puja
+                      {t("events.specialOfflinePuja")}
                     </span>
 
-                    <h3 className="mt-5 max-w-xl font-serif text-[38px] leading-[1.05] text-white lg:text-[50px]">
-                      {selectedEvent.title}
+                    <h3
+                      className={`${headingFontClass} mt-5 max-w-xl text-[38px] text-white lg:text-[50px] ${
+                        language === "hi"
+                          ? "leading-[1.28]"
+                          : "leading-[1.05]"
+                      }`}
+                    >
+                      {getEventText(
+                        t,
+                        selectedEvent,
+                        "title"
+                      )}
                     </h3>
 
                     <p className="mt-4 max-w-xl text-xs leading-6 text-white/70">
-                      Complete the form and Pandit Ji will contact you to
-                      confirm the final arrangements, Samagri and price.
+                      {t("events.arrangementDescription")}
                     </p>
 
                     <div className="mt-7 grid grid-cols-2 gap-3 border-t border-white/25 pt-6">
                       <div>
                         <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/50">
-                          Sacred Date
+                          {t("events.sacredDate")}
                         </p>
                         <p className="mt-2 text-[13px] font-semibold text-white">
                           {new Date(selectedEvent.date).toLocaleDateString(
-                            "en-IN",
+                            dateLocale,
                             {
                               day: "2-digit",
                               month: "long",
@@ -795,10 +874,10 @@ export default function MonthlyEventsSection() {
 
                       <div>
                         <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/50">
-                          Booking Price
+                          {t("events.bookingPrice")}
                         </p>
                         <p className="mt-2 text-[13px] font-semibold text-white">
-                          To be confirmed
+                          {t("events.toBeConfirmed")}
                         </p>
                       </div>
                     </div>
@@ -806,7 +885,7 @@ export default function MonthlyEventsSection() {
                     {selectedEvent.offer && (
                       <div className="mt-4 flex items-start gap-2 rounded-2xl border border-white/20 bg-white/10 p-3 text-[10px] leading-5 text-white/80 backdrop-blur-md">
                         <Tag size={14} className="mt-0.5 shrink-0" />
-                        {selectedEvent.offer}
+                        {getEventText(t, selectedEvent, "offer")}
                       </div>
                     )}
                   </div>
@@ -824,19 +903,24 @@ export default function MonthlyEventsSection() {
                         />
 
                         <p className="mt-3 text-[9px] font-bold uppercase tracking-[0.22em] text-[#a85c43]">
-                          Special Event Booking
+                          {t("events.specialEventBooking")}
                         </p>
 
-                        <h2 className="mt-2 font-serif text-[29px] leading-[1.05] text-[#2c2421] sm:text-[36px] md:text-[44px]">
-                          Book your{" "}
+                        <h2
+                          className={`${headingFontClass} mt-2 text-[29px] text-[#2c2421] sm:text-[36px] md:text-[44px] ${
+                            language === "hi"
+                              ? "leading-[1.3]"
+                              : "leading-[1.05]"
+                          }`}
+                        >
+                          {t("events.bookYour")}{" "}
                           <span className="text-[#9a3f2b]">
-                            Special Puja
+                            {t("events.specialPuja")}
                           </span>
                         </h2>
 
                         <p className="mx-auto mt-2 max-w-[500px] text-[11px] leading-5 text-[#81756f] md:text-xs">
-                          Submit complete details so your booking appears
-                          correctly in My Bookings.
+                          {t("events.bookingIntro")}
                         </p>
                       </div>
 
@@ -845,13 +929,23 @@ export default function MonthlyEventsSection() {
                         <div className="flex gap-3 p-3">
                           <img
                             src={selectedEvent.img}
-                            alt={selectedEvent.title}
+                            alt={getEventText(t, selectedEvent, "title")}
                             className="h-[76px] w-[76px] shrink-0 rounded-[15px] object-cover"
                           />
 
                           <div className="min-w-0 flex-1">
-                            <p className="line-clamp-2 font-serif text-[17px] font-semibold leading-5 text-[#342925]">
-                              {selectedEvent.title}
+                            <p
+                              className={`${headingFontClass} line-clamp-2 text-[17px] font-semibold text-[#342925] ${
+                                language === "hi"
+                                  ? "leading-6"
+                                  : "leading-5"
+                              }`}
+                            >
+                              {getEventText(
+                                t,
+                                selectedEvent,
+                                "title"
+                              )}
                             </p>
 
                             <div className="mt-2 flex items-center gap-1.5 text-[10px] text-[#7c6f68]">
@@ -861,7 +955,7 @@ export default function MonthlyEventsSection() {
                               />
                               {new Date(
                                 selectedEvent.date
-                              ).toLocaleDateString("en-IN", {
+                              ).toLocaleDateString(dateLocale, {
                                 day: "2-digit",
                                 month: "short",
                                 year: "numeric",
@@ -869,7 +963,7 @@ export default function MonthlyEventsSection() {
                             </div>
 
                             <p className="mt-1 text-[10px] font-bold text-[#8f321c]">
-                              Price to be confirmed
+                              {t("events.priceToBeConfirmed")}
                             </p>
                           </div>
                         </div>
@@ -880,7 +974,7 @@ export default function MonthlyEventsSection() {
                               size={12}
                               className="mt-0.5 shrink-0"
                             />
-                            {selectedEvent.offer}
+                            {getEventText(t, selectedEvent, "offer")}
                           </div>
                         )}
                       </div>
@@ -890,7 +984,7 @@ export default function MonthlyEventsSection() {
                         className="mt-5 space-y-4"
                       >
                         <FormField
-                          label="Full Name"
+                          label={t("events.fullName")}
                           required
                           icon={<UserRound size={16} />}
                         >
@@ -898,7 +992,7 @@ export default function MonthlyEventsSection() {
                             name="name"
                             value={form.name}
                             onChange={handleChange}
-                            placeholder="Enter devotee name"
+                            placeholder={t("events.namePlaceholder")}
                             required
                             autoComplete="name"
                             className="event-input"
@@ -907,7 +1001,7 @@ export default function MonthlyEventsSection() {
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                           <FormField
-                            label="Phone Number"
+                            label={t("events.phoneNumber")}
                             required
                             icon={<Phone size={16} />}
                           >
@@ -916,7 +1010,7 @@ export default function MonthlyEventsSection() {
                               type="tel"
                               value={form.phone}
                               onChange={handleChange}
-                              placeholder="Enter phone number"
+                              placeholder={t("events.phonePlaceholder")}
                               required
                               inputMode="tel"
                               autoComplete="tel"
@@ -925,7 +1019,7 @@ export default function MonthlyEventsSection() {
                           </FormField>
 
                           <FormField
-                            label="Email Address"
+                            label={t("events.emailAddress")}
                             required
                             icon={<Mail size={16} />}
                           >
@@ -934,7 +1028,7 @@ export default function MonthlyEventsSection() {
                               type="email"
                               value={form.email}
                               onChange={handleChange}
-                              placeholder="Enter email address"
+                              placeholder={t("events.emailPlaceholder")}
                               required
                               autoComplete="email"
                               className="event-input"
@@ -944,7 +1038,7 @@ export default function MonthlyEventsSection() {
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                           <FormField
-                            label="City"
+                            label={t("events.city")}
                             required
                             icon={<MapPin size={16} />}
                           >
@@ -952,7 +1046,7 @@ export default function MonthlyEventsSection() {
                               name="city"
                               value={form.city}
                               onChange={handleChange}
-                              placeholder="Mumbai"
+                              placeholder={t("events.cityPlaceholder")}
                               required
                               autoComplete="address-level2"
                               className="event-input"
@@ -960,7 +1054,7 @@ export default function MonthlyEventsSection() {
                           </FormField>
 
                           <FormField
-                            label="Preferred Time"
+                            label={t("events.preferredTime")}
                             required
                             icon={<Clock3 size={16} />}
                           >
@@ -972,23 +1066,23 @@ export default function MonthlyEventsSection() {
                               className="event-input appearance-none"
                             >
                               <option value="Flexible">
-                                Flexible
+                                {t("events.flexible")}
                               </option>
                               <option value="Morning">
-                                Morning
+                                {t("events.morning")}
                               </option>
                               <option value="Afternoon">
-                                Afternoon
+                                {t("events.afternoon")}
                               </option>
                               <option value="Evening">
-                                Evening
+                                {t("events.evening")}
                               </option>
                             </select>
                           </FormField>
                         </div>
 
                         <FormField
-                          label="Complete Puja Address"
+                          label={t("events.completeAddress")}
                           required
                           icon={<MapPin size={16} />}
                         >
@@ -996,7 +1090,7 @@ export default function MonthlyEventsSection() {
                             name="address"
                             value={form.address}
                             onChange={handleChange}
-                            placeholder="House/flat number, building, road and area"
+                            placeholder={t("events.addressPlaceholder")}
                             required
                             rows={3}
                             className="event-textarea"
@@ -1004,14 +1098,14 @@ export default function MonthlyEventsSection() {
                         </FormField>
 
                         <FormField
-                          label="Special Requirement"
+                          label={t("events.specialRequirement")}
                           icon={<MessageSquareText size={16} />}
                         >
                           <textarea
                             name="message"
                             value={form.message}
                             onChange={handleChange}
-                            placeholder="Gotra, Sankalp name or any special instruction (optional)"
+                            placeholder={t("events.requirementPlaceholder")}
                             rows={3}
                             className="event-textarea"
                           />
@@ -1020,12 +1114,12 @@ export default function MonthlyEventsSection() {
                         <div className="grid grid-cols-2 gap-2 rounded-[18px] border border-[#e7ece8] bg-[#f2f8f4] p-3">
                           <div>
                             <p className="text-[8px] font-bold uppercase tracking-wide text-[#718077]">
-                              Event Date
+                              {t("events.eventDate")}
                             </p>
                             <p className="mt-1 text-[10px] font-bold text-[#30463a] sm:text-xs">
                               {new Date(
                                 selectedEvent.date
-                              ).toLocaleDateString("en-IN", {
+                              ).toLocaleDateString(dateLocale, {
                                 day: "2-digit",
                                 month: "short",
                                 year: "numeric",
@@ -1035,10 +1129,10 @@ export default function MonthlyEventsSection() {
 
                           <div>
                             <p className="text-[8px] font-bold uppercase tracking-wide text-[#718077]">
-                              Final Price
+                              {t("events.finalPrice")}
                             </p>
                             <p className="mt-1 text-[10px] font-bold text-[#30463a] sm:text-xs">
-                              Pandit Ji will confirm
+                              {t("events.panditWillConfirm")}
                             </p>
                           </div>
                         </div>
@@ -1055,7 +1149,7 @@ export default function MonthlyEventsSection() {
                               size={16}
                               className="mt-0.5 shrink-0"
                             />
-                            Booking saved. Opening My Bookings...
+                            {t("events.bookingSaved")}
                           </div>
                         )}
 
@@ -1065,10 +1159,10 @@ export default function MonthlyEventsSection() {
                           className="flex min-h-[52px] w-full items-center justify-center gap-3 rounded-[16px] bg-[#8f321c] px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white shadow-[0_12px_28px_rgba(143,50,28,0.22)] transition hover:bg-[#762814] disabled:cursor-not-allowed disabled:opacity-60 md:min-h-[54px] md:text-[11px]"
                         >
                           {loading
-                            ? "Booking Puja..."
+                            ? t("events.bookingPuja")
                             : success
-                            ? "Booking Confirmed"
-                            : "Confirm Puja Booking"}
+                            ? t("events.bookingConfirmed")
+                            : t("events.confirmPujaBooking")}
 
                           {!loading && !success && (
                             <ArrowRight size={16} />
@@ -1080,8 +1174,7 @@ export default function MonthlyEventsSection() {
                             size={13}
                             className="mt-0.5 shrink-0"
                           />
-                          Offline Puja · Details and final price will be
-                          confirmed by Pandit Ji
+                          {t("events.offlineConfirmation")}
                         </div>
                       </form>
                     </div>

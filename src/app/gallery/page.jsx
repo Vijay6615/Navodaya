@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import Image from "next/image";
-import { Cormorant_Garamond } from "next/font/google";
 
 import {
   ChevronLeft,
@@ -12,11 +16,15 @@ import {
   X,
 } from "lucide-react";
 
-const displayFont = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
+import { useLanguage } from "../context/LanguageContext";
+
+const displayFont = {
+  className: "font-display-en",
+};
+
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
 
 /*
   Sirf src ke andar apne Cloudinary URLs paste karo.
@@ -30,114 +38,79 @@ const displayFont = Cormorant_Garamond({
 
 const gallery = [
   {
+    key: "eknath",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868530/eknath_xupkim.jpg",
-
-    title: "Deputy CM of Maharashtra Eknath Shinde",
-
   },
-
   {
+    key: "guruji",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868571/guruji_myhvzo.jpg",
-
-    title:
-      "Jagadguru Swami Raghavacharya Ji Maharaj",
-
   },
-
   {
+    key: "dhanashree",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868576/dhanashree_ldafxr.jpg",
-
-    title: " Actress Dhanashree Verma",
-
   },
-
   {
+    key: "shreyash",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868571/shreyash_qeztda.jpg",
-
-    title: "Cricketer Shreyash Iyer",
-
   },
   {
+    key: "sureshOberoi",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/hero_pyswfq.jpg",
-
-    title: "Indian actor and politician Suresh Oberoi",
-
   },
   {
+    key: "dhanashreeSecond",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868572/dhanashree2_mukerp.jpg",
-
-    title: "Acrtess Dhanashree Verma",
-
   },
-
   {
+    key: "nehaKakkar",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868570/nehakakkar_uuxou1.jpg",
-
-    title: "Singer Neha Kakkar",
-
   },
-
   {
+    key: "tvStar",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868562/random_lqjymn.jpg",
-
-    title: "TV Star",
-
   },
-
   {
+    key: "dhanashreeFamily",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/v1784868578/dhanashree-father_totc5d.jpg",
-
-    title: "Dhanashree Verma Family",
-
   },
   {
+    key: "group",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784892973/group_yawicd.jpg",
-
-    title: "",
-
+    hideTitle: true,
   },
   {
+    key: "divineBlessings",
     type: "image",
-
     src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1200/v1784868554/baba_q5gfcq.jpg",
-
-    title: "Divine Blessings",
-
   },
 
   /*
-  Future video example:
+    Future video example:
 
-  {
-    type: "video",
-    src: "https://res.cloudinary.com/your-cloud/video/upload/your-video.mp4",
-    title: "Sacred Puja Ceremony",
-    desc: "A devotional ceremony performed with authentic Vedic rituals.",
-  },
+    {
+      key: "sacredCeremony",
+      type: "video",
+      src: "https://res.cloudinary.com/your-cloud/video/upload/your-video.mp4",
+    },
   */
 ];
 
 export default function GalleryPage() {
+  const {
+    language,
+    t,
+  } = useLanguage();
+
   const [selectedIndex, setSelectedIndex] =
     useState(null);
 
@@ -159,6 +132,11 @@ export default function GalleryPage() {
     (item) => item.type === "video"
   ).length;
 
+  const headingFontClass =
+    language === "hi"
+      ? hindiDisplayFont.className
+      : displayFont.className;
+
   const nextItem = () => {
     setSelectedIndex(
       (previousIndex) =>
@@ -172,6 +150,33 @@ export default function GalleryPage() {
         ? gallery.length - 1
         : previousIndex - 1
     );
+  };
+
+  const getItemTitle = (item) => {
+    if (!item || item.hideTitle) {
+      return "";
+    }
+
+    return t(
+      `galleryPage.items.${item.key}.title`
+    );
+  };
+
+  const getItemDescription = (item) => {
+    if (!item) {
+      return "";
+    }
+
+    const value = t(
+      `galleryPage.items.${item.key}.description`,
+      ""
+    );
+
+    return value.startsWith(
+      "galleryPage.items."
+    )
+      ? ""
+      : value;
   };
 
   useEffect(() => {
@@ -287,119 +292,166 @@ export default function GalleryPage() {
                 : "translate-y-8 opacity-0"
             }`}
           >
-            <p className="text-center text-[10px] font-bold uppercase tracking-[0.3em] text-[#a8441b]">
-              Puja Dham Gallery
+            <p
+              className={`text-center text-[10px] font-bold text-[#a8441b] ${
+                language === "hi"
+                  ? "tracking-[0.08em]"
+                  : "uppercase tracking-[0.3em]"
+              }`}
+            >
+              {t("galleryPage.eyebrow")}
             </p>
 
             <h1
-              className={`${displayFont.className} mx-auto mt-5 max-w-4xl text-center text-[48px] font-semibold leading-[0.94] tracking-[-0.035em] sm:text-6xl lg:text-[80px]`}
+              className={`${headingFontClass} mx-auto mt-5 max-w-4xl text-center text-[48px] font-semibold ${
+                language === "hi"
+                  ? "leading-[1.16] tracking-normal"
+                  : "leading-[0.94] tracking-[-0.035em]"
+              } sm:text-6xl lg:text-[80px]`}
             >
-              Sacred moments,
+              {t("galleryPage.headingLine1")}
 
               <span className="block text-[#a8441b]">
-                held in memory.
+                {t(
+                  "galleryPage.headingLine2"
+                )}
               </span>
             </h1>
 
-
             <div className="mt-8 flex items-center justify-center gap-3">
               <span className="rounded-full border border-[#eadfd8] bg-[#fffaf7] px-4 py-2 text-[11px] font-semibold text-[#76675f]">
-                {imageCount} Images
+                {t(
+                  "galleryPage.imageCount"
+                ).replace(
+                  "{count}",
+                  imageCount
+                )}
               </span>
 
               <span className="rounded-full border border-[#eadfd8] bg-[#fffaf7] px-4 py-2 text-[11px] font-semibold text-[#76675f]">
-                {videoCount} Videos
+                {t(
+                  "galleryPage.videoCount"
+                ).replace(
+                  "{count}",
+                  videoCount
+                )}
               </span>
             </div>
           </div>
 
           {/* Gallery grid */}
           <div className="mt-14 columns-1 gap-5 space-y-5 sm:columns-2 lg:columns-3">
-            {gallery.map((item, index) => (
-              <article
-                key={`${item.src}-${index}`}
-                onClick={() =>
-                  setSelectedIndex(index)
-                }
-                style={{
-                  animationDelay: `${Math.min(
-                    index * 80,
-                    600
-                  )}ms`,
-                }}
-                className={`galleryCard group relative mb-5 break-inside-avoid cursor-pointer overflow-hidden border border-[#eee8e2] bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(66,34,18,0.12)] ${
-                  pageReady
-                    ? "galleryCardReady"
-                    : ""
-                }`}
-              >
-                <div className="relative overflow-hidden bg-[#f5f0ec]">
-                  {item.type === "image" ? (
-                    <div className="relative aspect-[4/5] w-full">
-                      <Image
-                        src={item.src}
-                        alt={
-                          item.title ||
-                          "Puja Dham gallery image"
-                        }
-                        fill
-                        sizes="
-                          (max-width: 640px) 100vw,
-                          (max-width: 1024px) 50vw,
-                          33vw
-                        "
-                        className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.035]"
-                      />
-                    </div>
-                  ) : (
-                    <video
-                      src={item.src}
-                      muted
-                      autoPlay
-                      loop
-                      playsInline
-                      preload="metadata"
-                      className="aspect-[4/5] w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.035]"
-                    />
-                  )}
+            {gallery.map((item, index) => {
+              const itemTitle =
+                getItemTitle(item);
 
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
+              const itemDescription =
+                getItemDescription(item);
 
-                  <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-black/20 text-white backdrop-blur-md">
-                    {item.type === "video" ? (
-                      <Play
-                        size={16}
-                        fill="currentColor"
-                      />
+              return (
+                <article
+                  key={`${item.src}-${index}`}
+                  onClick={() =>
+                    setSelectedIndex(index)
+                  }
+                  style={{
+                    animationDelay: `${Math.min(
+                      index * 80,
+                      600
+                    )}ms`,
+                  }}
+                  className={`galleryCard group relative mb-5 break-inside-avoid cursor-pointer overflow-hidden border border-[#eee8e2] bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(66,34,18,0.12)] ${
+                    pageReady
+                      ? "galleryCardReady"
+                      : ""
+                  }`}
+                >
+                  <div className="relative overflow-hidden bg-[#f5f0ec]">
+                    {item.type === "image" ? (
+                      <div className="relative aspect-[4/5] w-full">
+                        <Image
+                          src={item.src}
+                          unoptimized
+                          alt={
+                            itemTitle ||
+                            t(
+                              "galleryPage.defaultImageAlt"
+                            )
+                          }
+                          fill
+                          loading="lazy"
+                          sizes="
+                            (max-width: 640px) 100vw,
+                            (max-width: 1024px) 50vw,
+                            33vw
+                          "
+                          className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.035]"
+                        />
+                      </div>
                     ) : (
-                      <Images size={16} />
+                      <video
+                        src={item.src}
+                        muted
+                        autoPlay
+                        loop
+                        playsInline
+                        preload="metadata"
+                        className="aspect-[4/5] w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.035]"
+                      />
+                    )}
+
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
+
+                    <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-black/20 text-white backdrop-blur-md">
+                      {item.type === "video" ? (
+                        <Play
+                          size={16}
+                          fill="currentColor"
+                        />
+                      ) : (
+                        <Images size={16} />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-5 sm:p-6">
+                    <p
+                      className={`text-[9px] font-bold text-[#a8441b] ${
+                        language === "hi"
+                          ? "tracking-[0.07em]"
+                          : "uppercase tracking-[0.2em]"
+                      }`}
+                    >
+                      {item.type === "video"
+                        ? t(
+                            "galleryPage.sacredVideo"
+                          )
+                        : t(
+                            "galleryPage.divineMoment"
+                          )}
+                    </p>
+
+                    {itemTitle && (
+                      <h2
+                        className={`${headingFontClass} mt-2 text-3xl font-semibold ${
+                          language === "hi"
+                            ? "leading-[1.18] tracking-normal"
+                            : "leading-none tracking-[-0.02em]"
+                        } text-[#302824]`}
+                      >
+                        {itemTitle}
+                      </h2>
+                    )}
+
+                    {itemDescription && (
+                      <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-[#786c65]">
+                        {itemDescription}
+                      </p>
                     )}
                   </div>
-                </div>
-
-                <div className="p-5 sm:p-6">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#a8441b]">
-                    {item.type === "video"
-                      ? "Sacred Video"
-                      : "Divine Moment"}
-                  </p>
-
-                  {item.title && (
-                    <h2
-                      className={`${displayFont.className} mt-2 text-3xl font-semibold leading-none tracking-[-0.02em] text-[#302824]`}
-                    >
-                      {item.title}
-                    </h2>
-                  )}
-
-                  {item.desc && (
-                    <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-[#786c65]">
-                      {item.desc}
-                    </p>
-                  )}
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -422,7 +474,9 @@ export default function GalleryPage() {
             {/* Close button */}
             <button
               type="button"
-              aria-label="Close gallery"
+              aria-label={t(
+                "galleryPage.closeGallery"
+              )}
               onClick={() =>
                 setSelectedIndex(null)
               }
@@ -437,9 +491,12 @@ export default function GalleryPage() {
                 <div className="relative h-[70vh] max-h-[720px] min-h-[360px] w-full">
                   <Image
                     src={selected.src}
+                    unoptimized
                     alt={
-                      selected.title ||
-                      "Puja Dham gallery image"
+                      getItemTitle(selected) ||
+                      t(
+                        "galleryPage.defaultImageAlt"
+                      )
                     }
                     fill
                     priority
@@ -462,7 +519,9 @@ export default function GalleryPage() {
                 <>
                   <button
                     type="button"
-                    aria-label="Previous image"
+                    aria-label={t(
+                      "galleryPage.previousImage"
+                    )}
                     onClick={prevItem}
                     className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#431407] shadow-lg transition hover:scale-105 sm:left-4"
                   >
@@ -471,7 +530,9 @@ export default function GalleryPage() {
 
                   <button
                     type="button"
-                    aria-label="Next image"
+                    aria-label={t(
+                      "galleryPage.nextImage"
+                    )}
                     onClick={nextItem}
                     className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#431407] shadow-lg transition hover:scale-105 sm:right-4"
                   >
@@ -483,35 +544,66 @@ export default function GalleryPage() {
 
             {/* Selected media details */}
             <div className="flex flex-col justify-center bg-[#fffdfb] p-7 sm:p-10 lg:p-12">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#a8441b]">
+              <p
+                className={`text-[10px] font-bold text-[#a8441b] ${
+                  language === "hi"
+                    ? "tracking-[0.07em]"
+                    : "uppercase tracking-[0.22em]"
+                }`}
+              >
                 {selected.type === "video"
-                  ? "Sacred Video"
-                  : "Divine Moment"}
+                  ? t(
+                      "galleryPage.sacredVideo"
+                    )
+                  : t(
+                      "galleryPage.divineMoment"
+                    )}
               </p>
 
-              {selected.title && (
+              {getItemTitle(selected) && (
                 <h2
-                  className={`${displayFont.className} mt-4 text-4xl font-semibold leading-[0.95] tracking-[-0.025em] sm:text-5xl`}
+                  className={`${headingFontClass} mt-4 text-4xl font-semibold ${
+                    language === "hi"
+                      ? "leading-[1.16] tracking-normal"
+                      : "leading-[0.95] tracking-[-0.025em]"
+                  } sm:text-5xl`}
                 >
-                  {selected.title}
+                  {getItemTitle(selected)}
                 </h2>
               )}
 
               <div className="mt-6 h-px w-12 bg-[#a8441b]/40" />
 
-              {selected.desc && (
+              {getItemDescription(selected) && (
                 <p className="mt-6 text-[14px] leading-7 text-[#71645d]">
-                  {selected.desc}
+                  {getItemDescription(selected)}
                 </p>
               )}
 
-              <p className="mt-10 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#a8441b]">
-                Mantra · Vidhi · Aastha
+              <p
+                className={`mt-10 text-[10px] font-semibold text-[#a8441b] ${
+                  language === "hi"
+                    ? "tracking-[0.07em]"
+                    : "uppercase tracking-[0.2em]"
+                }`}
+              >
+                {t(
+                  "galleryPage.mantraLine"
+                )}
               </p>
 
               <p className="mt-4 text-xs text-[#8b7d75]">
-                Image {selectedIndex + 1} of{" "}
-                {gallery.length}
+                {t(
+                  "galleryPage.position"
+                )
+                  .replace(
+                    "{current}",
+                    selectedIndex + 1
+                  )
+                  .replace(
+                    "{total}",
+                    gallery.length
+                  )}
               </p>
             </div>
           </div>
