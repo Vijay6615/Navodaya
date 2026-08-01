@@ -1,6 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+
 import {
   Download,
   MoreVertical,
@@ -9,16 +14,42 @@ import {
   X,
 } from "lucide-react";
 
+const INSTALL_DISMISSED_KEY =
+  "puja-dham-install-dismissed";
+
 export default function InstallPujaDham() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState(null);
+
+  const [isInstalled, setIsInstalled] =
+    useState(false);
+
+  const [isIOS, setIsIOS] =
+    useState(false);
+
+  const [showBanner, setShowBanner] =
+    useState(false);
+
+  const [showHelp, setShowHelp] =
+    useState(false);
+
+  const dismissForCurrentVisit = useCallback(() => {
+    // Isi tab/session me internal page change ya reload ke baad
+    // popup dobara nahi dikhega.
+    window.sessionStorage.setItem(
+      INSTALL_DISMISSED_KEY,
+      "true"
+    );
+
+    setShowBanner(false);
+    setShowHelp(false);
+  }, []);
 
   useEffect(() => {
     const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
+      window.matchMedia(
+        "(display-mode: standalone)"
+      ).matches ||
       window.navigator.standalone === true;
 
     const iosDevice =
@@ -26,11 +57,16 @@ export default function InstallPujaDham() {
         window.navigator.userAgent
       ) && !window.MSStream;
 
+    const wasDismissed =
+      window.sessionStorage.getItem(
+        INSTALL_DISMISSED_KEY
+      ) === "true";
+
     setIsInstalled(standalone);
     setIsIOS(iosDevice);
 
-    // Har fresh website visit/page reload par card turant dikhega.
-    if (!standalone) {
+    // Website visit ke start me sirf ek baar dikhao.
+    if (!standalone && !wasDismissed) {
       setShowBanner(true);
     }
 
@@ -38,11 +74,23 @@ export default function InstallPujaDham() {
       event.preventDefault();
       setDeferredPrompt(event);
 
-      // Browser install event ready hote hi banner visible rakho.
-      setShowBanner(true);
+      const dismissed =
+        window.sessionStorage.getItem(
+          INSTALL_DISMISSED_KEY
+        ) === "true";
+
+      // Browser event route change ke baad fire ho,
+      // tab bhi dismissed popup ko dobara mat kholo.
+      if (!dismissed) {
+        setShowBanner(true);
+      }
     };
 
     const handleAppInstalled = () => {
+      window.sessionStorage.removeItem(
+        INSTALL_DISMISSED_KEY
+      );
+
       setIsInstalled(true);
       setDeferredPrompt(null);
       setShowBanner(false);
@@ -73,39 +121,61 @@ export default function InstallPujaDham() {
   }, []);
 
   const handleInstall = useCallback(async () => {
-    // iPhone/iPad me browser ka native JS install prompt nahi hota.
+    // iPhone/iPad me JavaScript se native
+    // installation prompt available nahi hota.
     if (isIOS) {
       setShowBanner(true);
       setShowHelp(true);
       return;
     }
 
-    // Chrome/Edge ka real install prompt ready hai.
+    // Chrome/Edge ka real install prompt.
     if (deferredPrompt) {
       await deferredPrompt.prompt();
 
-      const choice = await deferredPrompt.userChoice;
+      const choice =
+        await deferredPrompt.userChoice;
 
       if (choice.outcome === "accepted") {
+        window.sessionStorage.removeItem(
+          INSTALL_DISMISSED_KEY
+        );
+
         setIsInstalled(true);
         setShowBanner(false);
+        setShowHelp(false);
+      } else {
+        // Native prompt bhi dismiss kiya to isi visit me
+        // custom card baar-baar nahi dikhega.
+        dismissForCurrentVisit();
       }
 
-      // Ek event instance ko sirf ek baar use kiya ja sakta hai.
+      // beforeinstallprompt event instance
+      // sirf ek baar use hota hai.
       setDeferredPrompt(null);
       return;
     }
 
-    // Browser prompt ready/supported na ho to manual steps dikhao.
+    // Prompt ready/supported na ho to manual steps.
     setShowBanner(true);
     setShowHelp(true);
-  }, [deferredPrompt, isIOS]);
+  }, [
+    deferredPrompt,
+    dismissForCurrentVisit,
+    isIOS,
+  ]);
 
   useEffect(() => {
     const handleNavbarInstall = () => {
       if (isInstalled) {
         return;
       }
+
+      // Navbar ke Download App par click hone par
+      // session dismissal ko override karke prompt kholo.
+      window.sessionStorage.removeItem(
+        INSTALL_DISMISSED_KEY
+      );
 
       setShowBanner(true);
       handleInstall();
@@ -124,13 +194,6 @@ export default function InstallPujaDham() {
     };
   }, [handleInstall, isInstalled]);
 
-  const closeBanner = () => {
-    // Sirf current open visit ke liye close hoga.
-    // Next full website visit/reload par phir dikhega.
-    setShowBanner(false);
-    setShowHelp(false);
-  };
-
   if (isInstalled || !showBanner) {
     return null;
   }
@@ -145,7 +208,7 @@ export default function InstallPujaDham() {
         <button
           type="button"
           aria-label="Close install prompt"
-          onClick={closeBanner}
+          onClick={dismissForCurrentVisit}
           className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
         >
           <X size={17} />
@@ -166,8 +229,8 @@ export default function InstallPujaDham() {
             </p>
 
             <p className="mt-1 text-[11px] leading-4 text-gray-500">
-              Quick access ke liye Puja Dham ko apne
-              home screen par add karein.
+              Quick access ke liye Puja Dham ko
+              apne home screen par add karein.
             </p>
           </div>
         </div>
@@ -183,7 +246,7 @@ export default function InstallPujaDham() {
 
         <button
           type="button"
-          onClick={closeBanner}
+          onClick={dismissForCurrentVisit}
           className="mt-2 h-9 w-full rounded-xl text-[11px] font-semibold text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
         >
           Not now
@@ -197,7 +260,9 @@ export default function InstallPujaDham() {
         >
           <div
             className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -269,7 +334,8 @@ export default function InstallPujaDham() {
                     <>
                       Chrome ka{" "}
                       <strong className="inline-flex items-center gap-1 text-gray-800">
-                        Menu <MoreVertical size={15} />
+                        Menu{" "}
+                        <MoreVertical size={15} />
                       </strong>{" "}
                       open karo.
                     </>
