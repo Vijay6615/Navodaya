@@ -6,6 +6,8 @@ module.exports = {
   images: {
     dangerouslyAllowSVG: true,
 
+    qualities: [72, 74, 75, 76, 78, 80],
+
     remotePatterns: [
       {
         protocol: "https",

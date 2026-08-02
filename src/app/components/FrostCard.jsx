@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -155,7 +156,7 @@ function Countdown({ date }) {
 
     updateTimer();
 
-    const interval = setInterval(updateTimer, 1000);
+    const interval = setInterval(updateTimer, 60_000);
 
     return () => clearInterval(interval);
   }, [date]);
@@ -577,16 +578,24 @@ export default function MonthlyEventsSection() {
                 <article
                   key={i}
                   className="group overflow-hidden border border-[#e9e1dc] bg-[#fffaf7]"
+                  style={{
+                    contentVisibility: "auto",
+                    containIntrinsicSize: "760px",
+                  }}
                 >
 
                   {/* IMAGE */}
 
                   <div className="relative h-[280px] overflow-hidden md:h-[360px]">
 
-                    <img
+                    <Image
                       src={event.img}
                       alt={getEventText(t, event, "title")}
-                      className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
+                      fill
+                      loading="lazy"
+                      quality={76}
+                      sizes="(max-width: 767px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
@@ -738,6 +747,8 @@ export default function MonthlyEventsSection() {
               <img
                 src="/Pujadhamlogo1.png"
                 alt="Puja Dham"
+                loading="lazy"
+                decoding="async"
                 className="mx-auto h-[75px] w-auto object-contain"
               />
 
@@ -824,10 +835,13 @@ export default function MonthlyEventsSection() {
               <div className="grid h-full w-full md:grid-cols-[42%_58%]">
                 {/* LEFT VISUAL - DESKTOP */}
                 <div className="relative hidden h-full overflow-hidden md:block">
-                  <img
+                  <Image
                     src={selectedEvent.img}
                     alt={getEventText(t, selectedEvent, "title")}
-                    className="h-full w-full object-cover"
+                    fill
+                    priority
+                    sizes="42vw"
+                    className="object-cover"
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
@@ -899,6 +913,8 @@ export default function MonthlyEventsSection() {
                         <img
                           src="/Pujadhamlogo1.png"
                           alt="Puja Dham"
+                          loading="lazy"
+                          decoding="async"
                           className="mx-auto h-[48px] w-auto object-contain sm:h-[56px] md:h-[64px]"
                         />
 
@@ -927,9 +943,14 @@ export default function MonthlyEventsSection() {
                       {/* MOBILE EVENT SUMMARY */}
                       <div className="mt-4 overflow-hidden rounded-[20px] border border-[#eadfd7] bg-[#fffaf7] md:hidden">
                         <div className="flex gap-3 p-3">
-                          <img
+                          <Image
                             src={selectedEvent.img}
                             alt={getEventText(t, selectedEvent, "title")}
+                            width={76}
+                            height={76}
+                            loading="lazy"
+                            quality={72}
+                            sizes="76px"
                             className="h-[76px] w-[76px] shrink-0 rounded-[15px] object-cover"
                           />
 
@@ -1267,6 +1288,17 @@ export default function MonthlyEventsSection() {
           .event-input,
           .event-textarea {
             font-size: 13px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .event-booking-panel {
+            animation: none !important;
+          }
+
+          .event-input,
+          .event-textarea {
+            transition: none !important;
           }
         }
       `}</style>

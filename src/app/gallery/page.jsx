@@ -114,9 +114,6 @@ export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] =
     useState(null);
 
-  const [pageReady, setPageReady] =
-    useState(false);
-
   const popupRef = useRef(null);
 
   const selected =
@@ -180,15 +177,10 @@ export default function GalleryPage() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setPageReady(true);
-    }, 80);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
     if (!selected) return undefined;
+
+    const previousOverflow =
+      document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
 
@@ -214,7 +206,8 @@ export default function GalleryPage() {
     );
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow =
+        previousOverflow;
 
       window.removeEventListener(
         "keydown",
@@ -252,12 +245,14 @@ export default function GalleryPage() {
 
     popupElement.addEventListener(
       "touchstart",
-      handleTouchStart
+      handleTouchStart,
+      { passive: true }
     );
 
     popupElement.addEventListener(
       "touchend",
-      handleTouchEnd
+      handleTouchEnd,
+      { passive: true }
     );
 
     return () => {
@@ -285,13 +280,7 @@ export default function GalleryPage() {
 
         <div className="relative mx-auto max-w-[1400px] px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-20">
           {/* Heading */}
-          <div
-            className={`transition-all duration-1000 ease-out ${
-              pageReady
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0"
-            }`}
-          >
+          <div>
             <p
               className={`text-center text-[10px] font-bold text-[#a8441b] ${
                 language === "hi"
@@ -348,23 +337,22 @@ export default function GalleryPage() {
               const itemDescription =
                 getItemDescription(item);
 
+              const isFirstImage =
+                item.type === "image" &&
+                index === 0;
+
               return (
                 <article
                   key={`${item.src}-${index}`}
                   onClick={() =>
                     setSelectedIndex(index)
                   }
+                  className="galleryCard group relative mb-5 break-inside-avoid cursor-pointer overflow-hidden border border-[#eee8e2] bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(66,34,18,0.12)]"
                   style={{
-                    animationDelay: `${Math.min(
-                      index * 80,
-                      600
-                    )}ms`,
+                    contentVisibility: "auto",
+                    containIntrinsicSize:
+                      "620px",
                   }}
-                  className={`galleryCard group relative mb-5 break-inside-avoid cursor-pointer overflow-hidden border border-[#eee8e2] bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(66,34,18,0.12)] ${
-                    pageReady
-                      ? "galleryCardReady"
-                      : ""
-                  }`}
                 >
                   <div className="relative overflow-hidden bg-[#f5f0ec]">
                     {item.type === "image" ? (
@@ -379,7 +367,17 @@ export default function GalleryPage() {
                             )
                           }
                           fill
-                          loading="lazy"
+                          priority={isFirstImage}
+                          loading={
+                            isFirstImage
+                              ? "eager"
+                              : "lazy"
+                          }
+                          fetchPriority={
+                            isFirstImage
+                              ? "high"
+                              : "auto"
+                          }
                           sizes="
                             (max-width: 640px) 100vw,
                             (max-width: 1024px) 50vw,
@@ -392,10 +390,9 @@ export default function GalleryPage() {
                       <video
                         src={item.src}
                         muted
-                        autoPlay
                         loop
                         playsInline
-                        preload="metadata"
+                        preload="none"
                         className="aspect-[4/5] w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.035]"
                       />
                     )}
@@ -510,6 +507,7 @@ export default function GalleryPage() {
                   controls
                   autoPlay
                   playsInline
+                  preload="metadata"
                   className="max-h-[78vh] w-full object-contain"
                 />
               )}
@@ -612,14 +610,8 @@ export default function GalleryPage() {
 
       <style jsx global>{`
         .galleryCard {
-          opacity: 0;
-          transform: translateY(28px);
-        }
-
-        .galleryCardReady {
-          animation: galleryReveal 850ms
-            cubic-bezier(0.22, 1, 0.36, 1)
-            forwards;
+          opacity: 1;
+          transform: none;
         }
 
         .galleryOverlay {
@@ -631,13 +623,6 @@ export default function GalleryPage() {
           animation: galleryViewerIn 600ms
             cubic-bezier(0.22, 1, 0.36, 1)
             both;
-        }
-
-        @keyframes galleryReveal {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
         }
 
         @keyframes galleryOverlayIn {
@@ -666,12 +651,12 @@ export default function GalleryPage() {
 
         @media (prefers-reduced-motion: reduce) {
           .galleryCard,
-          .galleryCardReady,
           .galleryOverlay,
           .galleryViewer {
             opacity: 1;
             transform: none;
             animation: none;
+            transition: none;
           }
         }
       `}</style>

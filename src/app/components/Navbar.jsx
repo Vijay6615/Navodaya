@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -227,8 +228,20 @@ export default function Navbar() {
   }, [menuOpen]);
 
   useEffect(() => {
+    const hasOpenLayer =
+      menuOpen ||
+      desktopPujaOpen ||
+      desktopSevaOpen ||
+      searchOpen ||
+      settingsOpen;
+
+    if (!hasOpenLayer) {
+      return undefined;
+    }
+
     const closeOutside = (event) => {
       if (
+        menuOpen &&
         menuRef.current &&
         !menuRef.current.contains(event.target)
       ) {
@@ -238,6 +251,7 @@ export default function Navbar() {
       }
 
       if (
+        desktopPujaOpen &&
         desktopPujaRef.current &&
         !desktopPujaRef.current.contains(event.target)
       ) {
@@ -245,6 +259,7 @@ export default function Navbar() {
       }
 
       if (
+        desktopSevaOpen &&
         desktopSevaRef.current &&
         !desktopSevaRef.current.contains(event.target)
       ) {
@@ -252,6 +267,7 @@ export default function Navbar() {
       }
 
       if (
+        searchOpen &&
         searchRef.current &&
         !searchRef.current.contains(event.target)
       ) {
@@ -259,6 +275,7 @@ export default function Navbar() {
       }
 
       if (
+        settingsOpen &&
         settingsRef.current &&
         !settingsRef.current.contains(event.target)
       ) {
@@ -266,8 +283,16 @@ export default function Navbar() {
       }
     };
 
-    document.addEventListener("mousedown", closeOutside);
-    document.addEventListener("touchstart", closeOutside);
+    document.addEventListener(
+      "mousedown",
+      closeOutside
+    );
+
+    document.addEventListener(
+      "touchstart",
+      closeOutside,
+      { passive: true }
+    );
 
     return () => {
       document.removeEventListener(
@@ -280,7 +305,13 @@ export default function Navbar() {
         closeOutside
       );
     };
-  }, []);
+  }, [
+    menuOpen,
+    desktopPujaOpen,
+    desktopSevaOpen,
+    searchOpen,
+    settingsOpen,
+  ]);
 
   const localizedSearchLinks =
     searchLinks.map((item) => ({
@@ -296,8 +327,6 @@ export default function Navbar() {
           searchText.trim().toLowerCase()
         )
     );
-
-  const SHARE_IMAGE_URL = "/Pujadhamlogo1.png";
 
 const getShareMessage = () => {
   // Rebuild message whenever selected language changes.
@@ -408,6 +437,7 @@ const handleInstallApp = () => {
                   : "Open navigation menu"
               }
               aria-expanded={menuOpen}
+              aria-controls="mobile-navigation-drawer"
               onClick={() => {
                 setMenuOpen((value) => !value);
                 setMobilePujaOpen(false);
@@ -441,6 +471,7 @@ const handleInstallApp = () => {
 
             {/* MOBILE SLIDE DRAWER */}
             <aside
+              id="mobile-navigation-drawer"
               aria-label="Mobile navigation"
               className={`fixed bottom-0 left-0 top-0 z-[120] flex w-[58vw] min-w-[230px] max-w-[310px] flex-col border-r border-[#eee8e2] bg-white shadow-[18px_0_55px_rgba(39,27,20,0.18)] transition-transform duration-300 ease-out lg:hidden ${
                 menuOpen
@@ -456,9 +487,13 @@ const handleInstallApp = () => {
                   aria-label="Puja Dham Home"
                   className="flex items-center justify-self-start"
                 >
-                  <img
+                  <Image
                     src="/Pujadhamlogo1.png"
                     alt="Puja Dham Logo"
+                    width={86}
+                    height={62}
+                    loading="lazy"
+                    sizes="86px"
                     className="h-[62px] w-auto max-w-[86px] object-contain"
                   />
                 </Link>
@@ -681,9 +716,14 @@ const handleInstallApp = () => {
             aria-label="Puja Dham Home"
             className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 lg:static lg:mr-12 lg:translate-x-0 lg:translate-y-0"
           >
-            <img
+            <Image
               src="/Pujadhamlogo1.png"
               alt="Puja Dham Logo"
+              width={450}
+              height={130}
+              priority
+              fetchPriority="high"
+              sizes="(max-width: 639px) 320px, (max-width: 1023px) 350px, (max-width: 1279px) 400px, 450px"
               className="block h-[100px] w-auto max-w-[320px] object-contain sm:h-[110px] sm:max-w-[350px] lg:h-[120px] lg:max-w-[400px] xl:h-[130px] xl:max-w-[450px]"
             />
           </Link>
@@ -1126,6 +1166,18 @@ const handleInstallApp = () => {
           </div>
         </nav>
       </header>
+
+      <style jsx global>{`
+        @media (prefers-reduced-motion: reduce) {
+          header *,
+          #mobile-navigation-drawer {
+            scroll-behavior: auto !important;
+            transition-duration: 0.001ms !important;
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+          }
+        }
+      `}</style>
 
       <div
         className="h-[78px] lg:h-[88px]"

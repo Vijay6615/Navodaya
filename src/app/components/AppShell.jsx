@@ -4,37 +4,37 @@ import { usePathname } from "next/navigation";
 
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import ClientAnimation from "./ClientAnimation";
 import InstallPujaDham from "./InstallPujaDham";
+import ServiceWorkerRegister from "./ServiceWorkerRegister";
 
-export default function AppShell({ children }) {
-  const pathname = usePathname();
+const AUTH_ROUTES = new Set([
+  "/login",
+  "/signup",
+  "/forgot-password",
+]);
 
-  // Auth pages:
-  // In pages par Navbar aur Footer nahi dikhana
+export default function AppShell({
+  children,
+}) {
+  const pathname = usePathname() || "";
   const isAuthPage =
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/forgot-password";
+    AUTH_ROUTES.has(pathname);
 
   return (
     <div className="flex min-h-svh w-full flex-col">
-      {/* Global animations */}
-      <ClientAnimation />
+      <ServiceWorkerRegister />
 
-      {/* Auth pages par Navbar hide */}
       {!isAuthPage && <Navbar />}
 
-      {/* Page content */}
-      <main className="w-full flex-1">
+      <div className="w-full flex-1">
         {children}
-      </main>
+      </div>
 
-      {/* Auth pages par Footer hide */}
       {!isAuthPage && <Footer />}
 
-      {/* Install prompt sirf public website pages par */}
-      {!isAuthPage && <InstallPujaDham />}
+      {!isAuthPage && (
+        <InstallPujaDham />
+      )}
     </div>
   );
 }

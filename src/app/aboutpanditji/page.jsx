@@ -1,19 +1,7 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-
 import Link from "next/link";
-
-const displayFont = {
-  className: "font-display-en",
-};
-
-const hindiDisplayFont = {
-  className: "font-display-hi",
-};
+import Image from "next/image";
 
 import {
   ArrowRight,
@@ -26,7 +14,13 @@ import {
 
 import { useLanguage } from "../context/LanguageContext";
 
+const displayFont = {
+  className: "font-display-en",
+};
 
+const hindiDisplayFont = {
+  className: "font-display-hi",
+};
 
 const SPECIALIZATION_KEYS = [
   "vedicRituals",
@@ -37,23 +31,7 @@ const SPECIALIZATION_KEYS = [
 ];
 
 export default function AboutPanditjiPage() {
-  const {
-    language,
-    t,
-  } = useLanguage();
-
-  const [pageReady, setPageReady] =
-    useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(
-      () => setPageReady(true),
-      80
-    );
-
-    return () =>
-      clearTimeout(timer);
-  }, []);
+  const { language, t } = useLanguage();
 
   const headingFontClass =
     language === "hi"
@@ -75,36 +53,21 @@ export default function AboutPanditjiPage() {
       <section className="relative">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#fff5ef] blur-[100px]" />
-
           <div className="absolute -right-40 top-72 h-[440px] w-[440px] rounded-full bg-[#faf3ee] blur-[110px]" />
         </div>
 
         <div className="relative mx-auto max-w-[1400px] px-5 py-10 sm:px-8 md:py-16 lg:px-10 lg:py-20">
-          <div
-            className={`mb-12 text-center transition-all duration-1000 ease-out ${
-              pageReady
-                ? "translate-y-0 opacity-100"
-                : "-translate-y-5 opacity-0"
-            }`}
-          >
+          <div className="mb-12 text-center">
             <p
               className={`text-[12px] font-semibold text-[#a8441b] sm:text-[13px] ${eyebrowClass}`}
             >
-              {t(
-                "aboutPandit.mantraLine"
-              )}
+              {t("aboutPandit.mantraLine")}
             </p>
 
             <div className="mx-auto mt-4 h-px w-12 bg-[#a8441b]/40" />
           </div>
 
-          <div
-            className={`mb-10 max-w-3xl transition-all delay-100 duration-1000 ease-out md:mb-14 ${
-              pageReady
-                ? "translate-x-0 opacity-100"
-                : "-translate-x-10 opacity-0"
-            }`}
-          >
+          <div className="mb-10 max-w-3xl md:mb-14">
             <h1
               className={`${headingFontClass} mt-5 text-[48px] font-semibold ${
                 language === "hi"
@@ -112,26 +75,21 @@ export default function AboutPanditjiPage() {
                   : "leading-[0.92] tracking-[-0.035em]"
               } sm:text-6xl lg:text-[78px]`}
             >
-              {t(
-                "aboutPandit.heroTitle"
-              )}
+              {t("aboutPandit.heroTitle")}
             </h1>
           </div>
 
           <div className="grid items-stretch gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
-            <div
-              className={`group relative min-h-[500px] overflow-hidden bg-[#f5f0ec] transition-all delay-200 duration-1000 ease-out sm:min-h-[620px] ${
-                pageReady
-                  ? "translate-x-0 opacity-100"
-                  : "-translate-x-14 opacity-0"
-              }`}
-            >
-              <img
+            <div className="group relative min-h-[500px] overflow-hidden bg-[#f5f0ec] sm:min-h-[620px]">
+              <Image
                 src="/images/panditji.jpg"
-                alt={t(
-                  "aboutPandit.imageAlt"
-                )}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.025]"
+                alt={t("aboutPandit.imageAlt")}
+                fill
+                priority
+                fetchPriority="high"
+                quality={78}
+                sizes="(max-width: 1023px) 100vw, 45vw"
+                className="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.025]"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
@@ -144,9 +102,7 @@ export default function AboutPanditjiPage() {
                       : "uppercase tracking-[0.2em]"
                   }`}
                 >
-                  {t(
-                    "aboutPandit.role"
-                  )}
+                  {t("aboutPandit.role")}
                 </p>
 
                 <h2
@@ -156,20 +112,12 @@ export default function AboutPanditjiPage() {
                       : "tracking-[-0.02em]"
                   } sm:text-4xl`}
                 >
-                  {t(
-                    "aboutPandit.panditName"
-                  )}
+                  {t("aboutPandit.panditName")}
                 </h2>
               </div>
             </div>
 
-            <div
-              className={`flex flex-col justify-center border border-[#eee8e2] bg-[#fffdfb] p-6 transition-all delay-300 duration-1000 ease-out sm:p-9 lg:p-12 ${
-                pageReady
-                  ? "translate-x-0 opacity-100"
-                  : "translate-x-14 opacity-0"
-              }`}
-            >
+            <div className="flex flex-col justify-center border border-[#eee8e2] bg-[#fffdfb] p-6 sm:p-9 lg:p-12">
               <div className="flex items-center gap-2 text-[#a8441b]">
                 <BadgeCheck
                   size={18}
@@ -179,9 +127,7 @@ export default function AboutPanditjiPage() {
                 <span
                   className={`text-[11px] font-bold ${smallLabelClass}`}
                 >
-                  {t(
-                    "aboutPandit.certifiedRole"
-                  )}
+                  {t("aboutPandit.certifiedRole")}
                 </span>
               </div>
 
@@ -192,74 +138,44 @@ export default function AboutPanditjiPage() {
                     : "tracking-[-0.025em]"
                 } sm:text-5xl`}
               >
-                {t(
-                  "aboutPandit.panditName"
-                )}
+                {t("aboutPandit.panditName")}
               </h2>
 
               <div className="mt-6 flex flex-wrap gap-2">
                 <TrustTag
-                  icon={
-                    <BookOpen
-                      size={14}
-                    />
-                  }
-                  label={t(
-                    "aboutPandit.trust.knowledge"
-                  )}
+                  icon={<BookOpen size={14} />}
+                  label={t("aboutPandit.trust.knowledge")}
                 />
 
                 <TrustTag
-                  icon={
-                    <Sparkles
-                      size={14}
-                    />
-                  }
-                  label={t(
-                    "aboutPandit.trust.vedicCertified"
-                  )}
+                  icon={<Sparkles size={14} />}
+                  label={t("aboutPandit.trust.vedicCertified")}
                 />
 
                 <TrustTag
-                  icon={
-                    <Star size={14} />
-                  }
-                  label={t(
-                    "aboutPandit.trust.trusted"
-                  )}
+                  icon={<Star size={14} />}
+                  label={t("aboutPandit.trust.trusted")}
                 />
               </div>
 
               <div className="mt-9 grid grid-cols-3 border-y border-[#e9e1dc]">
                 <Stat
                   value="30+"
-                  label={t(
-                    "aboutPandit.stats.years"
-                  )}
-                  fontClass={
-                    headingFontClass
-                  }
+                  label={t("aboutPandit.stats.years")}
+                  fontClass={headingFontClass}
                 />
 
                 <Stat
                   value="20K+"
-                  label={t(
-                    "aboutPandit.stats.pujas"
-                  )}
+                  label={t("aboutPandit.stats.pujas")}
                   border
-                  fontClass={
-                    headingFontClass
-                  }
+                  fontClass={headingFontClass}
                 />
 
                 <Stat
                   value="4.9"
-                  label={t(
-                    "aboutPandit.stats.rating"
-                  )}
-                  fontClass={
-                    headingFontClass
-                  }
+                  label={t("aboutPandit.stats.rating")}
+                  fontClass={headingFontClass}
                 />
               </div>
 
@@ -271,9 +187,7 @@ export default function AboutPanditjiPage() {
                 />
 
                 <p className="relative pl-8 text-[14px] leading-7 text-[#625750] sm:text-[15px]">
-                  {t(
-                    "aboutPandit.biography"
-                  )}
+                  {t("aboutPandit.biography")}
                 </p>
               </div>
 
@@ -285,28 +199,24 @@ export default function AboutPanditjiPage() {
                       : "uppercase tracking-[0.2em]"
                   }`}
                 >
-                  {t(
-                    "aboutPandit.specializationsLabel"
-                  )}
+                  {t("aboutPandit.specializationsLabel")}
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {SPECIALIZATION_KEYS.map(
-                    (key) => {
-                      const label = t(
-                        `aboutPandit.specializations.${key}`
-                      );
+                  {SPECIALIZATION_KEYS.map((key) => {
+                    const label = t(
+                      `aboutPandit.specializations.${key}`
+                    );
 
-                      return (
-                        <span
-                          key={key}
-                          className="border border-[#e8ddd6] bg-white px-4 py-2 text-[12px] font-medium text-[#514640] transition duration-300 hover:-translate-y-0.5 hover:border-[#a8441b] hover:text-[#a8441b]"
-                        >
-                          {label}
-                        </span>
-                      );
-                    }
-                  )}
+                    return (
+                      <span
+                        key={key}
+                        className="border border-[#e8ddd6] bg-white px-4 py-2 text-[12px] font-medium text-[#514640] transition duration-300 hover:-translate-y-0.5 hover:border-[#a8441b] hover:text-[#a8441b]"
+                      >
+                        {label}
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -315,9 +225,7 @@ export default function AboutPanditjiPage() {
                   href="/pujas"
                   className="group inline-flex h-12 items-center justify-center gap-3 bg-[#a8441b] px-7 text-[13px] font-semibold text-white transition-all duration-300 hover:bg-[#873514] hover:shadow-[0_14px_30px_rgba(168,68,27,0.22)]"
                 >
-                  {t(
-                    "aboutPandit.explorePujas"
-                  )}
+                  {t("aboutPandit.explorePujas")}
 
                   <ArrowRight
                     size={17}
@@ -330,15 +238,15 @@ export default function AboutPanditjiPage() {
         </div>
       </section>
 
-      <section className="border-t border-[#eee8e2] bg-[#fffdfb]">
+      <section
+        className="border-t border-[#eee8e2] bg-[#fffdfb]"
+        style={{
+          contentVisibility: "auto",
+          containIntrinsicSize: "700px",
+        }}
+      >
         <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:px-10 lg:py-24">
-          <div
-            className={`transition-all delay-500 duration-1000 ease-out ${
-              pageReady
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0"
-            }`}
-          >
+          <div>
             <p
               className={`text-[10px] font-bold text-[#a8441b] ${
                 language === "hi"
@@ -346,9 +254,7 @@ export default function AboutPanditjiPage() {
                   : "uppercase tracking-[0.22em]"
               }`}
             >
-              {t(
-                "aboutPandit.philosophy.eyebrow"
-              )}
+              {t("aboutPandit.philosophy.eyebrow")}
             </p>
 
             <h2
@@ -358,35 +264,17 @@ export default function AboutPanditjiPage() {
                   : "leading-[0.98] tracking-[-0.025em]"
               } sm:text-5xl`}
             >
-              {t(
-                "aboutPandit.philosophy.line1"
-              )}
-
+              {t("aboutPandit.philosophy.line1")}
               <br />
-
-              {t(
-                "aboutPandit.philosophy.line2"
-              )}
-
+              {t("aboutPandit.philosophy.line2")}
               <br />
-
-              {t(
-                "aboutPandit.philosophy.line3"
-              )}
+              {t("aboutPandit.philosophy.line3")}
             </h2>
           </div>
 
-          <div
-            className={`max-w-2xl transition-all delay-700 duration-1000 ease-out lg:pt-8 ${
-              pageReady
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0"
-            }`}
-          >
+          <div className="max-w-2xl lg:pt-8">
             <p className="text-[16px] leading-8 text-[#6f635c] sm:text-[18px]">
-              {t(
-                "aboutPandit.philosophy.description"
-              )}
+              {t("aboutPandit.philosophy.description")}
             </p>
 
             <div className="mt-10 h-px w-full bg-[#e8dfda]" />
@@ -401,9 +289,7 @@ export default function AboutPanditjiPage() {
                     : "uppercase tracking-[0.18em]"
                 }`}
               >
-                {t(
-                  "aboutPandit.philosophy.mantraLine"
-                )}
+                {t("aboutPandit.philosophy.mantraLine")}
               </p>
             </div>
           </div>
@@ -413,10 +299,7 @@ export default function AboutPanditjiPage() {
   );
 }
 
-function TrustTag({
-  icon,
-  label,
-}) {
+function TrustTag({ icon, label }) {
   return (
     <span className="flex items-center gap-2 border border-[#e8ddd6] bg-white px-3 py-2 text-[11px] font-semibold text-[#5f534c] transition duration-300 hover:border-[#a8441b]/50">
       <span className="text-[#a8441b]">

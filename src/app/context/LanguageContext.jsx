@@ -11,60 +11,90 @@ import {
 
 import { translations } from "../data/translations";
 
-const LANGUAGE_STORAGE_KEY = "puja-dham-language";
+const LANGUAGE_STORAGE_KEY =
+  "puja-dham-language";
+
+const SUPPORTED_LANGUAGES = new Set([
+  "en",
+  "hi",
+]);
 
 const LanguageContext = createContext(null);
 
 function getNestedValue(object, path) {
-  return path
+  return String(path)
     .split(".")
     .reduce(
       (current, key) =>
-        current && current[key] !== undefined
+        current &&
+        current[key] !== undefined
           ? current[key]
           : undefined,
       object
     );
 }
 
-export function LanguageProvider({ children }) {
+function isSupportedLanguage(value) {
+  return SUPPORTED_LANGUAGES.has(value);
+}
+
+export function LanguageProvider({
+  children,
+}) {
   const [language, setLanguageState] =
     useState("en");
 
   useEffect(() => {
-    const savedLanguage =
-      window.localStorage.getItem(
-        LANGUAGE_STORAGE_KEY
-      );
+    try {
+      const savedLanguage =
+        window.localStorage.getItem(
+          LANGUAGE_STORAGE_KEY
+        );
 
-    if (
-      savedLanguage === "en" ||
-      savedLanguage === "hi"
-    ) {
-      setLanguageState(savedLanguage);
+      if (isSupportedLanguage(savedLanguage)) {
+        setLanguageState(savedLanguage);
+      }
+    } catch (error) {
+      console.warn(
+        "Saved language could not be read:",
+        error
+      );
     }
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang =
+    const htmlElement =
+      document.documentElement;
+
+    htmlElement.lang =
       language === "hi" ? "hi" : "en";
+
+    htmlElement.dir = "ltr";
   }, [language]);
 
   const setLanguage = useCallback(
     (nextLanguage) => {
-      if (
-        nextLanguage !== "en" &&
-        nextLanguage !== "hi"
-      ) {
+      if (!isSupportedLanguage(nextLanguage)) {
         return;
       }
 
-      setLanguageState(nextLanguage);
-
-      window.localStorage.setItem(
-        LANGUAGE_STORAGE_KEY,
-        nextLanguage
+      setLanguageState((currentLanguage) =>
+        currentLanguage === nextLanguage
+          ? currentLanguage
+          : nextLanguage
       );
+
+      try {
+        window.localStorage.setItem(
+          LANGUAGE_STORAGE_KEY,
+          nextLanguage
+        );
+      } catch (error) {
+        console.warn(
+          "Selected language could not be saved:",
+          error
+        );
+      }
     },
     []
   );
@@ -77,10 +107,11 @@ export function LanguageProvider({ children }) {
 
   const t = useCallback(
     (key, fallback = key) => {
-      const translatedValue = getNestedValue(
-        translations[language],
-        key
-      );
+      const translatedValue =
+        getNestedValue(
+          translations[language],
+          key
+        );
 
       if (
         typeof translatedValue === "string"
@@ -88,10 +119,11 @@ export function LanguageProvider({ children }) {
         return translatedValue;
       }
 
-      const englishValue = getNestedValue(
-        translations.en,
-        key
-      );
+      const englishValue =
+        getNestedValue(
+          translations.en,
+          key
+        );
 
       return typeof englishValue === "string"
         ? englishValue
@@ -117,14 +149,17 @@ export function LanguageProvider({ children }) {
   );
 
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider
+      value={value}
+    >
       {children}
     </LanguageContext.Provider>
   );
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext);
+  const context =
+    useContext(LanguageContext);
 
   if (!context) {
     throw new Error(

@@ -316,7 +316,13 @@ function PujaBookingCard({
     (isOnline ? t("myBookings.common.notProvided") : t("myBookings.puja.payOnService"));
 
   return (
-    <article className="overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_14px_40px_rgba(65,40,22,0.06)]">
+    <article
+      className="overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_14px_40px_rgba(65,40,22,0.06)]"
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "1200px",
+      }}
+    >
       <div className="border-b border-[#eee4dc] bg-gradient-to-br from-[#fff8f2] via-white to-[#f4faf6] p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
@@ -660,7 +666,13 @@ function SevaBookingCard({
       : `₹${Number(booking.amount || 0).toLocaleString("en-IN")}`;
 
   return (
-    <article className="overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_14px_40px_rgba(65,40,22,0.06)]">
+    <article
+      className="overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_14px_40px_rgba(65,40,22,0.06)]"
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "650px",
+      }}
+    >
       <div className="border-b border-[#eee4dc] bg-gradient-to-br from-[#fff8f2] via-white to-[#fffdf8] p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -1144,10 +1156,15 @@ export default function MyBookingsPage() {
             <button
               type="button"
               onClick={fetchMyBookings}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#e4d8cf] bg-white text-gray-500 shadow-sm transition hover:border-[#a8441b] hover:text-[#a8441b]"
+              aria-busy={loading}
+              disabled={loading}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#e4d8cf] bg-white text-gray-500 shadow-sm transition hover:border-[#a8441b] hover:text-[#a8441b] disabled:cursor-wait disabled:opacity-60"
               title={t("myBookings.actions.refresh")}
             >
-              <RefreshCw size={17} />
+              <RefreshCw
+                size={17}
+                className={loading ? "animate-spin" : ""}
+              />
             </button>
           </div>
 

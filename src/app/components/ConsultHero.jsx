@@ -1,10 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Star,
 } from "lucide-react";
+
+import { useLanguage } from "../context/LanguageContext";
 
 const displayFont = {
   className: "font-display-en",
@@ -13,10 +16,6 @@ const displayFont = {
 const hindiDisplayFont = {
   className: "font-display-hi",
 };
-
-import { useLanguage } from "../context/LanguageContext";
-
-
 
 export default function ConsultHero() {
   const router = useRouter();
@@ -37,7 +36,13 @@ export default function ConsultHero() {
       : "leading-[0.92]";
 
   return (
-    <section className="relative overflow-hidden bg-[#fffdfb] px-5 py-20 md:py-28">
+    <section
+      className="relative overflow-hidden bg-[#fffdfb] px-5 py-20 md:py-28"
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "850px",
+      }}
+    >
       {/* SOFT BACKGROUND */}
       <div className="pointer-events-none absolute -left-40 top-20 h-[420px] w-[420px] rounded-full bg-[#fff1e8] blur-[120px]" />
 
@@ -157,11 +162,15 @@ export default function ConsultHero() {
 
         {/* RIGHT IMAGE */}
         <div className="relative">
-          <div className="relative h-[480px] overflow-hidden md:h-[620px]">
-            <img
+          <div className="relative h-[480px] overflow-hidden bg-[#f5f0ec] md:h-[620px]">
+            <Image
               src="/images/family.jpg"
               alt={t("consultHero.imageAlt")}
-              className="h-full w-full object-cover transition-transform duration-[1400ms] hover:scale-[1.03]"
+              fill
+              loading="lazy"
+              quality={76}
+              sizes="(max-width: 767px) 100vw, 50vw"
+              className="object-cover transition-transform duration-[1400ms] hover:scale-[1.03]"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />

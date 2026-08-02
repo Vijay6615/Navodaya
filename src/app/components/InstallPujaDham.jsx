@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -16,6 +18,8 @@ import { useLanguage } from "../context/LanguageContext";
 
 const INSTALL_DISMISSED_KEY =
   "puja-dham-install-dismissed";
+
+const INSTALL_BANNER_DELAY = 5000;
 
 export default function InstallPujaDham() {
   const { t } = useLanguage();
@@ -35,17 +39,61 @@ export default function InstallPujaDham() {
   const [showHelp, setShowHelp] =
     useState(false);
 
-  const dismissForCurrentVisit = useCallback(() => {
-    // Isi tab/session me internal page change ya reload ke baad
-    // popup dobara nahi dikhega.
-    window.sessionStorage.setItem(
-      INSTALL_DISMISSED_KEY,
-      "true"
-    );
+  const bannerTimerRef = useRef(null);
 
-    setShowBanner(false);
-    setShowHelp(false);
+  const clearBannerTimer = useCallback(() => {
+    if (bannerTimerRef.current) {
+      window.clearTimeout(
+        bannerTimerRef.current
+      );
+
+      bannerTimerRef.current = null;
+    }
   }, []);
+
+  const dismissForCurrentVisit =
+    useCallback(() => {
+      clearBannerTimer();
+
+      try {
+        window.sessionStorage.setItem(
+          INSTALL_DISMISSED_KEY,
+          "true"
+        );
+      } catch (error) {
+        console.warn(
+          "Install dismissal could not be saved:",
+          error
+        );
+      }
+
+      setShowBanner(false);
+      setShowHelp(false);
+    }, [clearBannerTimer]);
+
+  const scheduleBanner = useCallback(() => {
+    clearBannerTimer();
+
+    bannerTimerRef.current =
+      window.setTimeout(() => {
+        let dismissed = false;
+
+        try {
+          dismissed =
+            window.sessionStorage.getItem(
+              INSTALL_DISMISSED_KEY
+            ) === "true";
+        } catch {
+          dismissed = false;
+        }
+
+        if (!dismissed) {
+          setShowBanner(true);
+        }
+
+        bannerTimerRef.current = null;
+      }, INSTALL_BANNER_DELAY);
+  }, [clearBannerTimer]);
 
   useEffect(() => {
     const standalone =
@@ -59,39 +107,59 @@ export default function InstallPujaDham() {
         window.navigator.userAgent
       ) && !window.MSStream;
 
-    const wasDismissed =
-      window.sessionStorage.getItem(
-        INSTALL_DISMISSED_KEY
-      ) === "true";
+    let wasDismissed = false;
+
+    try {
+      wasDismissed =
+        window.sessionStorage.getItem(
+          INSTALL_DISMISSED_KEY
+        ) === "true";
+    } catch {
+      wasDismissed = false;
+    }
 
     setIsInstalled(standalone);
     setIsIOS(iosDevice);
 
-    // Website visit ke start me sirf ek baar dikhao.
     if (!standalone && !wasDismissed) {
-      setShowBanner(true);
+      scheduleBanner();
     }
 
-    const handleBeforeInstallPrompt = (event) => {
+    const handleBeforeInstallPrompt = (
+      event
+    ) => {
       event.preventDefault();
       setDeferredPrompt(event);
 
-      const dismissed =
-        window.sessionStorage.getItem(
-          INSTALL_DISMISSED_KEY
-        ) === "true";
+      let dismissed = false;
 
-      // Browser event route change ke baad fire ho,
-      // tab bhi dismissed popup ko dobara mat kholo.
+      try {
+        dismissed =
+          window.sessionStorage.getItem(
+            INSTALL_DISMISSED_KEY
+          ) === "true";
+      } catch {
+        dismissed = false;
+      }
+
       if (!dismissed) {
-        setShowBanner(true);
+        scheduleBanner();
       }
     };
 
     const handleAppInstalled = () => {
-      window.sessionStorage.removeItem(
-        INSTALL_DISMISSED_KEY
-      );
+      clearBannerTimer();
+
+      try {
+        window.sessionStorage.removeItem(
+          INSTALL_DISMISSED_KEY
+        );
+      } catch (error) {
+        console.warn(
+          "Install dismissal could not be cleared:",
+          error
+        );
+      }
 
       setIsInstalled(true);
       setDeferredPrompt(null);
@@ -110,6 +178,8 @@ export default function InstallPujaDham() {
     );
 
     return () => {
+      clearBannerTimer();
+
       window.removeEventListener(
         "beforeinstallprompt",
         handleBeforeInstallPrompt
@@ -120,48 +190,66 @@ export default function InstallPujaDham() {
         handleAppInstalled
       );
     };
-  }, []);
+  }, [
+    clearBannerTimer,
+    scheduleBanner,
+  ]);
 
   const handleInstall = useCallback(async () => {
-    // iPhone/iPad me JavaScript se native
-    // installation prompt available nahi hota.
+    clearBannerTimer();
+
     if (isIOS) {
       setShowBanner(true);
       setShowHelp(true);
       return;
     }
 
-    // Chrome/Edge ka real install prompt.
     if (deferredPrompt) {
-      await deferredPrompt.prompt();
+      try {
+        await deferredPrompt.prompt();
 
-      const choice =
-        await deferredPrompt.userChoice;
+        const choice =
+          await deferredPrompt.userChoice;
 
-      if (choice.outcome === "accepted") {
-        window.sessionStorage.removeItem(
-          INSTALL_DISMISSED_KEY
+        if (
+          choice.outcome === "accepted"
+        ) {
+          try {
+            window.sessionStorage.removeItem(
+              INSTALL_DISMISSED_KEY
+            );
+          } catch (error) {
+            console.warn(
+              "Install dismissal could not be cleared:",
+              error
+            );
+          }
+
+          setIsInstalled(true);
+          setShowBanner(false);
+          setShowHelp(false);
+        } else {
+          dismissForCurrentVisit();
+        }
+      } catch (error) {
+        console.error(
+          "Install prompt failed:",
+          error
         );
 
-        setIsInstalled(true);
-        setShowBanner(false);
-        setShowHelp(false);
-      } else {
-        // Native prompt bhi dismiss kiya to isi visit me
-        // custom card baar-baar nahi dikhega.
-        dismissForCurrentVisit();
+        setShowBanner(true);
+        setShowHelp(true);
+      } finally {
+        setDeferredPrompt(null);
       }
 
-      // beforeinstallprompt event instance
-      // sirf ek baar use hota hai.
-      setDeferredPrompt(null);
       return;
     }
 
-    // Prompt ready/supported na ho to manual steps.
     setShowBanner(true);
     setShowHelp(true);
   }, [
+    clearBannerTimer,
     deferredPrompt,
     dismissForCurrentVisit,
     isIOS,
@@ -173,11 +261,18 @@ export default function InstallPujaDham() {
         return;
       }
 
-      // Navbar ke Download App par click hone par
-      // session dismissal ko override karke prompt kholo.
-      window.sessionStorage.removeItem(
-        INSTALL_DISMISSED_KEY
-      );
+      clearBannerTimer();
+
+      try {
+        window.sessionStorage.removeItem(
+          INSTALL_DISMISSED_KEY
+        );
+      } catch (error) {
+        console.warn(
+          "Install dismissal could not be cleared:",
+          error
+        );
+      }
 
       setShowBanner(true);
       handleInstall();
@@ -194,7 +289,11 @@ export default function InstallPujaDham() {
         handleNavbarInstall
       );
     };
-  }, [handleInstall, isInstalled]);
+  }, [
+    clearBannerTimer,
+    handleInstall,
+    isInstalled,
+  ]);
 
   if (isInstalled || !showBanner) {
     return null;
@@ -217,11 +316,14 @@ export default function InstallPujaDham() {
         </button>
 
         <div className="flex items-center gap-3 pr-8">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-orange-100 bg-orange-50">
-            <img
+          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-orange-100 bg-orange-50">
+            <Image
               src="/icons/icon-192.png"
               alt="Puja Dham"
-              className="h-full w-full object-cover"
+              fill
+              loading="lazy"
+              sizes="56px"
+              className="object-cover"
             />
           </div>
 
@@ -257,7 +359,9 @@ export default function InstallPujaDham() {
       {showHelp && (
         <div
           className="fixed inset-0 z-[150] flex items-end justify-center bg-black/50 p-4 backdrop-blur-sm sm:items-center"
-          onClick={() => setShowHelp(false)}
+          onClick={() =>
+            setShowHelp(false)
+          }
         >
           <div
             className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl"
@@ -280,7 +384,9 @@ export default function InstallPujaDham() {
               <button
                 type="button"
                 aria-label="Close instructions"
-                onClick={() => setShowHelp(false)}
+                onClick={() =>
+                  setShowHelp(false)
+                }
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500"
               >
                 <X size={18} />
@@ -308,24 +414,32 @@ export default function InstallPujaDham() {
               <div className="mt-5 space-y-4">
                 <Instruction
                   number="1"
-                  text={t("install.androidStep1")}
+                  text={t(
+                    "install.androidStep1"
+                  )}
                 />
 
                 <Instruction
                   number="2"
-                  text={t("install.androidStep2")}
+                  text={t(
+                    "install.androidStep2"
+                  )}
                 />
 
                 <Instruction
                   number="3"
-                  text={t("install.androidStep3")}
+                  text={t(
+                    "install.androidStep3"
+                  )}
                 />
               </div>
             )}
 
             <button
               type="button"
-              onClick={() => setShowHelp(false)}
+              onClick={() =>
+                setShowHelp(false)
+              }
               className="mt-6 h-11 w-full rounded-xl bg-[#a8441b] text-sm font-bold text-white"
             >
               {t("install.gotIt")}
@@ -333,6 +447,16 @@ export default function InstallPujaDham() {
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        @media (prefers-reduced-motion: reduce) {
+          [aria-label="Install Puja Dham"] *,
+          [aria-label="Install Puja Dham"] {
+            animation-duration: 0.001ms !important;
+            transition-duration: 0.001ms !important;
+          }
+        }
+      `}</style>
     </>
   );
 }

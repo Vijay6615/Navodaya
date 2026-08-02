@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "../context/LanguageContext";
@@ -262,10 +263,15 @@ export default function GauSevaPage() {
   return (
     <main className="min-h-screen bg-[#fffdfb] text-[#24140f]">
       <section className="relative flex min-h-[82vh] items-end overflow-hidden">
-        <img
+        <Image
           src="/images/Gau-Seva.png"
           alt="Gau Seva"
-          className="absolute inset-0 h-full w-full object-cover"
+          fill
+          priority
+          fetchPriority="high"
+          quality={78}
+          sizes="100vw"
+          className="object-cover"
         />
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/10" />
@@ -302,7 +308,13 @@ export default function GauSevaPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-[0.8fr_1.2fr] md:gap-20 md:py-28">
+      <section
+        className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-[0.8fr_1.2fr] md:gap-20 md:py-28"
+        style={{
+          contentVisibility: "auto",
+          containIntrinsicSize: "650px",
+        }}
+      >
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9a3f27]">
             {t("gauSeva.about.eyebrow")}
@@ -332,6 +344,10 @@ export default function GauSevaPage() {
       <section
         id="seva-options"
         className="border-y border-[#eee4dc] bg-[#f7f1ec]"
+        style={{
+          contentVisibility: "auto",
+          containIntrinsicSize: "900px",
+        }}
       >
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
           <div className="max-w-2xl">
@@ -461,7 +477,13 @@ export default function GauSevaPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <section
+        className="mx-auto max-w-6xl px-6 py-20 md:py-28"
+        style={{
+          contentVisibility: "auto",
+          containIntrinsicSize: "620px",
+        }}
+      >
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9a3f27]">
             {t("gauSeva.impact.eyebrow")}
@@ -505,7 +527,13 @@ export default function GauSevaPage() {
         </div>
       </section>
 
-      <section className="bg-[#431407] text-white">
+      <section
+        className="bg-[#431407] text-white"
+        style={{
+          contentVisibility: "auto",
+          containIntrinsicSize: "500px",
+        }}
+      >
         <div className="mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d9a889]">
             {t("gauSeva.philosophy.eyebrow")}
@@ -678,6 +706,8 @@ export default function GauSevaPage() {
               <img
                 src="/Pujadhamlogo1.png"
                 alt="Puja Dham"
+                loading="lazy"
+                decoding="async"
                 className="mx-auto h-16 object-contain"
               />
 
@@ -705,6 +735,8 @@ export default function GauSevaPage() {
                 <img
                   src="/paytmQr.jpeg"
                   alt="Payment QR"
+                  loading="lazy"
+                  decoding="async"
                   className="mx-auto h-48 w-48 object-contain"
                 />
               </div>

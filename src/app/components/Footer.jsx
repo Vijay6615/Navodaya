@@ -3,6 +3,7 @@
 // src/app/components/Footer.jsx
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowUpRight,
   ChevronRight,
@@ -39,7 +40,7 @@ const quickLinks = [
   },
   {
     labelKey: "footer.seva",
-    href: "/seva",
+    href: "/gau-seva",
   },
   {
     labelKey: "footer.myBookings",
@@ -84,7 +85,13 @@ export default function Footer() {
   );
 
   return (
-    <footer className="relative mt-auto w-full shrink-0 overflow-hidden bg-[#2b160d] text-white">
+    <footer
+      className="relative mt-auto w-full shrink-0 overflow-hidden bg-[#2b160d] text-white"
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "620px",
+      }}
+    >
       {/* Decorative background */}
       <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -right-24 h-80 w-80 rounded-full bg-amber-400/10 blur-3xl" />
@@ -99,9 +106,13 @@ export default function Footer() {
               aria-label="Puja Dham Home"
               className="inline-flex items-center"
             >
-              <img
+              <Image
                 src="/Pujadhamlogo1.png"
                 alt="Puja Dham Logo"
+                width={280}
+                height={118}
+                loading="lazy"
+                sizes="(max-width: 639px) 280px, (max-width: 1023px) 280px, 280px"
                 className="block h-[92px] w-auto max-w-[280px] object-contain sm:h-[105px] lg:h-[118px]"
               />
             </Link>
@@ -185,7 +196,7 @@ export default function Footer() {
               />
 
               <ContactLink
-                href="mailto:navodayapuja@gmail.com"
+                href="mailto:pujadham@gmail.com"
                 icon={<Mail size={16} />}
                 label={t("footer.emailUs")}
                 value="pujadham@gmail.com"
@@ -235,6 +246,18 @@ export default function Footer() {
           </p>
         </div>
       </div>
+      <style jsx global>{`
+        @media (prefers-reduced-motion: reduce) {
+          footer *,
+          footer *::before,
+          footer *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+          }
+        }
+      `}</style>
+
     </footer>
   );
 }

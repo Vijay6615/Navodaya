@@ -2,6 +2,7 @@
 
 import { PUJAS } from "../../pujasData";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
@@ -339,11 +340,18 @@ export default function PujaDetail() {
             
             {/* LEFT HERO IMAGE PANEL */}
             <div className="lg:col-span-5 relative overflow-hidden rounded-[32px] border border-[#f0e6dd] bg-[#fffaf6] shadow-[0_15px_45px_rgba(54,37,28,0.04)]">
-              <img
-                src={displayPuja.image}
-                alt={displayPuja.name}
-                className="h-[300px] sm:h-[420px] lg:h-[500px] w-full object-cover"
-              />
+              <div className="relative h-[300px] w-full sm:h-[420px] lg:h-[500px]">
+                <Image
+                  src={displayPuja.image}
+                  alt={displayPuja.name}
+                  fill
+                  priority
+                  fetchPriority="high"
+                  quality={78}
+                  sizes="(max-width: 1023px) 100vw, 42vw"
+                  className="object-cover"
+                />
+              </div>
               <div className="absolute left-4 top-4">
                 <span className="rounded-full bg-[#a8441b] px-4 py-1.5 text-xs font-bold text-white shadow-md uppercase tracking-wider">
                   {displayPuja.category}
@@ -389,7 +397,7 @@ export default function PujaDetail() {
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
 
                 {/* Online option wrapper */}
-                <div className="group rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9] hover:shadow-[0_18px_36px_rgba(168,68,27,.1)]">
+                <div className="pujaDetailMotion group rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9] hover:shadow-[0_18px_36px_rgba(168,68,27,.1)]">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-50 border border-green-100">
@@ -426,7 +434,7 @@ export default function PujaDetail() {
                 </div>
 
                 {/* Offline option wrapper */}
-                <div className="group rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9] hover:shadow-[0_18px_36px_rgba(168,68,27,.1)]">
+                <div className="pujaDetailMotion group rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_10px_30px_rgba(54,37,28,0.03)] transition duration-300 hover:-translate-y-1 hover:border-[#d9c5b9] hover:shadow-[0_18px_36px_rgba(168,68,27,.1)]">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 border border-blue-100">
@@ -467,7 +475,13 @@ export default function PujaDetail() {
           </div>
 
           {/* BLOCK INTERACTION PACK: Structured layouts to keep details brief and clean */}
-          <div className="mt-12 space-y-8 max-w-[960px]">
+          <div
+            className="mt-12 max-w-[960px] space-y-8"
+            style={{
+              contentVisibility: "auto",
+              containIntrinsicSize: "2200px",
+            }}
+          >
             
             {/* ABOUT SECTION */}
             <article className="rounded-3xl border border-[#f0e6dd] bg-white p-6 md:p-8 shadow-sm">
@@ -728,7 +742,13 @@ export default function PujaDetail() {
 
           {/* DYNAMIC RELATED CAROUSAL FEED */}
           {relatedPujas.length > 0 && (
-            <section className="mt-16 border-t border-gray-100 pt-12">
+            <section
+              className="mt-16 border-t border-gray-100 pt-12"
+              style={{
+                contentVisibility: "auto",
+                containIntrinsicSize: "520px",
+              }}
+            >
               <div className="mb-6 flex items-center justify-between">
                 <h2 className={`${headingFontClass} text-3xl font-bold text-[#252525]`}>{t("pujaDetails.related.title")}</h2>
                 <Link href="/pujas" className="text-xs font-bold uppercase tracking-wider text-[#a8441b] bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100 hover:bg-orange-100">{t("pujaDetails.related.viewAll")}</Link>
@@ -739,9 +759,19 @@ export default function PujaDetail() {
                   <Link
                     key={item.slug}
                     href={`/pujas/${item.slug}`}
-                    className="w-[62vw] max-w-[240px] shrink-0 snap-start overflow-hidden rounded-3xl border border-[#f0e6dd] bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-md group sm:w-auto sm:max-w-none sm:shrink"
+                    className="pujaDetailMotion w-[62vw] max-w-[240px] shrink-0 snap-start overflow-hidden rounded-3xl border border-[#f0e6dd] bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-md group sm:w-auto sm:max-w-none sm:shrink"
                   >
-                    <img src={item.image} alt={item.name} className="h-32 sm:h-48 w-full object-cover" />
+                    <div className="relative h-32 w-full sm:h-48">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        loading="lazy"
+                        quality={72}
+                        sizes="(max-width: 639px) 62vw, (max-width: 1023px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
                     <div className="p-3 sm:p-4">
                       <span className="rounded-full bg-orange-50 border border-orange-100 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-[#a8441b] tracking-wide uppercase">{item.category}</span>
                       <h3 className="mt-2 sm:mt-3 text-sm sm:text-lg font-bold text-[#252525] group-hover:text-[#a8441b] transition-colors truncate">{item.name}</h3>
@@ -765,7 +795,13 @@ export default function PujaDetail() {
           )}
 
           {/* SPLASH LOWER CTA FOOTER SECTION */}
-          <section className="mt-16 overflow-hidden rounded-[36px] bg-gradient-to-br from-[#a8441b] to-[#c95326] p-8 md:p-12 text-white text-center shadow-md">
+          <section
+            className="mt-16 overflow-hidden rounded-[36px] bg-gradient-to-br from-[#a8441b] to-[#c95326] p-8 text-center text-white shadow-md md:p-12"
+            style={{
+              contentVisibility: "auto",
+              containIntrinsicSize: "340px",
+            }}
+          >
             <div className="flex flex-col items-center max-w-xl mx-auto">
               <h2 className={`${headingFontClass} mt-4 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight`}>{t("pujaDetails.cta.title")}</h2>
               <p className="mt-3 text-xs sm:text-sm text-orange-100/80 leading-6 font-medium">
@@ -829,6 +865,14 @@ export default function PujaDetail() {
           }
           .related-scroll::-webkit-scrollbar {
             display: none;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .pujaDetailMotion {
+              animation: none !important;
+              transition: none !important;
+              transform: none !important;
+            }
           }
         `}</style>
 

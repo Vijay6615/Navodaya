@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   Volume2,
@@ -224,7 +225,7 @@ export default function SitaRamCounterPage() {
         ref={audioRef}
         src="/audio/ram-ram-jai-raja-ram.mp3"
         loop
-        preload="auto"
+        preload="none"
       />
 
       
@@ -288,10 +289,15 @@ export default function SitaRamCounterPage() {
         <section className="px-4 sm:px-6 lg:px-4 pt-4 sm:pt-6">
           <div className="relative h-52 sm:h-72 lg:h-[420px] rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-xl">
 
-            <img
+            <Image
               src="/images/Ram.jpg"
               alt="Sita Ram"
-              className="absolute inset-0 w-full h-full object-cover"
+              fill
+              priority
+              fetchPriority="high"
+              quality={78}
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 92vw, 1200px"
+              className="object-cover"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
@@ -598,7 +604,13 @@ export default function SitaRamCounterPage() {
         )}
 
         {/* ================= MALA SUMMARY ================= */}
-        <section className="px-4 sm:px-6 lg:px-4 mt-6 sm:mt-8">
+        <section
+          className="px-4 sm:px-6 lg:px-4 mt-6 sm:mt-8"
+          style={{
+            contentVisibility: "auto",
+            containIntrinsicSize: "430px",
+          }}
+        >
 
           <div className="flex items-end justify-between mb-3">
 
@@ -622,11 +634,17 @@ export default function SitaRamCounterPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] lg:grid-cols-[260px_1fr]">
 
-              <img
-                src="/images/hanuman.jpg"
-                alt="Hanuman"
-                className="w-full h-48 sm:h-full sm:min-h-[180px] lg:min-h-[220px] object-cover"
-              />
+              <div className="relative h-48 sm:h-full sm:min-h-[180px] lg:min-h-[220px]">
+                <Image
+                  src="/images/hanuman.jpg"
+                  alt="Hanuman"
+                  fill
+                  loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 180px, 260px"
+                  className="object-cover"
+                />
+              </div>
 
               <div className="p-4">
 
@@ -658,7 +676,13 @@ export default function SitaRamCounterPage() {
         </section>
 
         {/* ================= RECENT DEPOSITS ================= */}
-        <section className="px-4 sm:px-6 lg:px-4 mt-7 sm:mt-9">
+        <section
+          className="px-4 sm:px-6 lg:px-4 mt-7 sm:mt-9"
+          style={{
+            contentVisibility: "auto",
+            containIntrinsicSize: "500px",
+          }}
+        >
 
           <div className="flex items-center justify-between mb-3">
 
@@ -751,14 +775,24 @@ export default function SitaRamCounterPage() {
         </section>
 
         {/* ================= DEVOTIONAL QUOTE ================= */}
-        <section className="px-4 sm:px-6 lg:px-4 mt-7 sm:mt-9">
+        <section
+          className="px-4 sm:px-6 lg:px-4 mt-7 sm:mt-9"
+          style={{
+            contentVisibility: "auto",
+            containIntrinsicSize: "420px",
+          }}
+        >
 
           <div className="relative h-48 sm:h-64 lg:h-80 rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-lg">
 
-            <img
+            <Image
               src="/images/akhand-ramayan-path.jpg"
               alt="Sita Ram devotion"
-              className="absolute inset-0 w-full h-full object-cover"
+              fill
+              loading="lazy"
+              quality={75}
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 92vw, 1200px"
+              className="object-cover"
             />
 
             <div className="absolute inset-0 bg-black/60" />

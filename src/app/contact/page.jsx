@@ -157,9 +157,6 @@ export default function ContactPage() {
     return true;
   };
 
-  const [pageReady, setPageReady] =
-    useState(false);
-
   const [form, setForm] = useState({
     name: "",
     surname: "",
@@ -190,15 +187,6 @@ export default function ContactPage() {
     type: "success",
     message: "",
   });
-
-  useEffect(() => {
-    const timer = setTimeout(
-      () => setPageReady(true),
-      80
-    );
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (!selectedPujaKey) {
@@ -412,11 +400,7 @@ export default function ContactPage() {
         <div className="relative mx-auto max-w-[1280px] px-5 py-12 sm:px-8 md:py-16 lg:px-10 lg:py-20">
           {/* HEADING */}
           <div
-            className={`max-w-4xl transition-all duration-1000 ease-out ${
-              pageReady
-                ? "translate-x-0 opacity-100"
-                : "-translate-x-10 opacity-0"
-            }`}
+            className="max-w-4xl"
           >
             <p
               className={`text-[10px] font-bold text-[#a8441b] ${
@@ -453,11 +437,7 @@ export default function ContactPage() {
           <div className="mt-12 grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:gap-10">
             {/* CONTACT INFO */}
             <div
-              className={`flex flex-col justify-between border border-[#eee8e2] bg-[#431407] p-7 text-white transition-all delay-150 duration-1000 ease-out sm:p-9 lg:p-11 ${
-                pageReady
-                  ? "translate-x-0 opacity-100"
-                  : "-translate-x-14 opacity-0"
-              }`}
+              className="flex flex-col justify-between border border-[#eee8e2] bg-[#431407] p-7 text-white sm:p-9 lg:p-11"
             >
               <div>
                 <p
@@ -566,11 +546,7 @@ export default function ContactPage() {
 
             {/* FORM */}
             <div
-              className={`border border-[#eee8e2] bg-[#fffdfb] p-6 transition-all delay-300 duration-1000 ease-out sm:p-9 lg:p-11 ${
-                pageReady
-                  ? "translate-x-0 opacity-100"
-                  : "translate-x-14 opacity-0"
-              }`}
+              className="border border-[#eee8e2] bg-[#fffdfb] p-6 sm:p-9 lg:p-11"
             >
               <p
                 className={`text-[10px] font-bold text-[#a8441b] ${
@@ -892,6 +868,15 @@ export default function ContactPage() {
             opacity: 1;
             transform: translateY(0)
               scale(1);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .contactInput,
+          .contactToast,
+          .pujaList {
+            animation: none !important;
+            transition: none !important;
           }
         }
       `}</style>

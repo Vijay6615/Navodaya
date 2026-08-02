@@ -22,19 +22,19 @@ const hindiDisplayFont = {
 
 const HERO_SLIDES = [
   {
-    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826364/jivdanimata_vyk5tc.png",
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:eco,c_limit,w_1200/v1784826364/jivdanimata_vyk5tc.png",
     altKey: "hero.slides.jivdaniAlt",
   },
   {
-    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826288/heropuja_qcaug6.png",
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:eco,c_limit,w_1200/v1784826288/heropuja_qcaug6.png",
     altKey: "hero.slides.pujaAlt",
   },
   {
-    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826294/gouseva_xfepxu.png",
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:eco,c_limit,w_1200/v1784826294/gouseva_xfepxu.png",
     altKey: "hero.slides.gauSevaAlt",
   },
   {
-    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:good,c_limit,w_1600/v1784826327/naamjaap_wj9dix.png",
+    src: "https://res.cloudinary.com/b5iu6h89/image/upload/f_auto,q_auto:eco,c_limit,w_1200/v1784826327/naamjaap_wj9dix.png",
     altKey: "hero.slides.naamJaapAlt",
   },
 ];
@@ -45,6 +45,8 @@ const AUTOPLAY_MS = 5000;
 export default function Hero() {
   const { language, t } = useLanguage();
   const [index, setIndex] = useState(0);
+  const [imageReady, setImageReady] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
 
   const headingFontClass =
     language === "hi"
@@ -57,12 +59,43 @@ export default function Hero() {
       : "leading-[1.15] sm:leading-[1.15] md:leading-[1.12]";
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % TOTAL_SLIDES);
+    const handleVisibilityChange = () => {
+      setPageVisible(!document.hidden);
+    };
+
+    handleVisibilityChange();
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
+
+    return () => {
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!imageReady || !pageVisible) {
+      return undefined;
+    }
+
+    const timer = window.setInterval(() => {
+      setIndex(
+        (previous) =>
+          (previous + 1) % TOTAL_SLIDES
+      );
     }, AUTOPLAY_MS);
 
-    return () => clearInterval(timer);
-  }, []);
+    return () => window.clearInterval(timer);
+  }, [imageReady, pageVisible]);
+
+  useEffect(() => {
+    setImageReady(false);
+  }, [index]);
 
   const goTo = (i) => setIndex((i + TOTAL_SLIDES) % TOTAL_SLIDES);
   const next = () => goTo(index + 1);
@@ -80,7 +113,7 @@ export default function Hero() {
       ====================================================== */}
       <div
         key={HERO_SLIDES[index].src}
-        className="absolute inset-0 [animation:heroImageFade_1.1s_ease-in-out]"
+        className="heroMotionSafe absolute inset-0 [animation:heroImageFade_1.1s_ease-in-out]"
       >
         <Image
           src={HERO_SLIDES[index].src}
@@ -88,9 +121,19 @@ export default function Hero() {
           unoptimized
           fill
           priority={index === 0}
+          loading={index === 0 ? "eager" : "lazy"}
           fetchPriority={index === 0 ? "high" : "auto"}
+          decoding="async"
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Crect width='20' height='12' fill='%23c97942'/%3E%3C/svg%3E"
           sizes="100vw"
-          className="object-cover object-center [animation:heroZoom_7s_ease-in-out_forwards]"
+          onLoad={() => setImageReady(true)}
+          onError={() => setImageReady(true)}
+          className={`object-cover object-center transition-opacity duration-500 ${
+            imageReady
+              ? "opacity-100 [animation:heroZoom_7s_ease-in-out_forwards]"
+              : "opacity-80"
+          }`}
         />
       </div>
 
@@ -154,7 +197,7 @@ export default function Hero() {
 
         {/* ---------- SLIDE 1 CONTENT — Narayan Puja ---------- */}
         {index === 0 && (
-          <div className="flex flex-col items-center">
+          <div className="heroMotionSafe flex flex-col items-center">
             
 
             
@@ -167,7 +210,7 @@ export default function Hero() {
                 md:text-6xl
                 ${headingLineHeightClass}
                 font-bold whitespace-pre-line
-                opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
+                [animation:heroFadeUp_0.8s_ease-out_0.15s_both]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
@@ -176,7 +219,7 @@ export default function Hero() {
 
             
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.45s_forwards]">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 [animation:heroFadeUp_0.8s_ease-out_0.45s_both]">
               <a
                 href="/pujas"
                 className="
@@ -218,7 +261,7 @@ export default function Hero() {
 
         {/* ---------- SLIDE 2 CONTENT — Homam & Yagna ---------- */}
         {index === 1 && (
-          <div className="flex flex-col items-center">
+          <div className="heroMotionSafe flex flex-col items-center">
             
 
 
@@ -230,7 +273,7 @@ export default function Hero() {
                 md:text-6xl
                 ${headingLineHeightClass}
                 font-bold whitespace-pre-line
-                opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
+                [animation:heroFadeUp_0.8s_ease-out_0.15s_both]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
@@ -239,7 +282,7 @@ export default function Hero() {
 
             
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.45s_forwards]">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 [animation:heroFadeUp_0.8s_ease-out_0.45s_both]">
               <a
                 href="/pujas"
                 className="
@@ -265,7 +308,7 @@ export default function Hero() {
 
         {/* ---------- SLIDE 3 CONTENT — Akhand Ramayan Path ---------- */}
         {index === 2 && (
-          <div className="flex flex-col items-center">
+          <div className="heroMotionSafe flex flex-col items-center">
             
 
 
@@ -277,14 +320,14 @@ export default function Hero() {
                 md:text-6xl
                 ${headingLineHeightClass}
                 font-bold whitespace-pre-line
-                opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
+                [animation:heroFadeUp_0.8s_ease-out_0.15s_both]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
               {t("hero.slide3.heading")}
             </h1>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.45s_forwards]">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 [animation:heroFadeUp_0.8s_ease-out_0.45s_both]">
               <a
                 href="/gau-seva"
                 className="
@@ -310,7 +353,7 @@ export default function Hero() {
 
         {/* ---------- SLIDE 4 CONTENT — Satyanarayan Puja ---------- */}
         {index === 3 && (
-          <div className="flex flex-col items-center">
+          <div className="heroMotionSafe flex flex-col items-center">
             
             <h1
               className={`
@@ -320,7 +363,7 @@ export default function Hero() {
                 md:text-6xl
                 ${headingLineHeightClass}
                 font-bold whitespace-pre-line
-                opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.15s_forwards]
+                [animation:heroFadeUp_0.8s_ease-out_0.15s_both]
                 [text-shadow:0_2px_20px_rgba(0,0,0,0.35)]
               `}
             >
@@ -329,7 +372,7 @@ export default function Hero() {
 
             
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 opacity-0 [animation:heroFadeUp_0.8s_ease-out_0.45s_forwards]">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 [animation:heroFadeUp_0.8s_ease-out_0.45s_both]">
               <a
                 href="/sita-ram-counter"
                 className="
@@ -389,8 +432,8 @@ export default function Hero() {
 
       <style>{`
         @keyframes heroFadeUp {
-          from { opacity: 0; transform: translateY(18px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { transform: translateY(18px); }
+          to { transform: translateY(0); }
         }
         @keyframes heroDraw {
           from { width: 0; }
@@ -401,7 +444,7 @@ export default function Hero() {
           to { transform: scale(1.045); }
         }
         @keyframes heroImageFade {
-          from { opacity: 0.2; }
+          from { opacity: 0.82; }
           to { opacity: 1; }
         }
         @keyframes heroMarquee {
@@ -409,7 +452,10 @@ export default function Hero() {
           to { transform: translateX(-50%); }
         }
         @media (prefers-reduced-motion: reduce) {
-          * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+          .heroMotionSafe {
+            animation: none !important;
+            transform: none !important;
+          }
         }
       `}</style>
     </section>

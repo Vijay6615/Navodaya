@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   ArrowRight,
   BadgeCheck,
@@ -558,10 +559,15 @@ function BookingForm() {
         <div className="grid overflow-hidden rounded-[34px] border border-[#eee2d8] bg-white shadow-[0_30px_90px_rgba(55,35,15,0.09)] lg:overflow-visible lg:grid-cols-[0.9fr_1.1fr]">
           {/* IMAGE PANEL KEPT UNCHANGED */}
           <div className="relative flex h-[220px] sm:h-[320px] lg:h-[calc(100vh-3rem)] lg:max-h-[640px] items-center justify-center overflow-hidden bg-[#fffaf6] m-4 rounded-3xl lg:sticky lg:top-6 lg:m-6 lg:self-start lg:rounded-[26px]">
-            <img
+            <Image
               src={displayPuja.image}
               alt={displayPuja.name}
-              className="max-h-full max-w-full object-contain p-4"
+              fill
+              priority
+              fetchPriority="high"
+              quality={78}
+              sizes="(max-width: 1023px) 100vw, 42vw"
+              className="object-contain p-4"
             />
             <div className="absolute inset-x-4 bottom-4 hidden items-center justify-between gap-3 rounded-2xl bg-white/90 px-4 py-3 backdrop-blur-sm lg:flex">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#252525]">
@@ -902,6 +908,13 @@ function BookingForm() {
                 </section>
               )}
 
+              <div
+                className="space-y-5"
+                style={{
+                  contentVisibility: "auto",
+                  containIntrinsicSize: "2200px",
+                }}
+              >
               {/* STEP 3: CUSTOMER DETAILS */}
               <section className="rounded-[28px] border border-[#eee4dc] bg-white p-5 shadow-[0_10px_30px_rgba(55,35,15,0.04)] sm:p-6">
                 <SectionTitle
@@ -1110,9 +1123,14 @@ function BookingForm() {
 
                   <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[190px_1fr]">
                     <div className="mx-auto w-fit rounded-[24px] bg-white p-3 shadow-sm lg:mx-0">
-                      <img
+                      <Image
                         src="/paytmQr.jpeg"
                         alt={t("bookingPage.payment.qrAlt")}
+                        width={160}
+                        height={160}
+                        loading="lazy"
+                        quality={80}
+                        sizes="160px"
                         className="h-40 w-40 object-contain"
                       />
                     </div>
@@ -1464,6 +1482,8 @@ function BookingForm() {
                 </div>
               )}
 
+              </div>
+
               <button
                 type="submit"
                 disabled={loading || !pujaType}
@@ -1610,6 +1630,13 @@ function BookingForm() {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .accordionBody,
+          .optionReveal {
+            animation: none !important;
+            transition: none !important;
           }
         }
       `}</style>

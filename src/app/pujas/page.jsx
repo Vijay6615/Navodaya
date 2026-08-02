@@ -11,6 +11,8 @@ import {
   useSearchParams,
 } from "next/navigation";
 
+import Image from "next/image";
+
 
 
 import {
@@ -389,6 +391,8 @@ function PujasPageContent() {
                   event.target.value
                 )
               }
+              autoComplete="off"
+              spellCheck="false"
               placeholder={
                 searchPlaceholder
               }
@@ -470,18 +474,31 @@ function PujasPageContent() {
                     onClick={() =>
                       openPuja(puja)
                     }
-                    className="group min-w-0 cursor-pointer overflow-hidden rounded-[20px] border border-[#eee5de] bg-white shadow-[0_4px_16px_rgba(62,38,22,0.06)] transition duration-300 active:scale-[0.98] md:hover:-translate-y-1.5 md:hover:border-orange-200 md:hover:shadow-[0_20px_45px_rgba(62,38,22,0.11)]"
+                    className="pujaCardMotion group min-w-0 cursor-pointer overflow-hidden rounded-[20px] border border-[#eee5de] bg-white shadow-[0_4px_16px_rgba(62,38,22,0.06)] transition duration-300 active:scale-[0.98] md:hover:-translate-y-1.5 md:hover:border-orange-200 md:hover:shadow-[0_20px_45px_rgba(62,38,22,0.11)]"
+                    style={{
+                      contentVisibility: "auto",
+                      containIntrinsicSize: "430px",
+                    }}
                   >
                     <div className="relative h-28 overflow-hidden bg-orange-50 sm:h-36 md:h-40">
-                      <img
-                        src={
-                          puja.image
+                      <Image
+                        src={puja.image}
+                        alt={localizedPuja.name}
+                        fill
+                        priority={index < 4}
+                        loading={
+                          index < 4
+                            ? "eager"
+                            : "lazy"
                         }
-                        alt={
-                          localizedPuja.name
+                        fetchPriority={
+                          index < 4
+                            ? "high"
+                            : "auto"
                         }
-                        loading="lazy"
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                        quality={74}
+                        sizes="(max-width: 639px) 50vw, (max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                        className="pujaCardMotion object-cover transition duration-700 group-hover:scale-105"
                       />
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
@@ -673,6 +690,14 @@ function PujasPageContent() {
           </div>
         )}
       </section>
+      <style jsx global>{`
+        @media (prefers-reduced-motion: reduce) {
+          .pujaCardMotion {
+            transition: none !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
     </main>
   );
 }
