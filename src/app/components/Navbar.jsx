@@ -19,11 +19,15 @@ import {
   ChevronDown,
   CircleUserRound,
   Languages,
+  ShieldCheck,
+  FileText,
+  RotateCcw,
+  LockKeyhole,
 } from "lucide-react";
 
 const WEBSITE_URL = "https://www.pujadham.co.in";
 const INSTAGRAM_URL = "https://www.instagram.com/puja_dham/";
-const SHARE_IMAGE_URL = "/Pujadhamlogo1.png";
+const SHARE_IMAGE_URL = "/Pujadhamlogo.jpg"; // Relative to the public folder
 
 const GOOGLE_REVIEW_URL =
   process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
@@ -346,8 +350,8 @@ const getShareImageFile = async () => {
 
   const blob = await response.blob();
 
-  return new File([blob], "puja-dham.png", {
-    type: blob.type || "image/png",
+  return new File([blob], "pujadham.jpg", {
+    type: blob.type || "image/jpeg",
   });
 };
 
@@ -1141,6 +1145,59 @@ const handleInstallApp = () => {
 
                       <ChevronRight size={15} />
                     </button>
+
+                      <div className="my-1 border-t border-[#eee8e2]" />
+
+                      <Link
+                        href="/privacy-policy"
+                        onClick={() => setSettingsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                      >
+                        <ShieldCheck size={18} />
+                        <span className="flex-1">
+                          {language === "hi" ? "गोपनीयता नीति" : "Privacy Policy"}
+                        </span>
+                        <ChevronRight size={15} />
+                      </Link>
+
+                      <Link
+                        href="/terms-and-conditions"
+                        onClick={() => setSettingsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                      >
+                        <FileText size={18} />
+                        <span className="flex-1">
+                          {language === "hi" ? "नियम एवं शर्तें" : "Terms & Conditions"}
+                        </span>
+                        <ChevronRight size={15} />
+                      </Link>
+
+                      <Link
+                        href="/refund-policy"
+                        onClick={() => setSettingsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                      >
+                        <RotateCcw size={18} />
+                        <span className="flex-1">
+                          {language === "hi"
+                            ? "रिफंड एवं रद्दीकरण नीति"
+                            : "Refund & Cancellation Policy"}
+                        </span>
+                        <ChevronRight size={15} />
+                      </Link>
+
+                      <Link
+                        href="/security"
+                        onClick={() => setSettingsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-[13px] text-[#332c28] transition hover:bg-[#faf7f4] hover:text-[#a8441b]"
+                      >
+                        <LockKeyhole size={18} />
+                        <span className="flex-1">
+                          {language === "hi" ? "सुरक्षा" : "Security"}
+                        </span>
+                        <ChevronRight size={15} />
+                      </Link>
+
 
                     {isLoggedIn && (
                       <button

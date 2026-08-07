@@ -1,13 +1,9 @@
 import { PUJAS } from "./pujasData";
 
-const BASE_URL =
-  "https://www.pujadham.co.in";
+const BASE_URL = "https://www.pujadham.co.in";
 
 function getAbsoluteUrl(value) {
-  if (
-    !value ||
-    typeof value !== "string"
-  ) {
+  if (!value || typeof value !== "string") {
     return null;
   }
 
@@ -42,8 +38,7 @@ function createStaticEntry({
     priority,
   };
 
-  const imageUrl =
-    getAbsoluteUrl(image);
+  const imageUrl = getAbsoluteUrl(image);
 
   if (imageUrl) {
     entry.images = [imageUrl];
@@ -97,50 +92,62 @@ export default function sitemap() {
       changeFrequency: "yearly",
       priority: 0.65,
     }),
+
+    // Legal / Policy Pages
+    createStaticEntry({
+      path: "/privacy-policy",
+      changeFrequency: "yearly",
+      priority: 0.4,
+    }),
+
+    createStaticEntry({
+      path: "/refund-policy",
+      changeFrequency: "yearly",
+      priority: 0.4,
+    }),
+
+    createStaticEntry({
+      path: "/security",
+      changeFrequency: "yearly",
+      priority: 0.4,
+    }),
+
+    createStaticEntry({
+      path: "/terms-and-conditions",
+      changeFrequency: "yearly",
+      priority: 0.4,
+    }),
   ];
 
   const seenSlugs = new Set();
 
-  const pujaPages = PUJAS.flatMap(
-    (puja) => {
-      const slug =
-        typeof puja?.slug === "string"
-          ? puja.slug
-              .trim()
-              .replace(/^\/+|\/+$/g, "")
-          : "";
+  const pujaPages = PUJAS.flatMap((puja) => {
+    const slug =
+      typeof puja?.slug === "string"
+        ? puja.slug.trim().replace(/^\/+|\/+$/g, "")
+        : "";
 
-      if (
-        !slug ||
-        seenSlugs.has(slug)
-      ) {
-        return [];
-      }
-
-      seenSlugs.add(slug);
-
-      const entry = {
-        url: `${BASE_URL}/pujas/${encodeURIComponent(
-          slug
-        )}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      };
-
-      const imageUrl =
-        getAbsoluteUrl(puja.image);
-
-      if (imageUrl) {
-        entry.images = [imageUrl];
-      }
-
-      return [entry];
+    if (!slug || seenSlugs.has(slug)) {
+      return [];
     }
-  );
 
-  return [
-    ...staticPages,
-    ...pujaPages,
-  ];
+    seenSlugs.add(slug);
+
+    const entry = {
+      url: `${BASE_URL}/pujas/${encodeURIComponent(slug)}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    };
+
+    const imageUrl = getAbsoluteUrl(puja.image);
+
+    if (imageUrl) {
+      entry.images = [imageUrl];
+    }
+
+    return [entry];
+  });
+
+  return [...staticPages, ...pujaPages];
 }

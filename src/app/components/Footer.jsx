@@ -72,8 +72,32 @@ const companyLinks = [
   },
 ];
 
+
+const legalLinks = [
+  {
+    en: "Privacy Policy",
+    hi: "गोपनीयता नीति",
+    href: "/privacy-policy",
+  },
+  {
+    en: "Refund & Cancellation Policy",
+    hi: "रिफंड एवं रद्दीकरण नीति",
+    href: "/refund-policy",
+  },
+  {
+    en: "Security",
+    hi: "सुरक्षा",
+    href: "/security",
+  },
+  {
+    en: "Terms & Conditions",
+    hi: "नियम एवं शर्तें",
+    href: "/terms-and-conditions",
+  },
+];
+
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const currentYear = new Date().getFullYear();
 
@@ -226,12 +250,26 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-10 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent sm:mt-12 lg:mt-14" />
 
-        <div className="flex flex-col items-center justify-between gap-4 pt-6 text-center sm:flex-row sm:text-left">
-          <div>
-            <p className="text-[11px] text-orange-50/50 sm:text-xs">
-              {copyrightText}
-            </p>
-          </div>
+        {/* Legal links */}
+        <nav
+          aria-label={language === "hi" ? "कानूनी लिंक" : "Legal links"}
+          className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pt-6"
+        >
+          {legalLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-[11px] text-orange-50/55 transition-colors hover:text-orange-300 sm:text-xs"
+            >
+              {language === "hi" ? item.hi : item.en}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="mt-5 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-5 text-center sm:flex-row sm:text-left">
+          <p className="text-[11px] text-orange-50/50 sm:text-xs">
+            {copyrightText}
+          </p>
 
           <p className="text-[10px] text-orange-50/40 sm:text-[11px]">
             {t("footer.designedBy")}{" "}
