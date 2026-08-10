@@ -274,12 +274,12 @@ export default function Footer() {
           <p className="text-[10px] text-orange-50/40 sm:text-[11px]">
             {t("footer.designedBy")}{" "}
             <a
-              href="https://vijayshukla-portfolio.vercel.app"
+              href="https://nexkripa.in"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium text-blue-400 underline decoration-blue-400 underline-offset-4 transition-colors hover:text-blue-300"
             >
-              Vijay Shukla
+              NexKripa IT India
             </a>
           </p>
         </div>
