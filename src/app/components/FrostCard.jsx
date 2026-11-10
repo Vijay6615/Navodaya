@@ -32,91 +32,87 @@ const hindiDisplayFont = {
 };
 
 // ================= EVENTS =================
+// Add your own event objects inside each month array.
+// Required fields: img, key, title, desc, date. offer is optional.
 
 const EVENTS = {
-  August: [
+  November: [
     {
-      img: "/images/Shivratri.png",
-      key: "sawanShivratri",
-      title: "Sawan Shivratri, Maha Rudra Abhishek & Havan",
-      desc: "Experience the divine blessings of Lord Shiva through Maha Rudra Abhishek and Havan during the sacred month of Sawan. This powerful ritual removes negativity, fulfills wishes, improves health, and brings peace, prosperity, and spiritual growth.",
-      offer: "10% OFF this month",
-      date: "2026-08-11",
+      img: "/images/chhath.png",
+      key: "chhathPuja",
+      title: "Chhath Puja Special",
+      desc: "Offer prayers to Lord Surya and Chhathi Maiya through sacred rituals and Arghya. Seek blessings for health, happiness and family prosperity.",
+      offer: "Free Consulation",
+      date: "2026-11-15",
     },
     {
-      img: "/images/naappanchmi.png",
-      key: "nagPanchami",
-      title: "Nag Panchami Special Puja",
-      desc: "Celebrate Nag Panchami with traditional Vedic rituals dedicated to the divine serpent deities. Seek protection from Kaal Sarp Dosha, receive blessings for prosperity, family well-being, and spiritual harmony through sacred mantra chanting.",
-      offer: "10% OFF this month + Free Muhurat Consultation",
-      date: "2026-08-17",
-    },
-  ],
-
-  September: [
-    {
-      img: "/images/KrishnaJanmashtami.jpg",
-      key: "janmashtami",
-      title: "Krishna Janmashtami Special Puja",
-      desc: "Celebrate the birth of Lord Krishna with devotional puja, bhajans, mantra chanting, and sacred rituals. Receive blessings for happiness, prosperity, protection, and spiritual enlightenment while strengthening devotion towards Lord Krishna.",
-      offer: "10% OFF this month",
-      date: "2026-09-04",
+      img: "/images/devutthana-ekadashi.png",
+      key: "devutthanaEkadashi",
+      title: "Devutthana Ekadashi Puja",
+      desc: "Worship Lord Vishnu on this sacred Ekadashi. Invite peace, prosperity and divine blessings into your home.",
+      offer: "10% OFF",
+      date: "2026-11-20",
     },
     {
-      img: "/images/ganesh-puja.jpg",
-      key: "ganeshChaturthi",
-      title: "Ganesh Chaturthi Special Puja",
-      desc: "Celebrate Ganesh Chaturthi with sacred Vedic rituals, Ganapati Atharvashirsha recitation, and special puja to invite Lord Ganesha's blessings for success, happiness, wealth, and obstacle-free beginnings.",
-      offer: "10% OFF this month + Free Muhurat Consultation",
-      date: "2026-09-14",
+      img: "/images/tulsi-vivah.png",
+      key: "tulsiVivah",
+      title: "Tulsi Vivah Special Puja",
+      desc: "Celebrate the divine marriage of Goddess Tulsi and Lord Vishnu. Pray for marital harmony, happiness and family well-being.",
+      offer: "Special Puja Booking",
+      date: "2026-11-21",
     },
     {
-      img: "/images/GaneshVisarjan.jpg",
-      key: "ganeshVisarjan",
-      title: "Ganesh Visarjan",
-      desc: "Offer a heartfelt farewell to Lord Ganesha with traditional Visarjan rituals, prayers, and Aarti. Seek blessings for wisdom, prosperity, success, and the removal of obstacles before bidding farewell to Bappa.",
-      offer: "10% OFF this month",
-      date: "2026-09-25",
-    },
-  
-    {
-      img: "/images/PitraDoshNivaran.jpg",
-      key: "pitruPaksha",
-      title: "Pitru Paksha Special Puja",
-      desc: "Honor your ancestors during Pitru Paksha with traditional Shradh, Tarpan, and Pitra Dosh Nivaran rituals. Seek ancestral blessings for family harmony, prosperity, health, and relief from karmic obstacles.",
-      offer: "10% OFF this month",
-      date: "2026-09-26",
+      img: "/images/dev-diwali.png",
+      key: "devDiwali",
+      title: "Dev Diwali & Kartik Purnima",
+      desc: "Celebrate the divine festival of lights with Deep Daan and sacred prayers. Seek blessings for peace, prosperity and spiritual growth.",
+      offer: "Special Puja Booking",
+      date: "2026-11-24",
     },
   ],
+  December: [
+    // Add December events here
+  ],
+  January: [
+    // Add January events here
 
-  October: [
     {
-      img: "/images/durgapuja.png",
-      key: "navratriDurga",
-      title: "Sharadiya Navratri & Durga Puja",
-      desc: "Celebrate the nine divine nights of Goddess Durga with Chandi Path, Durga Puja, and special Vedic rituals for protection, prosperity, courage, and victory over negativity.",
-      offer: "15% OFF this month",
-      date: "2026-10-03",
+      img: "/images/lohri.png",
+      key: "Lohri",
+      title: "Lohri Special Puja",
+      desc: "A traditional harvest festival celebrated with bonfires, prayers, folk songs and offerings. Seek blessings for prosperity, health and happiness.",
+      offer: "10% OFF",
+      date: "2027-01-14",
     },
     {
-      img: "/images/Vijayadashami.png",
-      key: "dussehra",
-      title: "Vijayadashami (Dussehra) Special Puja",
-      desc: "Celebrate the victory of good over evil with Vijayadashami Puja. Seek blessings for success, new beginnings, career growth, courage, and prosperity through sacred Vedic rituals.",
-      offer: "10% OFF this month",
-      date: "2026-10-12",
+      img: "/images/sankranti.png",
+      key: "MakarSankranti",
+      title: "Makar Sankranti Special Puja",
+      desc: "Devotees worship Lord Surya, take holy baths and perform charity to welcome Uttarayan. Seek blessings for health, wealth and spiritual growth.",
+      offer: "Free Consulation",
+      date: "2027-01-15",
     },
     {
-      img: "/images/laxmi.jpg",
-      key: "diwaliLakshmi",
-      title: "Diwali Lakshmi Puja",
-      desc: "Welcome Goddess Lakshmi into your home with traditional Diwali Lakshmi Puja. Receive blessings for wealth, abundance, business growth, happiness, and lasting prosperity.",
-      offer: "20% OFF this month + Free Muhurat Consultation",
-      date: "2026-10-20",
+      img: "/images/satyanarayan.jpg",
+      key: "Satyanarayan",
+      title: "Satyanarayan Special Puja",
+      desc: "Devotees worship Lord Vishnu, perform Satyanarayan Katha and seek peace and prosperity.",
+      offer: "Special Puja Booking",
+      date: "2027-01-22",
     },
+    
   ],
 };
 
+// Example event object to paste into any month array:
+// {
+//   img: "/images/your-event-image.jpg",
+//   key: "yourUniqueEventKey",
+//   title: "Your Puja Title",
+//   desc: "Short description of the puja and its benefits.",
+//   offer: "Special Offer", // optional
+//   date: "2026-11-15",
+// }
 const months = Object.keys(EVENTS);
 
 function getEventText(t, event, field) {
@@ -185,14 +181,14 @@ function Countdown({ date }) {
   ];
 
   return (
-    <div className="flex items-center gap-5">
+    <div className="flex items-center gap-2 sm:gap-5">
       {items.map((item, index) => (
         <div
           key={item.label}
-          className="flex items-center gap-5"
+          className="flex items-center gap-2 sm:gap-5"
         >
           <div>
-            <p className="font-serif text-[24px] text-[#342925]">
+            <p className="font-serif text-[20px] text-[#342925] sm:text-[24px]">
               {String(item.value).padStart(2, "0")}
             </p>
 
@@ -228,7 +224,7 @@ export default function MonthlyEventsSection() {
       ? hindiDisplayFont.className
       : displayFont.className;
 
-  const [month, setMonth] = useState(months[0]);
+  const [month, setMonth] = useState("November");
 
   const [mounted, setMounted] = useState(false);
 
@@ -478,235 +474,153 @@ export default function MonthlyEventsSection() {
 
   return (
     <>
-      <section className="w-full bg-[#fffdfb] px-5 py-20 md:py-28">
+      <section className="relative w-full overflow-hidden bg-[#fcf8f4] px-4 py-14 md:px-6 md:py-24">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,_rgba(221,185,157,0.18),_transparent_68%)]" />
 
-        <div className="mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-6xl">
 
-          {/* HEADER */}
-
-          <div className="mb-14 text-center">
-
-            <div className="mb-5 flex items-center justify-center gap-3">
-
-              <span className="h-px w-8 bg-[#b97b66]" />
-
-              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#a85c43]">
-                {t("events.sacredCalendar")}
-              </p>
-
-              <span className="h-px w-8 bg-[#b97b66]" />
-
+          {/* PREMIUM HEADER */}
+          <div className="relative mb-12 overflow-hidden rounded-[30px] border border-[#ead9cb] bg-[radial-gradient(circle_at_top_left,_#fff5e9,_transparent_48%),linear-gradient(135deg,#fffaf5_0%,#f5e9df_100%)] px-6 py-12 text-center shadow-[0_18px_55px_rgba(89,48,29,0.07)] md:mb-14 md:rounded-[38px] md:px-12 md:py-16">
+            <div className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full border border-[#c89b7e]/20 md:h-72 md:w-72" />
+            <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full border border-[#c89b7e]/20" />
+            <div className="relative">
+          
+              <h2 className={`${headingFontClass} text-[40px] leading-[1.12] text-[#30231e] md:text-[66px] ${language === "hi" ? "!leading-[1.3]" : ""}`}>
+                {t("events.upcomingLine1")}
+                <br />
+                <span className="text-[#9a4329]">{t("events.upcomingLine2")}</span>
+              </h2>
+              <div className="mx-auto mt-7 flex max-w-xs items-center justify-center gap-3">
+                <span className="h-px flex-1 bg-[#c9a58e]" />
+                <span className="text-[15px] text-[#a66b4f]">✦</span>
+                <span className="h-px flex-1 bg-[#c9a58e]" />
+              </div>
             </div>
-
-            <h2
-              className={`${headingFontClass} text-[42px] text-[#2c2421] md:text-[64px] ${
-                language === "hi"
-                  ? "leading-[1.25]"
-                  : "leading-[1.05]"
-              }`}
-            >
-              {t("events.upcomingLine1")}
-              <br />
-              {t("events.upcomingLine2")}
-            </h2>
-
           </div>
 
-          {/* MONTH SELECTOR */}
-
-          <div className="mb-14 flex justify-center">
-
-            <div className="flex border border-[#e7dfda] bg-[#fffaf7]">
-
-              {months.map((m) => (
+          {/* MONTH NAVIGATION */}
+          <div className="mb-12 flex justify-center md:mb-14">
+            <div className="inline-flex w-full max-w-[660px] gap-2 rounded-2xl border border-[#eadfd6] bg-white/80 p-2 shadow-[0_10px_30px_rgba(72,43,29,0.06)] backdrop-blur-sm">
+              {months.map((m, index) => (
                 <button
                   key={m}
-                  onClick={() => {
-                    setMonth(m);
-                  }}
-                  className={`px-6 py-3 text-[11px] font-medium uppercase tracking-[0.16em] transition-all duration-300 md:px-9 ${
+                  type="button"
+                  onClick={() => setMonth(m)}
+                  aria-pressed={month === m}
+                  className={`relative flex min-w-0 flex-1 flex-col items-center justify-center rounded-xl px-2 py-3.5 transition-all duration-300 md:py-4 ${
                     month === m
-                      ? "bg-[#8f321c] text-white"
-                      : "text-[#625752] hover:bg-[#f6eee9]"
+                      ? "bg-[#87351f] text-white shadow-[0_8px_18px_rgba(135,53,31,0.22)]"
+                      : "text-[#6e5b50] hover:bg-[#f8eee7]"
                   }`}
                 >
-                  {t(
-                    `events.months.${m.toLowerCase()}`,
-                    m
-                  )}
+                  <span className={`mb-1 text-[8px] font-semibold uppercase tracking-[0.2em] ${month === m ? "text-white/65" : "text-[#b08c78]"}`}>
+                    202{index === 2 ? "7" : "6"}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.12em] md:text-[12px] md:tracking-[0.18em]">
+                    {t(`events.months.${m.toLowerCase()}`, m)}
+                  </span>
+                  {month === m && <span className="mt-2 h-1 w-5 rounded-full bg-[#f0c9a8]" />}
                 </button>
               ))}
-
             </div>
-
           </div>
 
           {/* EMPTY MONTH */}
-
           {selectedEvents.length === 0 && (
-            <div className="border-y border-[#eee7e2] py-20 text-center">
-
-              <CalendarDays
-                size={28}
-                strokeWidth={1.3}
-                className="mx-auto text-[#a85c43]"
-              />
-
-              <h3
-                className={`${headingFontClass} mt-5 text-3xl text-[#332925]`}
-              >
+            <div className="relative overflow-hidden rounded-[28px] border border-dashed border-[#d9c3b4] bg-[linear-gradient(135deg,#fffaf6,#f8eee7)] px-6 py-16 text-center md:py-20">
+              <div className="absolute -right-10 -top-12 h-40 w-40 rounded-full bg-[#ead6c7]/30 blur-2xl" />
+              <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-[#e5cdbb] bg-white text-[#9a4b31] shadow-sm">
+                <CalendarDays size={27} strokeWidth={1.4} />
+              </div>
+              <p className="relative mt-6 text-[9px] font-bold uppercase tracking-[0.28em] text-[#a36a50]">
+                {t(`events.months.${month.toLowerCase()}`, month)} · {month === "January" ? "2027" : "2026"}
+              </p>
+              <h3 className={`${headingFontClass} relative mt-3 text-3xl text-[#34251f] md:text-[40px]`}>
                 {t("events.noEventsTitle")}
               </h3>
-
-              <p className="mt-3 text-sm text-[#81756f]">
+              <p className="relative mx-auto mt-3 max-w-md text-[13px] leading-7 text-[#84736a]">
                 {t("events.noEventsDescription")}
               </p>
-
+              <div className="relative mx-auto mt-7 h-px w-16 bg-[#c99c7e]" />
             </div>
           )}
 
-          {/* EVENTS */}
-
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-
+          {/* EVENT COLLECTION */}
+          <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 md:gap-8">
             {selectedEvents.map((event, i) => {
-              const expired =
-                new Date(event.date).getTime() <
-                Date.now();
+              const expired = new Date(event.date).getTime() < Date.now();
 
               return (
                 <article
-                  key={i}
-                  className="group overflow-hidden border border-[#e9e1dc] bg-[#fffaf7]"
-                  style={{
-                    contentVisibility: "auto",
-                    containIntrinsicSize: "760px",
-                  }}
+                  key={event.key || i}
+                  className="group relative overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_12px_36px_rgba(67,41,25,0.07)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(67,41,25,0.13)] md:rounded-[30px]"
+                  style={{ contentVisibility: "auto", containIntrinsicSize: "760px" }}
                 >
-
                   {/* IMAGE */}
-
-                  <div className="relative h-[280px] overflow-hidden md:h-[360px]">
-
+                  <div className="relative h-[230px] overflow-hidden bg-[#efe3da] xs:h-[260px] sm:h-[300px] md:h-[320px] lg:h-[340px]">
                     <Image
                       src={event.img}
                       alt={getEventText(t, event, "title")}
                       fill
                       loading="lazy"
-                      quality={76}
+                      quality={80}
                       sizes="(max-width: 767px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
+                      className="object-cover transition-transform duration-[1400ms] group-hover:scale-[1.06]"
                     />
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#21130e]/65 via-transparent to-black/10" />
+                    <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-white backdrop-blur-md">
+                      <CalendarDays size={13} />
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.17em]">
+                        {new Date(event.date).toLocaleDateString(dateLocale, { day: "2-digit", month: "long", year: "numeric" })}
+                      </span>
+                    </div>
                     {event.offer && (
-                      <div className="absolute left-5 top-5 bg-[#fffdfb] px-4 py-2">
-
-                        <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8f321c]">
+                      <div className="absolute right-5 top-5 max-w-[75%] rounded-full border border-white/60 bg-[#fffaf4]/95 px-4 py-2 shadow-lg backdrop-blur-sm">
+                        <p className="text-[8px] font-extrabold uppercase tracking-[0.13em] text-[#87351f] md:text-[9px]">
                           {getEventText(t, event, "offer")}
                         </p>
-
                       </div>
                     )}
-
                   </div>
 
                   {/* CONTENT */}
-
-                  <div className="p-7 md:p-9">
-
-                    <div className="mb-5 flex items-center gap-2 text-[#9c6a58]">
-
-                      <CalendarDays
-                        size={15}
-                        strokeWidth={1.5}
-                      />
-
-                      <p className="text-[10px] uppercase tracking-[0.2em]">
-
-                        {new Date(
-                          event.date
-                        ).toLocaleDateString(
-                          dateLocale,
-                          {
-                            day: "2-digit",
-
-                            month: "long",
-
-                            year: "numeric",
-                          }
-                        )}
-
-                      </p>
-
+                  <div className="p-5 sm:p-7 md:p-8">
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="h-px w-7 bg-[#b77b5e]" />
+                      <span className="text-[9px] font-bold uppercase tracking-[0.24em] text-[#a36b51]">
+                        {t(`events.months.${month.toLowerCase()}`, month)} · {month === "January" ? "2027" : "2026"}
+                      </span>
                     </div>
-
-                    <h3
-                      className={`${headingFontClass} text-[32px] text-[#302724] md:text-[38px] ${
-                        language === "hi"
-                          ? "leading-[1.35]"
-                          : "leading-tight"
-                      }`}
-                    >
-                      {getEventText(
-                        t,
-                        event,
-                        "title"
-                      )}
+                    <h3 className={`${headingFontClass} text-[29px] leading-[1.16] text-[#30231e] transition-colors duration-300 group-hover:text-[#8f3c25] md:text-[36px] ${language === "hi" ? "!leading-[1.35]" : ""}`}>
+                      {getEventText(t, event, "title")}
                     </h3>
-
-                    <p className="mt-4 max-w-lg text-[14px] leading-7 text-[#746963]">
-                      {getEventText(
-                        t,
-                        event,
-                        "desc"
-                      )}
+                    <p className="mt-4 min-h-[84px] max-w-xl text-[13px] leading-[1.9] text-[#77685f] md:text-[14px]">
+                      {getEventText(t, event, "desc")}
                     </p>
-
-                    <div className="my-7 h-px w-full bg-[#e8dfda]" />
-
-                    <Countdown date={event.date} />
-
-                    {/* BUTTON */}
-
-                    <button
-                      disabled={
-                        expired ||
-                        status === "loading"
-                      }
-                      onClick={() =>
-                        openBooking(event)
-                      }
-                      className={`mt-8 inline-flex min-w-[145px] items-center justify-center gap-4 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] transition-all duration-300 ${
-                        expired
-                          ? "cursor-not-allowed bg-[#ddd5d0] text-[#8c817b]"
-                          : "bg-[#96391f] text-white hover:bg-[#7c2b17]"
-                      }`}
-                    >
-
-                      {expired
-                        ? t("events.eventClosed")
-                        : status === "loading"
-                        ? t("events.pleaseWait")
-                        : t("events.bookPuja")}
-
-                      {!expired &&
-                        status !== "loading" && (
-                          <ArrowRight
-                            size={15}
-                            strokeWidth={1.5}
-                          />
-                        )}
-
-                    </button>
-
+                    <div className="my-6 h-px bg-gradient-to-r from-[#d9b49b] via-[#eee4dc] to-transparent" />
+                    <div className="flex min-h-[46px] flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                      <div className="min-w-0 sm:flex-1">
+                        <p className="mb-1 text-[8px] font-bold uppercase tracking-[0.2em] text-[#a18d80]">{t("events.countdownLabel", "Event begins in")}</p>
+                        <Countdown date={event.date} />
+                      </div>
+                      <button
+                        type="button"
+                        disabled={expired || status === "loading"}
+                        onClick={() => openBooking(event)}
+                        className={`inline-flex w-full shrink-0 items-center justify-center gap-3 rounded-full px-5 py-3.5 text-[9px] font-bold uppercase tracking-[0.12em] transition-all duration-300 sm:w-auto sm:px-6 sm:py-3 md:text-[10px] ${
+                          expired
+                            ? "cursor-not-allowed bg-[#e8e1dc] text-[#95877e]"
+                            : "bg-[#87351f] text-white shadow-[0_8px_18px_rgba(135,53,31,0.18)] hover:bg-[#692715] hover:shadow-[0_12px_24px_rgba(135,53,31,0.25)]"
+                        }`}
+                      >
+                        {expired ? t("events.eventClosed") : status === "loading" ? t("events.pleaseWait") : t("events.bookPuja")}
+                        {!expired && status !== "loading" && <ArrowRight size={14} />}
+                      </button>
+                    </div>
                   </div>
-
                 </article>
               );
             })}
-
           </div>
 
         </div>
