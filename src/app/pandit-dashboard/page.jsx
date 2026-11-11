@@ -37,6 +37,7 @@ const FILTERS = [
   { key: "puja", label: "Puja", fullLabel: "Regular Pujas" },
   { key: "event", label: "Events", fullLabel: "Monthly Events" },
   { key: "seva", label: "Seva", fullLabel: "Seva Bookings" },
+  { key: "store", label: "Store", fullLabel: "Store Orders" },
 ];
 
 const HIDDEN_STORAGE_KEY = "pandit_hidden_booking_keys_v1";
@@ -50,6 +51,7 @@ function normalizePaymentStatus(value) {
 }
 
 function getBookingType(booking) {
+  if (booking?.bookingType === "store") return "store";
   return booking?.bookingType === "seva" ? "seva" : "puja";
 }
 
@@ -63,6 +65,7 @@ function isMonthlyEventBooking(booking) {
 }
 
 function getDashboardCategory(booking) {
+  if (getBookingType(booking) === "store") return "store";
   if (getBookingType(booking) === "seva") return "seva";
   if (isMonthlyEventBooking(booking)) return "event";
   return "puja";
@@ -255,6 +258,9 @@ export default function PanditDashboard() {
       seva: visibleBookings.filter(
         (booking) => getDashboardCategory(booking) === "seva"
       ).length,
+      store: visibleBookings.filter(
+        (booking) => getDashboardCategory(booking) === "store"
+      ).length,
       hidden: hiddenBookingKeys.length,
     };
   }, [visibleBookings, hiddenBookingKeys]);
@@ -283,6 +289,7 @@ export default function PanditDashboard() {
         booking.userEmail,
         booking.phone,
         booking.bookingId,
+        booking.orderId,
         booking._id,
         booking.address,
         booking.city,
@@ -722,9 +729,12 @@ function BookingCard({
   onUpdatePayment,
   onHide,
 }) {
+  const isStore = bookingType === "store";
   const isSeva = bookingType === "seva";
 
-  const bookingTitle = isSeva
+  const bookingTitle = isStore
+    ? booking.pujaName || `Store Order (${booking.orderId || "New"})`
+    : isSeva
     ? booking.sevaType || "Gau Seva"
     : isMonthlyEvent
     ? booking.eventTitle ||
@@ -847,7 +857,12 @@ function BookingCard({
                 </span>
               )}
 
-              {isSeva ? (
+              {isStore ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-800">
+                  <PackageCheck size={11} />
+                  Store Order
+                </span>
+              ) : isSeva ? (
                 <PaymentBadge status={paymentStatus} />
               ) : (
                 <span className="inline-flex items-center gap-1 rounded-full border border-[#e0e5ec] bg-white px-2.5 py-1 text-[9px] font-bold text-gray-600">
@@ -956,7 +971,9 @@ function BookingCard({
 
         {expanded && (
           <div className="mt-4 space-y-4">
-            {isSeva ? (
+            {isStore ? (
+        <PackageCheck size={11} />
+      ) : isSeva ? (
               <SevaDetails
                 booking={booking}
                 basePrice={basePrice}
@@ -1000,6 +1017,29 @@ function BookingCard({
               </div>
             )}
 
+            {isStore && Array.isArray(booking.items) && booking.items.length > 0 && (
+              <div className="rounded-[18px] border border-emerald-200 bg-[#f4faf6] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-900">
+                  Ordered Items ({booking.items.length}):
+                </p>
+                <div className="mt-2 space-y-2">
+                  {booking.items.map((it, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between text-xs text-[#28221f]"
+                    >
+                      <span className="font-semibold text-emerald-950">
+                        • {it.title || it.titleHi} (×{it.quantity}) {it.weight ? `[${it.weight}]` : ""}
+                      </span>
+                      <span className="font-bold text-[#a8441b]">
+                        ₹{it.price * it.quantity}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="rounded-[18px] border border-[#e8ddd5] bg-[#fbfaf8] p-3.5">
               <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-gray-400">
                 Booking Created
@@ -1013,7 +1053,50 @@ function BookingCard({
 
         <div className="mt-4 border-t border-[#eee8e2] pt-4">
           <div className="grid gap-2 sm:flex sm:flex-wrap sm:items-center">
-            {normalizedStatus === "pending" && (
+            {isStore ? (
+              <>
+                {["placed", "pending"].includes(normalizedStatus) && (
+                  <>
+                    <ActionButton
+                      disabled={updating}
+                      onClick={() => onUpdateStatus("dispatched")}
+                      icon={<PackageCheck size={15} />}
+                    >
+                      Dispatch Order
+                    </ActionButton>
+                    <ActionButton
+                      danger
+                      disabled={updating}
+                      onClick={() => onUpdateStatus("cancelled")}
+                      icon={<XCircle size={15} />}
+                    >
+                      Cancel Order
+                    </ActionButton>
+                  </>
+                )}
+                {normalizedStatus === "dispatched" && (
+                  <ActionButton
+                    disabled={updating}
+                    onClick={() => onUpdateStatus("delivered")}
+                    icon={<CircleCheckBig size={15} />}
+                  >
+                    Mark Delivered
+                  </ActionButton>
+                )}
+                {paymentStatus === "pending" && (
+                  <ActionButton
+                    secondary
+                    disabled={updating}
+                    onClick={() => onUpdatePayment("paid")}
+                    icon={<IndianRupee size={15} />}
+                  >
+                    Mark Paid
+                  </ActionButton>
+                )}
+              </>
+            ) : (
+              <>
+                {normalizedStatus === "pending" && (
               <>
                 <ActionButton
                   disabled={updating}
@@ -1021,11 +1104,7 @@ function BookingCard({
                   icon={<CheckCircle2 size={15} />}
                 >
                   Confirm{" "}
-                  {isSeva
-                    ? "Seva"
-                    : isMonthlyEvent
-                    ? "Event"
-                    : "Puja"}
+                  {isSeva ? "Seva" : isMonthlyEvent ? "Event" : "Puja"}
                 </ActionButton>
 
                 <ActionButton
@@ -1060,6 +1139,8 @@ function BookingCard({
               >
                 Verify Payment
               </ActionButton>
+            )}
+              </>
             )}
 
             <button
@@ -1567,9 +1648,12 @@ function BookingTypeBadge({
   bookingType,
   isMonthlyEvent = false,
 }) {
+  const isStore = bookingType === "store";
   const isSeva = bookingType === "seva";
 
-  const styles = isSeva
+  const styles = isStore
+    ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+    : isSeva
     ? "border-rose-200 bg-rose-50 text-rose-700"
     : isMonthlyEvent
     ? "border-violet-200 bg-violet-50 text-violet-700"
@@ -1579,7 +1663,9 @@ function BookingTypeBadge({
     <span
       className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${styles}`}
     >
-      {isSeva ? (
+      {isStore ? (
+        <PackageCheck size={11} />
+      ) : isSeva ? (
         <HeartHandshake size={11} />
       ) : isMonthlyEvent ? (
         <CalendarDays size={11} />
@@ -1587,7 +1673,9 @@ function BookingTypeBadge({
         <Sparkles size={11} />
       )}
 
-      {isSeva
+      {isStore
+        ? "Store Order"
+        : isSeva
         ? "Seva"
         : isMonthlyEvent
         ? "Monthly Event"
@@ -1599,6 +1687,9 @@ function BookingTypeBadge({
 function StatusBadge({ status }) {
   const styles = {
     pending: "border-amber-200 bg-amber-50 text-amber-700",
+    placed: "border-amber-200 bg-amber-50 text-amber-700",
+    dispatched: "border-indigo-200 bg-indigo-50 text-indigo-700",
+    delivered: "border-emerald-200 bg-emerald-50 text-emerald-700",
     confirmed:
       "border-emerald-200 bg-emerald-50 text-emerald-700",
     accepted:
@@ -1627,6 +1718,9 @@ function StatusBadge({ status }) {
 function PaymentBadge({ status }) {
   const styles = {
     pending: "border-amber-200 bg-amber-50 text-amber-700",
+    placed: "border-amber-200 bg-amber-50 text-amber-700",
+    dispatched: "border-indigo-200 bg-indigo-50 text-indigo-700",
+    delivered: "border-emerald-200 bg-emerald-50 text-emerald-700",
     submitted: "border-blue-200 bg-blue-50 text-blue-700",
     paid:
       "border-emerald-200 bg-emerald-50 text-emerald-700",

@@ -5,6 +5,9 @@ export const myBookingsTranslations = {
 
       status: {
         pending: "Pending Verification",
+        placed: "Order Placed",
+        dispatched: "Dispatched",
+        delivered: "Delivered",
         submitted: "Payment Submitted",
         confirmed: "Confirmed",
         completed: "Completed",
@@ -47,6 +50,7 @@ export const myBookingsTranslations = {
       tabs: {
         puja: "Puja",
         seva: "Seva",
+        store: "My Orders",
       },
 
       fields: {
@@ -228,6 +232,9 @@ export const myBookingsTranslations = {
           "सत्यापन लंबित",
         submitted:
           "भुगतान जमा किया गया",
+        placed: "ऑर्डर दर्ज हुआ",
+        dispatched: "डिस्पैच हुआ",
+        delivered: "डिलीवर हुआ",
         confirmed: "पुष्टि हो गई",
         completed: "पूर्ण",
         cancelled: "रद्द",
@@ -275,6 +282,7 @@ export const myBookingsTranslations = {
       tabs: {
         puja: "पूजा",
         seva: "सेवा",
+        store: "मेरे ऑर्डर",
       },
 
       fields: {

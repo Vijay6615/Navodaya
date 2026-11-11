@@ -6,11 +6,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useLanguage } from "../context/LanguageContext";
+import { useCart } from "../context/CartContext";
 
 import {
   Menu,
   X,
   Search,
+  ShoppingBag,
   User,
   Download,
   Share2,
@@ -52,6 +54,10 @@ const searchLinks = [
   },
   {
     labelKey: "navbar.gauSeva",
+  },
+  {
+    labelKey: "navbar.pujaStore",
+    href: "/store",
     href: "/gau-seva",
   },
   {
@@ -90,6 +96,7 @@ export default function Navbar() {
     t,
   } = useLanguage();
 
+  const { totalItems } = useCart();
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   const isAdmin =
@@ -105,6 +112,10 @@ export default function Navbar() {
       href: "/",
     },
 
+    {
+      label: (t("navbar.pujaStore") || "Puja Store"),
+      href: "/store",
+    },
     {
       label: t("navbar.naamJaap"),
       href: "/sita-ram-counter",
@@ -918,6 +929,19 @@ const handleInstallApp = () => {
 
           {/* RIGHT ACTIONS */}
           <div className="relative z-30 ml-auto flex items-center gap-1 sm:gap-2">
+            <Link
+              href="/cart"
+              aria-label={t("navbar.cart") || "Cart"}
+              className="relative flex h-11 w-11 items-center justify-center border-none bg-transparent text-[#28221f] shadow-none outline-none transition hover:text-[#a8441b] active:scale-90"
+            >
+              <ShoppingBag size={21} strokeWidth={1.7} />
+              {totalItems > 0 && (
+                <span className="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#a8441b] px-1 text-[10px] font-bold text-white shadow-sm">
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              )}
+            </Link>
+
             {/* Desktop language switch only.
                 Mobile switch is inside the hamburger drawer. */}
             <div className="hidden lg:block">

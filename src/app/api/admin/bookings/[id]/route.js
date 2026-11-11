@@ -19,6 +19,9 @@ const ALLOWED_STATUS = [
   "rejected",
   "cancelled",
   "completed",
+  "placed",
+  "dispatched",
+  "delivered",
 ];
 
 async function checkAdmin() {
@@ -46,6 +49,14 @@ function getDatabaseAndCollection(
   client,
   bookingType
 ) {
+  if (bookingType === "store") {
+    return {
+      database: client.db("navodayapuja"),
+      collectionName: "store_orders",
+      statusField: "status",
+    };
+  }
+
   if (bookingType === "seva") {
     return {
       database: client.db("navodaya"),
@@ -67,7 +78,7 @@ function getBookingQuery(id) {
         _id: new ObjectId(id),
       }
     : {
-        bookingId: id,
+        $or: [{ bookingId: id }, { orderId: id }],
       };
 }
 
@@ -139,7 +150,9 @@ export async function PATCH(
     const body = await request.json();
 
     const bookingType =
-      body?.bookingType === "seva"
+      body?.bookingType === "store"
+        ? "store"
+        : body?.bookingType === "seva"
         ? "seva"
         : "puja";
 
@@ -499,7 +512,9 @@ export async function DELETE(
       .catch(() => ({}));
 
     const bookingType =
-      body?.bookingType === "seva"
+      body?.bookingType === "store"
+        ? "store"
+        : body?.bookingType === "seva"
         ? "seva"
         : "puja";
 

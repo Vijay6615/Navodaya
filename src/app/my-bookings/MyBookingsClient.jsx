@@ -29,6 +29,9 @@ import {
   Video,
   WalletCards,
   XCircle,
+  ShoppingBag,
+  Truck,
+  Check,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +41,21 @@ const STATUS_META = {
     labelKey: "myBookings.status.pending",
     badge: "border-amber-200 bg-amber-50 text-amber-700",
     dot: "bg-amber-500",
+  },
+  placed: {
+    labelKey: "myBookings.status.placed",
+    badge: "border-amber-200 bg-amber-50 text-amber-700",
+    dot: "bg-amber-500",
+  },
+  dispatched: {
+    labelKey: "myBookings.status.dispatched",
+    badge: "border-indigo-200 bg-indigo-50 text-indigo-700",
+    dot: "bg-indigo-500",
+  },
+  delivered: {
+    labelKey: "myBookings.status.delivered",
+    badge: "border-emerald-200 bg-emerald-50 text-emerald-800",
+    dot: "bg-emerald-600",
   },
   submitted: {
     labelKey: "myBookings.status.submitted",
@@ -609,7 +627,7 @@ function PujaBookingCard({
               </span>
             </div>
 
-            {isCompleted ? (
+            {isCompleted || status === "cancelled" ? (
               <button
                 type="button"
                 disabled={actionLoading === bookingKey(booking, index)}
@@ -755,28 +773,265 @@ function SevaBookingCard({
   );
 }
 
+
+function StoreOrderCard({ order, index, language, t }) {
+  const isHindi = language === "hi";
+  const rawStatus = (order.status || "placed").toLowerCase();
+
+  const isCancelled = rawStatus === "cancelled";
+  const isDelivered = rawStatus === "delivered";
+  const isDispatched = rawStatus === "dispatched" || isDelivered;
+  const isPlaced = true;
+
+  const orderId = order.orderId || order._id || `STORE-${index + 1}`;
+  const totalAmount = order.pricing?.total ? `₹${order.pricing.total}` : "—";
+  const deliveryFee =
+    order.pricing?.deliveryFee === 0
+      ? isHindi
+        ? "मुफ़्त"
+        : "FREE"
+      : `₹${order.pricing?.deliveryFee || 0}`;
+
+  return (
+    <article
+      className="overflow-hidden rounded-[26px] border border-[#eadfd7] bg-white shadow-[0_14px_40px_rgba(65,40,22,0.06)]"
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "900px",
+      }}
+    >
+      <div className="border-b border-[#eee4dc] bg-gradient-to-br from-[#fffaf6] via-white to-[#f4faf6] p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-800">
+                <ShoppingBag size={12} />
+                {isHindi ? "सामग्री ऑर्डर" : "Store Order"}
+              </span>
+
+              <StatusBadge status={rawStatus} t={t} />
+
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#eadfd7] bg-white px-2.5 py-1 text-[10px] font-bold text-gray-600">
+                {order.paymentMethod === "cod"
+                  ? isHindi
+                    ? "कैश ऑन डिलीवरी"
+                    : "Cash on Delivery"
+                  : "Prepaid"}
+              </span>
+            </div>
+
+            <h2 className="mt-2 text-lg font-extrabold text-[#27221f] sm:text-xl">
+              {isHindi ? "पूजन सामग्री एवं प्रसाद" : "Puja Samagri & Prasad"} (
+              {order.items?.length || 0} {isHindi ? "सामग्री" : "items"})
+            </h2>
+
+            <p className="mt-1 font-mono text-[11px] text-gray-500">
+              {t("myBookings.common.bookingId")}:{" "}
+              <strong className="text-[#a8441b]">{orderId}</strong>
+            </p>
+          </div>
+
+          <div className="shrink-0 rounded-[18px] border border-[#dce9e1] bg-white px-4 py-2.5 text-left sm:text-right">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">
+              {isHindi ? "कुल भुगतान" : "Total Amount"}
+            </span>
+            <p className="text-xl font-black text-[#a8441b]">{totalAmount}</p>
+          </div>
+        </div>
+
+        {/* LIVE TRACKING BAR */}
+        <div className="mt-5 rounded-2xl border border-[#ebdcd1] bg-[#fffaf5] p-4">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8b5d3b]">
+            {isHindi ? "लाइव डिलीवरी स्टेटस (Live Tracking)" : "Live Order Status Tracking"}
+          </p>
+
+          {isCancelled ? (
+            <div className="mt-2 flex items-center gap-2 text-xs font-bold text-red-600">
+              <XCircle size={16} />
+              <span>
+                {isHindi
+                  ? "यह ऑर्डर रद्द कर दिया गया है।"
+                  : "This order has been cancelled."}
+              </span>
+            </div>
+          ) : (
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+              <div className="flex flex-col items-center">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                    isPlaced
+                      ? "bg-[#26734d] text-white shadow"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  <Check size={14} />
+                </div>
+                <span className="mt-1.5 text-[11px] font-bold text-[#2b221d]">
+                  {isHindi ? "ऑर्डर दर्ज" : "Placed"}
+                </span>
+                <span className="text-[9px] text-gray-400">
+                  {formatDateTime(order.createdAt, language, "")}
+                </span>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                    isDispatched
+                      ? "bg-[#26734d] text-white shadow"
+                      : "border border-amber-300 bg-amber-100 text-amber-800"
+                  }`}
+                >
+                  {isDispatched ? <Check size={14} /> : <Truck size={14} />}
+                </div>
+                <span className="mt-1.5 text-[11px] font-bold text-[#2b221d]">
+                  {isHindi ? "डिस्पैच / रवाना" : "Dispatched"}
+                </span>
+                <span className="text-[9px] text-gray-400">
+                  {isDispatched
+                    ? isHindi
+                      ? "रास्ते में"
+                      : "In Transit"
+                    : isHindi
+                    ? "तैयार हो रहा है"
+                    : "Preparing"}
+                </span>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                    isDelivered
+                      ? "bg-[#26734d] text-white shadow"
+                      : "border border-gray-200 bg-gray-100 text-gray-400"
+                  }`}
+                >
+                  {isDelivered ? <Check size={14} /> : <PackageCheck size={14} />}
+                </div>
+                <span className="mt-1.5 text-[11px] font-bold text-[#2b221d]">
+                  {isHindi ? "डिलीवर हुआ" : "Delivered"}
+                </span>
+                <span className="text-[9px] text-gray-400">
+                  {isDelivered
+                    ? isHindi
+                      ? "सफलतापूर्वक पहुंचा"
+                      : "Delivered"
+                    : isHindi
+                    ? "2-4 दिन"
+                    : "2-4 Days"}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-5">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="rounded-2xl border border-[#eadfd7] bg-white p-4">
+            <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#a8441b]">
+              <PackageCheck size={15} />
+              <span>
+                {isHindi ? "सामग्री सूची" : "Ordered Items"} (
+                {order.items?.length || 0})
+              </span>
+            </h4>
+
+            <div className="mt-3 divide-y divide-[#f4efeb]">
+              {(order.items || []).map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between py-2 text-xs"
+                >
+                  <div>
+                    <p className="font-bold text-[#2b221d]">
+                      {isHindi ? item.titleHi || item.title : item.title}
+                    </p>
+                    <p className="text-[10px] text-gray-400">
+                      Qty: {item.quantity}{" "}
+                      {item.weight ? `• ${item.weight}` : ""}
+                    </p>
+                  </div>
+                  <span className="font-extrabold text-[#2b221d]">
+                    ₹{item.price * item.quantity}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3 flex justify-between border-t border-[#f2eae4] pt-3 text-xs font-medium text-gray-500">
+              <span>{isHindi ? "डिलीवरी शुल्क" : "Delivery Fee"}</span>
+              <span className="font-bold text-[#26734d]">{deliveryFee}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between rounded-2xl border border-[#eadfd7] bg-[#fbfaf8] p-4">
+            <div>
+              <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#5c4f46]">
+                <MapPin size={15} className="text-[#a8441b]" />
+                <span>{isHindi ? "डिलीवरी का पता" : "Shipping Destination"}</span>
+              </h4>
+
+              <p className="mt-3 text-xs font-bold text-[#2b221d]">
+                {order.customer?.fullName || "Devotee"}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-[#5c4f46]">
+                {order.shippingAddress?.address}
+                {order.shippingAddress?.landmark
+                  ? `, Near ${order.shippingAddress.landmark}`
+                  : ""}
+                <br />
+                {order.shippingAddress?.city} - {order.shippingAddress?.pincode}
+              </p>
+              <p className="mt-2 text-xs text-[#5c4f46]">
+                📞 {order.customer?.phone}
+              </p>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between border-t border-[#eee8e2] pt-3">
+              <span className="font-mono text-[10px] text-gray-400">
+                {isHindi ? "भुगतान: डिलीवरी पर" : "Payment: Cash on Delivery"}
+              </span>
+
+              <a
+                href={`https://wa.me/919594943609?text=${encodeURIComponent(
+                  `Namaste Puja Dham, I am inquiring about my store order: ${orderId}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-full border border-[#26734d] bg-[#eaf7ef] px-3 py-1 text-[11px] font-bold text-[#26734d] transition hover:bg-[#26734d] hover:text-white"
+              >
+                <span>WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function EmptyState({ activeTab, t }) {
+  const isStore = activeTab === "store";
   const isSeva = activeTab === "seva";
 
   return (
     <div className="flex min-h-[42vh] items-center justify-center rounded-[28px] border border-dashed border-[#e6d9cf] bg-white px-5 py-12">
       <div className="max-w-sm text-center">
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#fff3e9] text-[#a8441b]">
-          {isSeva ? <HeartHandshake size={28} /> : <CalendarDays size={28} />}
+          {isStore ? <ShoppingBag size={28} /> : isSeva ? <HeartHandshake size={28} /> : <CalendarDays size={28} />}
         </span>
 
         <h2 className="mt-5 text-xl font-bold text-[#2b2622]">
-          {isSeva ? t("myBookings.empty.sevaTitle") : t("myBookings.empty.pujaTitle")}
+          {isStore ? "No Store Orders Found" : isSeva ? t("myBookings.empty.sevaTitle") : t("myBookings.empty.pujaTitle")}
         </h2>
 
         <p className="mt-2 text-xs leading-6 text-gray-500">
-          {isSeva
-            ? t("myBookings.empty.sevaDescription")
-            : t("myBookings.empty.pujaDescription")}
+          {isStore ? "You haven't ordered any puja kits or prasad yet." : isSeva ? t("myBookings.empty.sevaDescription") : t("myBookings.empty.pujaDescription")}
         </p>
 
         <Link
-          href={isSeva ? "/seva" : "/pujas"}
+          href={isStore ? "/store" : isSeva ? "/gau-seva" : "/pujas"}
           className="mt-5 inline-flex rounded-full bg-[#a8441b] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#8d3816]"
         >
           {isSeva ? t("myBookings.empty.exploreSeva") : t("myBookings.empty.explorePujas")}
@@ -790,6 +1045,7 @@ export default function MyBookingsPage() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const { language, t } = useLanguage();
+  const isHindi = language === "hi";
 
   const notAvailable = t(
     "myBookings.common.notAvailable"
@@ -801,6 +1057,7 @@ export default function MyBookingsPage() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [pujaBookings, setPujaBookings] = useState([]);
   const [sevaBookings, setSevaBookings] = useState([]);
+  const [storeOrders, setStoreOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
@@ -809,7 +1066,7 @@ export default function MyBookingsPage() {
   useEffect(() => {
     const tab = searchParams.get("tab");
 
-    if (tab === "seva" || tab === "puja") {
+    if (tab === "seva" || tab === "puja" || tab === "store") {
       setActiveTab(tab);
     }
   }, [searchParams]);
@@ -819,19 +1076,18 @@ export default function MyBookingsPage() {
       setLoading(true);
       setErrorMessage("");
 
-      let localPujaBookings = [];
+      const userEmail = String(session?.user?.email || "").toLowerCase().trim();
 
+      // Clear legacy local test bookings from localStorage so they never corrupt devotee's view
       if (typeof window !== "undefined") {
         try {
-          localPujaBookings = JSON.parse(
-            localStorage.getItem("local_puja_bookings") || "[]"
-          );
+          localStorage.removeItem("local_puja_bookings");
         } catch {
-          localPujaBookings = [];
+          // ignore
         }
       }
 
-      const [pujaResult, sevaResult] = await Promise.allSettled([
+      const [pujaResult, sevaResult, storeResult] = await Promise.allSettled([
         fetch("/api/bookings", {
           cache: "no-store",
           headers: {
@@ -840,6 +1096,13 @@ export default function MyBookingsPage() {
           },
         }),
         fetch("/api/seva-bookings", {
+          cache: "no-store",
+          headers: {
+            Pragma: "no-cache",
+            "Cache-Control": "no-cache",
+          },
+        }),
+        fetch(`/api/store/order?email=${encodeURIComponent(userEmail)}`, {
           cache: "no-store",
           headers: {
             Pragma: "no-cache",
@@ -873,40 +1136,30 @@ export default function MyBookingsPage() {
         sevaApiFailed = true;
       }
 
-      const userEmail = String(session?.user?.email || "")
-        .toLowerCase()
-        .trim();
-
       const belongsToCurrentUser = (booking) => {
+        if (!userEmail) return false;
         const bookingEmail = String(
-          booking?.email || booking?.userEmail || ""
+          booking?.email ||
+          booking?.userEmail ||
+          booking?.customerEmail ||
+          ""
         )
           .toLowerCase()
           .trim();
 
-        return !bookingEmail || !userEmail || bookingEmail === userEmail;
+        return Boolean(bookingEmail && bookingEmail === userEmail);
       };
 
-      const mergedPujaBookings = mergeBookings(
-        localPujaBookings.filter(belongsToCurrentUser),
-        apiPujaBookings.filter(belongsToCurrentUser)
-      );
-
-      setPujaBookings(mergedPujaBookings);
+      setPujaBookings(apiPujaBookings.filter(belongsToCurrentUser));
       setSevaBookings(apiSevaBookings.filter(belongsToCurrentUser));
 
-      if (
-        pujaApiFailed &&
-        sevaApiFailed &&
-        mergedPujaBookings.length === 0
-      ) {
-        setErrorMessage(
-          t("myBookings.errors.serverUnavailable")
-        );
-      } else if (pujaApiFailed && mergedPujaBookings.length > 0) {
-        setErrorMessage(
-          t("myBookings.errors.localOnly")
-        );
+      if (storeResult.status === "fulfilled" && storeResult.value.ok) {
+        const storeData = await storeResult.value.json();
+        setStoreOrders(storeData.orders || []);
+      }
+
+      if (pujaApiFailed && sevaApiFailed) {
+        setErrorMessage(t("myBookings.errors.serverUnavailable"));
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -920,6 +1173,7 @@ export default function MyBookingsPage() {
     if (status === "unauthenticated") {
       setPujaBookings([]);
       setSevaBookings([]);
+      setStoreOrders([]);
 
       if (typeof window !== "undefined") {
         localStorage.removeItem("last_booking_sync");
@@ -947,8 +1201,7 @@ export default function MyBookingsPage() {
     const isCompletedDelete = action === "delete-completed";
 
     if (
-      isCompletedDelete &&
-      normalizeStatus(booking.status) !== "completed"
+      isCompletedDelete && !["completed", "cancelled"].includes(normalizeStatus(booking.status))
     ) {
       alert(t("myBookings.alerts.onlyCompleted"));
       return;
@@ -987,38 +1240,11 @@ export default function MyBookingsPage() {
       }
 
       if (typeof window !== "undefined") {
-        let existingLocal = [];
-
         try {
-          existingLocal = JSON.parse(
-            localStorage.getItem("local_puja_bookings") || "[]"
-          );
+          localStorage.removeItem("local_puja_bookings");
         } catch {
-          existingLocal = [];
+          // ignore
         }
-
-        const updatedLocal = existingLocal.filter(
-          (item, itemIndex) => {
-            const sameGeneratedKey =
-              bookingKey(item, itemIndex) === key;
-            const sameBookingId =
-              booking.bookingId &&
-              item.bookingId === booking.bookingId;
-            const sameDatabaseId =
-              booking._id && item._id === booking._id;
-
-            return !(
-              sameGeneratedKey ||
-              sameBookingId ||
-              sameDatabaseId
-            );
-          }
-        );
-
-        localStorage.setItem(
-          "local_puja_bookings",
-          JSON.stringify(updatedLocal)
-        );
       }
 
       setPujaBookings((current) =>
@@ -1057,10 +1283,10 @@ export default function MyBookingsPage() {
     }
   };
 
-  const displayedBookings = useMemo(
-    () => (activeTab === "seva" ? sevaBookings : pujaBookings),
-    [activeTab, sevaBookings, pujaBookings]
-  );
+  const displayedBookings = useMemo(() => {
+    if (activeTab === "store") return storeOrders;
+    return activeTab === "seva" ? sevaBookings : pujaBookings;
+  }, [activeTab, storeOrders, sevaBookings, pujaBookings]);
 
   const bookingStats = useMemo(() => {
     const currentBookings = displayedBookings;
@@ -1221,7 +1447,7 @@ export default function MyBookingsPage() {
           </div>
         )}
 
-        <div className="my-5 grid grid-cols-2 gap-1.5 rounded-[20px] border border-[#e7ddd5] bg-white p-1.5 shadow-sm">
+        <div className="my-5 grid grid-cols-3 gap-1.5 rounded-[20px] border border-[#e7ddd5] bg-white p-1.5 shadow-sm">
           <button
             type="button"
             onClick={() => setActiveTab("puja")}
@@ -1265,10 +1491,44 @@ export default function MyBookingsPage() {
               {sevaBookings.length}
             </span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("store")}
+            className={`flex min-h-12 items-center justify-center gap-1.5 rounded-[15px] px-2 text-xs font-bold transition sm:gap-2 sm:text-sm ${
+              activeTab === "store"
+                ? "bg-[#a8441b] text-white shadow-md"
+                : "text-gray-500 hover:bg-[#fff5ed]"
+            }`}
+          >
+            <ShoppingBag size={15} />
+            <span>{t("myBookings.tabs.store") || "My Orders"}</span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[9px] ${
+                activeTab === "store"
+                  ? "bg-white/20 text-white"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {storeOrders.length}
+            </span>
+          </button>
         </div>
 
         {displayedBookings.length === 0 ? (
           <EmptyState activeTab={activeTab} t={t} />
+        ) : activeTab === "store" ? (
+          <div className="space-y-5">
+            {storeOrders.map((order, index) => (
+              <StoreOrderCard
+                key={order._id || order.orderId || index}
+                order={order}
+                index={index}
+                language={language}
+                t={t}
+              />
+            ))}
+          </div>
         ) : activeTab === "puja" ? (
           <div className="space-y-5">
             {pujaBookings.map((booking, index) => (
@@ -1304,10 +1564,10 @@ export default function MyBookingsPage() {
           </div>
 
           <Link
-            href={activeTab === "seva" ? "/seva" : "/pujas"}
+            href={activeTab === "store" ? "/store" : activeTab === "seva" ? "/gau-seva" : "/pujas"}
             className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#a8441b] px-5 text-xs font-bold text-[#a8441b] transition hover:bg-[#a8441b] hover:text-white"
           >
-            {activeTab === "seva" ? t("myBookings.footer.bookSeva") : t("myBookings.footer.bookPuja")}
+            {activeTab === "store" ? (isHindi ? "स्टोर में और सामग्री देखें" : "Explore Puja Store") : activeTab === "seva" ? t("myBookings.footer.bookSeva") : t("myBookings.footer.bookPuja")}
           </Link>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
@@ -26,6 +27,7 @@ import {
   User,
   Video,
   ClipboardList,
+  ShoppingBag,
 } from "lucide-react";
 
 import { PUJAS } from "../pujasData";
@@ -905,6 +907,35 @@ function BookingForm() {
                         </div>
                       </div>
                     )}
+
+                  {/* PUJA STORE CROSS-SELL CALLOUT */}
+                  <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-[18px] border border-[#f0ded2] bg-[#fffaf6] p-4">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#a8441b] text-white shadow-sm">
+                        <ShoppingBag size={18} />
+                      </span>
+                      <div>
+                        <p className="text-xs font-bold text-[#28221f] sm:text-sm">
+                          {language === "hi"
+                            ? "शुद्ध हवन सामग्री, गौमय धूप या मंदिर प्रसाद चाहिए?"
+                            : "Need pure Havan Samagri, Gomaya Dhoop or Temple Prasad?"}
+                        </p>
+                        <p className="text-[11px] text-[#736359]">
+                          {language === "hi"
+                            ? "पूजा धाम स्टोर से घर बैठे 100% शुद्ध वैदिक सामग्री ऑर्डर करें।"
+                            : "Order 100% authentic Vedic items directly from Puja Dham Store."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/store"
+                      target="_blank"
+                      className="shrink-0 self-end sm:self-center rounded-full border border-[#a8441b] bg-white px-4 py-1.5 text-xs font-bold text-[#a8441b] shadow-sm transition hover:bg-[#a8441b] hover:text-white"
+                    >
+                      {language === "hi" ? "स्टोर देखें →" : "Visit Store →"}
+                    </Link>
+                  </div>
                 </section>
               )}
 

@@ -39,6 +39,10 @@ const quickLinks = [
     href: "/pujas?mode=online",
   },
   {
+    labelKey: "footer.pujaStore",
+    href: "/store",
+  },
+  {
     labelKey: "footer.seva",
     href: "/gau-seva",
   },

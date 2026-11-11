@@ -7,6 +7,37 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 function formatBooking(booking, bookingType) {
+  if (bookingType === "store") {
+    return {
+      ...booking,
+      _id: booking._id.toString(),
+      bookingType: "store",
+      bookingCategory: "Store Order",
+      pujaName: `Store Order (${booking.items?.length || 0} items)`,
+      pujaHindiName: `सामग्री ऑर्डर (${booking.items?.length || 0} सामग्री)`,
+      name: booking.customer?.fullName || "Devotee",
+      userName: booking.customer?.fullName || "Devotee",
+      phone: booking.customer?.phone || "",
+      email: booking.customer?.email || "",
+      userEmail: booking.customer?.email || "",
+      city: booking.shippingAddress?.city || "Mumbai",
+      address: `${booking.shippingAddress?.address || ""}${
+        booking.shippingAddress?.landmark
+          ? `, Near ${booking.shippingAddress.landmark}`
+          : ""
+      }, ${booking.shippingAddress?.city || ""} - ${
+        booking.shippingAddress?.pincode || ""
+      }`.trim(),
+      amount: booking.pricing?.total || 0,
+      totalAmount: booking.pricing?.total || 0,
+      totalPrice: booking.pricing?.total ? `₹${booking.pricing.total}` : "₹0",
+      paymentMethod: booking.paymentMethod || "cod",
+      status: booking.status || "placed",
+      paymentStatus: booking.paymentStatus || "pending",
+      date: booking.createdAt,
+    };
+  }
+
   return {
     ...booking,
     _id: booking._id.toString(),
@@ -56,7 +87,7 @@ export async function GET() {
 
     const client = await clientPromise;
 
-    const [pujaBookings, sevaBookings] =
+    const [pujaBookings, sevaBookings, storeOrders] =
       await Promise.all([
         client
           .db("navodayapuja")
@@ -71,6 +102,13 @@ export async function GET() {
           .find({})
           .sort({ createdAt: -1 })
           .toArray(),
+
+        client
+          .db("navodayapuja")
+          .collection("store_orders")
+          .find({})
+          .sort({ createdAt: -1 })
+          .toArray(),
       ]);
 
     const formattedPujas = pujaBookings.map(
@@ -81,9 +119,14 @@ export async function GET() {
       (booking) => formatBooking(booking, "seva")
     );
 
+    const formattedStore = storeOrders.map(
+      (order) => formatBooking(order, "store")
+    );
+
     const allBookings = [
       ...formattedPujas,
       ...formattedSevas,
+      ...formattedStore,
     ].sort(
       (a, b) =>
         new Date(b.createdAt || 0).getTime() -
@@ -98,6 +141,7 @@ export async function GET() {
           total: allBookings.length,
           puja: formattedPujas.length,
           seva: formattedSevas.length,
+          store: formattedStore.length,
         },
       },
       { status: 200 }

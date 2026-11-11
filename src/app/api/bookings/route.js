@@ -670,6 +670,25 @@ export async function DELETE(request) {
       );
     }
 
+    const isPermanentDelete = searchParams.get("action") === "delete" || currentStatus === "completed" || currentStatus === "cancelled";
+
+    if (isPermanentDelete) {
+      await collection.deleteOne({
+        _id: new ObjectId(bookingId),
+        email: userEmail,
+      });
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Puja booking deleted successfully",
+          bookingId,
+          status: "deleted",
+        },
+        { status: 200 }
+      );
+    }
+
     await collection.updateOne(
       {
         _id: new ObjectId(bookingId),
